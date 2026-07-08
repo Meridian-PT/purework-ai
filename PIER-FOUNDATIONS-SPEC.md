@@ -9,18 +9,17 @@
 - Deploy as own Cloudflare Pages project, version independently
 - Shell embeds via routed iframe with postMessage handshake
 
-## Handshake Protocol
+## Auth Model (CORRECTED per Peter 2026-07-08)
 
-```js
-// Shell posts on iframe load:
-{ type: 'PF_SESSION', tenant: 'pier-foundations', user, role, token }
+~~postMessage handshake~~ NOT USED. The shell uses a **session cookie** (`pf_auth_token`).
 
-// Module validates origin and replies:
-// event.origin === 'https://pf-platform.pages.dev'
-{ type: 'PF_MODULE_READY', module: 'hr' }
+```
+Deploy: same-origin path under pf-platform (e.g. /hr/)
+Auth: pf_auth_token cookie, inherited automatically
+RBAC: enforced at platform/functions layer
 ```
 
-Beta: trusted-embed (no real per-user identity yet, hardcoded 'Brad')
+Module does NOT need shell-repo write access. Tether (integration owner) handles wiring with Peter (nav entry + same-origin serving behind review gate).
 
 ## Data Boundaries
 
