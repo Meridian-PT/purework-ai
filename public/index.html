@@ -2694,6 +2694,23 @@
           <span class="nav-item-icon">&#x2705;</span>
           <span class="nav-item-label">Policies</span>
         </a>
+        <a class="nav-item" data-route="timeoff" onclick="navigate('timeoff')">
+          <span class="nav-item-icon">&#x1F3D6;</span>
+          <span class="nav-item-label">Time Off</span>
+        </a>
+        <a class="nav-item" data-route="performance" onclick="navigate('performance')">
+          <span class="nav-item-icon">&#x1F3AF;</span>
+          <span class="nav-item-label">Performance</span>
+        </a>
+        <a class="nav-item" data-route="myprofile" onclick="navigate('myprofile')">
+          <span class="nav-item-icon">&#x1F464;</span>
+          <span class="nav-item-label">My Profile</span>
+        </a>
+        <a class="nav-item" data-route="reports" onclick="navigate('reports')">
+          <span class="nav-item-icon">&#x1F4C8;</span>
+          <span class="nav-item-label">Reports</span>
+          <span class="admin-badge">Admin</span>
+        </a>
 
         <div class="nav-section-label">Intelligence</div>
         <a class="nav-item" data-route="scoring" onclick="navigate('scoring')">
@@ -3199,6 +3216,10 @@
       'onboarding': { title: 'Onboarding', render: renderOnboarding },
       'policies': { title: 'Policies', render: renderPolicies },
       'scoring': { title: 'Scoring Engines', render: renderScoring },
+      'timeoff': { title: 'Time Off', render: renderTimeOff },
+      'performance': { title: 'Performance', render: renderPerformance },
+      'myprofile': { title: 'My Profile', render: renderMyProfile },
+      'reports': { title: 'Reports', render: renderReports },
       'settings': { title: 'Settings', render: renderSettings }
     };
 
@@ -4957,6 +4978,389 @@
       } catch (err) {
         console.warn('Failed to toggle user status:', err);
       }
+    }
+
+    /* ================================================================
+       TIME OFF / VACATION TRACKING PAGE
+       ================================================================ */
+
+    function renderTimeOff() {
+      var user = APP_STATE.user;
+      var isAdmin = user && (user.role === 'admin' || user.role === 'manager');
+
+      /* Demo PTO balances */
+      var balances = [
+        { type: 'Vacation', total: 15, used: 7, pending: 2, color: 'var(--accent)' },
+        { type: 'Sick Days', total: 5, used: 1, pending: 0, color: 'var(--warning)' },
+        { type: 'Personal Days', total: 3, used: 1, pending: 0, color: 'var(--success)' },
+        { type: 'Bereavement', total: 5, used: 0, pending: 0, color: 'var(--text-dim)' }
+      ];
+
+      var balanceCards = balances.map(function(b) {
+        var remaining = b.total - b.used - b.pending;
+        var pct = Math.round((b.used / b.total) * 100);
+        return '<div class="card" style="text-align:center;">' +
+          '<div class="card-body">' +
+            '<div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:8px;">' + b.type + '</div>' +
+            '<div style="font-size:2rem;font-weight:700;color:' + b.color + ';">' + remaining + '</div>' +
+            '<div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:12px;">days remaining</div>' +
+            '<div class="metric-progress"><div class="metric-progress-bar" style="width:' + pct + '%;background:' + b.color + ';"></div></div>' +
+            '<div style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;">' + b.used + ' used / ' + b.pending + ' pending / ' + b.total + ' total</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      /* Demo requests */
+      var requests = [
+        { id: 1, employee: 'Alex Chen', type: 'Vacation', start: '2026-07-21', end: '2026-07-25', days: 5, status: 'pending', reason: 'Family trip' },
+        { id: 2, employee: 'Lisa Thompson', type: 'Sick Day', start: '2026-07-08', end: '2026-07-08', days: 1, status: 'approved', reason: 'Not feeling well' },
+        { id: 3, employee: 'Marcus Williams', type: 'Personal', start: '2026-07-15', end: '2026-07-15', days: 1, status: 'pending', reason: 'Appointment' },
+        { id: 4, employee: 'Sarah Mitchell', type: 'Vacation', start: '2026-08-04', end: '2026-08-08', days: 5, status: 'approved', reason: 'Summer vacation' },
+        { id: 5, employee: 'James Rodriguez', type: 'Vacation', start: '2026-07-28', end: '2026-07-30', days: 3, status: 'denied', reason: 'Road trip — denied due to team coverage' }
+      ];
+
+      var statusBadge = function(s) {
+        var colors = { pending: 'var(--warning)', approved: 'var(--success)', denied: 'var(--error)' };
+        return '<span style="background:' + (colors[s] || 'var(--text-dim)') + '22;color:' + (colors[s] || 'var(--text-dim)') + ';padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;text-transform:uppercase;">' + s + '</span>';
+      };
+
+      var requestRows = requests.map(function(r) {
+        var approveBtn = (isAdmin && r.status === 'pending') ?
+          '<button onclick="demoApprove(' + r.id + ')" style="background:var(--success);color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.7rem;margin-right:4px;">Approve</button>' +
+          '<button onclick="demoDeny(' + r.id + ')" style="background:var(--error);color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.7rem;">Deny</button>' : '';
+        return '<tr>' +
+          '<td>' + escapeHtml(r.employee) + '</td>' +
+          '<td>' + r.type + '</td>' +
+          '<td>' + r.start + '</td>' +
+          '<td>' + r.end + '</td>' +
+          '<td>' + r.days + '</td>' +
+          '<td>' + statusBadge(r.status) + '</td>' +
+          '<td>' + escapeHtml(r.reason) + '</td>' +
+          '<td>' + approveBtn + '</td>' +
+        '</tr>';
+      }).join('');
+
+      /* Request form */
+      var formHtml = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header"><div class="card-title">Request Time Off</div></div>' +
+        '<div class="card-body">' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;">' +
+            '<div><label style="font-size:0.75rem;color:var(--text-dim);display:block;margin-bottom:4px;">Type</label><select id="pto-type" style="width:100%;padding:8px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.85rem;"><option>Vacation</option><option>Sick Day</option><option>Personal Day</option><option>Bereavement</option></select></div>' +
+            '<div><label style="font-size:0.75rem;color:var(--text-dim);display:block;margin-bottom:4px;">Start Date</label><input type="date" id="pto-start" style="width:100%;padding:8px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.85rem;"></div>' +
+            '<div><label style="font-size:0.75rem;color:var(--text-dim);display:block;margin-bottom:4px;">End Date</label><input type="date" id="pto-end" style="width:100%;padding:8px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.85rem;"></div>' +
+            '<div><label style="font-size:0.75rem;color:var(--text-dim);display:block;margin-bottom:4px;">Reason</label><input type="text" id="pto-reason" placeholder="Optional note" style="width:100%;padding:8px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.85rem;"></div>' +
+          '</div>' +
+          '<button onclick="demoSubmitPTO()" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;">Submit Request</button>' +
+        '</div></div>';
+
+      /* Accrual rules info */
+      var accrualHtml = '<div class="card">' +
+        '<div class="card-header"><div class="card-title">PTO Accrual Rules</div></div>' +
+        '<div class="card-body" style="padding:0;overflow-x:auto;">' +
+          '<table class="team-table"><thead><tr><th>Leave Type</th><th>Accrual</th><th>Max Carry-Over</th><th>Waiting Period</th><th>Jurisdiction</th></tr></thead><tbody>' +
+          '<tr><td>Vacation</td><td>1.25 days/month (15/yr)</td><td>5 days</td><td>90 days</td><td>Universal</td></tr>' +
+          '<tr><td>Sick Days</td><td>Front-loaded Jan 1</td><td>0 (use or lose)</td><td>None</td><td>Ontario ESA</td></tr>' +
+          '<tr><td>Personal Days</td><td>Front-loaded Jan 1</td><td>0 (use or lose)</td><td>None</td><td>Ontario ESA s.50(1)</td></tr>' +
+          '<tr><td>Bereavement</td><td>As needed</td><td>N/A</td><td>None</td><td>Ontario ESA s.50(2)</td></tr>' +
+          '<tr><td>Parental Leave</td><td>Per ESA/FMLA</td><td>N/A</td><td>13 weeks service</td><td>Ontario/Federal</td></tr>' +
+          '</tbody></table>' +
+        '</div></div>';
+
+      return '' +
+        '<div class="welcome-message">Time Off</div>' +
+        '<p class="welcome-sub">Track balances, submit requests, and manage team time off.</p>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;">' + balanceCards + '</div>' +
+        formHtml +
+        '<div class="card" style="margin-bottom:20px;">' +
+          '<div class="card-header"><div class="card-title">' + (isAdmin ? 'Team Requests' : 'My Requests') + '</div></div>' +
+          '<div class="card-body" style="padding:0;overflow-x:auto;">' +
+            '<table class="team-table"><thead><tr><th>Employee</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th>Status</th><th>Reason</th><th>Actions</th></tr></thead><tbody>' + requestRows + '</tbody></table>' +
+          '</div>' +
+        '</div>' +
+        accrualHtml;
+    }
+
+    function demoSubmitPTO() { showToast('Time off request submitted! Your manager will be notified.'); }
+    function demoApprove(id) { showToast('Request #' + id + ' approved!'); }
+    function demoDeny(id) { showToast('Request #' + id + ' denied.'); }
+
+    /* ================================================================
+       PERFORMANCE REVIEW PAGE
+       ================================================================ */
+
+    function renderPerformance() {
+      var user = APP_STATE.user;
+      var isAdmin = user && (user.role === 'admin' || user.role === 'manager');
+
+      /* Current review cycle */
+      var cycleHtml = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header" style="display:flex;align-items:center;justify-content:space-between;">' +
+          '<div class="card-title">Current Cycle: Q3 2026 Mid-Year Review</div>' +
+          '<span style="background:var(--warning-bg);color:var(--warning);padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;">In Progress</span>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;">' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--accent);">5</div><div style="font-size:0.7rem;color:var(--text-dim);">TOTAL REVIEWS</div></div>' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--success);">2</div><div style="font-size:0.7rem;color:var(--text-dim);">COMPLETED</div></div>' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--warning);">2</div><div style="font-size:0.7rem;color:var(--text-dim);">IN PROGRESS</div></div>' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.5rem;font-weight:700;color:var(--error);">1</div><div style="font-size:0.7rem;color:var(--text-dim);">NOT STARTED</div></div>' +
+          '</div>' +
+          '<div class="metric-progress" style="height:8px;margin-bottom:8px;"><div class="metric-progress-bar" style="width:60%;background:var(--accent);"></div></div>' +
+          '<div style="font-size:0.8rem;color:var(--text-secondary);">Deadline: August 1, 2026 &bull; 24 days remaining</div>' +
+        '</div></div>';
+
+      /* Team reviews table (admin/manager) */
+      var reviews = [
+        { name: 'Alex Chen', role: 'Software Engineer', status: 'completed', selfDone: true, mgrDone: true, rating: 4.2, goals: '5/5 met' },
+        { name: 'Lisa Thompson', role: 'Manufacturing Lead', status: 'completed', selfDone: true, mgrDone: true, rating: 3.8, goals: '4/5 met' },
+        { name: 'Marcus Williams', role: 'Operations Coord', status: 'in_progress', selfDone: true, mgrDone: false, rating: null, goals: '3/5 met' },
+        { name: 'James Rodriguez', role: 'Sales Manager', status: 'in_progress', selfDone: false, mgrDone: false, rating: null, goals: '4/6 met' },
+        { name: 'Sarah Mitchell', role: 'HR Director', status: 'not_started', selfDone: false, mgrDone: false, rating: null, goals: '2/4 met' }
+      ];
+
+      var statusColors = { completed: 'var(--success)', in_progress: 'var(--warning)', not_started: 'var(--error)' };
+      var statusLabels = { completed: 'Completed', in_progress: 'In Progress', not_started: 'Not Started' };
+
+      var checkmark = function(done) { return done ? '<span style="color:var(--success);">&#x2714;</span>' : '<span style="color:var(--text-dim);">&#x2014;</span>'; };
+
+      var reviewRows = reviews.map(function(r) {
+        return '<tr>' +
+          '<td><strong>' + escapeHtml(r.name) + '</strong><br><span style="font-size:0.75rem;color:var(--text-dim);">' + r.role + '</span></td>' +
+          '<td>' + checkmark(r.selfDone) + ' Self</td>' +
+          '<td>' + checkmark(r.mgrDone) + ' Manager</td>' +
+          '<td>' + (r.rating ? '<span style="color:var(--accent);font-weight:700;">' + r.rating + '/5</span>' : '<span style="color:var(--text-dim);">--</span>') + '</td>' +
+          '<td>' + r.goals + '</td>' +
+          '<td><span style="background:' + statusColors[r.status] + '22;color:' + statusColors[r.status] + ';padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">' + statusLabels[r.status] + '</span></td>' +
+          '<td><button onclick="showToast(\'Opening review for ' + escapeHtml(r.name) + '...\')" style="background:var(--accent);color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.7rem;">Open</button></td>' +
+        '</tr>';
+      }).join('');
+
+      var teamTable = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header"><div class="card-title">Team Reviews</div></div>' +
+        '<div class="card-body" style="padding:0;overflow-x:auto;">' +
+          '<table class="team-table"><thead><tr><th>Employee</th><th>Self Review</th><th>Manager Review</th><th>Rating</th><th>Goals</th><th>Status</th><th>Action</th></tr></thead><tbody>' + reviewRows + '</tbody></table>' +
+        '</div></div>';
+
+      /* Review template preview */
+      var templateHtml = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header"><div class="card-title">Review Template: Mid-Year Check-In</div></div>' +
+        '<div class="card-body">' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;">' +
+            '<div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius-sm);">' +
+              '<div style="font-weight:600;color:var(--text-primary);margin-bottom:8px;">Section 1: Goal Review</div>' +
+              '<ul style="color:var(--text-secondary);font-size:0.85rem;padding-left:16px;line-height:1.8;">' +
+                '<li>Review each goal set in Q1</li><li>Rate: Exceeded / Met / Partially Met / Not Met</li><li>Evidence and examples for each</li><li>Blockers encountered</li>' +
+              '</ul></div>' +
+            '<div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius-sm);">' +
+              '<div style="font-weight:600;color:var(--text-primary);margin-bottom:8px;">Section 2: Competency Assessment</div>' +
+              '<ul style="color:var(--text-secondary);font-size:0.85rem;padding-left:16px;line-height:1.8;">' +
+                '<li>Rate 1-5 on each PT pillar</li><li>Integrity / Accountability / Transparency</li><li>Growth / Innovation / Persistence / Love</li><li>Specific examples required</li>' +
+              '</ul></div>' +
+            '<div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius-sm);">' +
+              '<div style="font-weight:600;color:var(--text-primary);margin-bottom:8px;">Section 3: Development Plan</div>' +
+              '<ul style="color:var(--text-secondary);font-size:0.85rem;padding-left:16px;line-height:1.8;">' +
+                '<li>Strengths to leverage</li><li>Growth areas (max 2)</li><li>Training / resources needed</li><li>Q3-Q4 goals (SMART format)</li>' +
+              '</ul></div>' +
+            '<div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius-sm);">' +
+              '<div style="font-weight:600;color:var(--text-primary);margin-bottom:8px;">Section 4: Employee Self-Assessment</div>' +
+              '<ul style="color:var(--text-secondary);font-size:0.85rem;padding-left:16px;line-height:1.8;">' +
+                '<li>Proudest achievement this half</li><li>Biggest challenge faced</li><li>What support do you need?</li><li>Career aspirations (1yr / 3yr)</li>' +
+              '</ul></div>' +
+          '</div>' +
+        '</div></div>';
+
+      /* 360 Feedback */
+      var feedbackHtml = '<div class="card">' +
+        '<div class="card-header"><div class="card-title">360 Feedback</div></div>' +
+        '<div class="card-body">' +
+          '<p style="color:var(--text-secondary);margin-bottom:16px;">Peer feedback requests are sent automatically when a review cycle begins. Responses are anonymous and summarized by category.</p>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.2rem;font-weight:700;color:var(--accent);">12</div><div style="font-size:0.7rem;color:var(--text-dim);">Requests Sent</div></div>' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.2rem;font-weight:700;color:var(--success);">8</div><div style="font-size:0.7rem;color:var(--text-dim);">Responses Received</div></div>' +
+            '<div style="background:var(--bg-secondary);padding:12px;border-radius:var(--radius-sm);text-align:center;"><div style="font-size:1.2rem;font-weight:700;color:var(--warning);">67%</div><div style="font-size:0.7rem;color:var(--text-dim);">Response Rate</div></div>' +
+          '</div>' +
+        '</div></div>';
+
+      return '' +
+        '<div class="welcome-message">Performance Reviews</div>' +
+        '<p class="welcome-sub">Manage review cycles, goals, competency assessments, and 360 feedback.</p>' +
+        cycleHtml + teamTable + templateHtml + feedbackHtml;
+    }
+
+    /* ================================================================
+       MY PROFILE (EMPLOYEE SELF-SERVICE) PAGE
+       ================================================================ */
+
+    function renderMyProfile() {
+      var user = APP_STATE.user;
+
+      var profileData = {
+        name: user.name, email: user.email, role: user.role,
+        department: 'Human Resources', title: 'HR Director',
+        startDate: '2024-03-15', manager: 'Jared Sanborn',
+        location: 'Toronto, ON', employeeId: 'PT-' + String(user.id).padStart(4, '0'),
+        phone: '(416) 555-0142', emergencyContact: 'Nathalia Daser / (416) 555-0199',
+        salary: '$125,000', payFrequency: 'Bi-weekly',
+        benefits: ['Health (Sun Life)', 'Dental (Sun Life)', 'Vision (Sun Life)', 'RRSP Match 4%', 'EAP Program']
+      };
+
+      var infoRow = function(label, value) {
+        return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);">' +
+          '<span style="color:var(--text-dim);font-size:0.85rem;">' + label + '</span>' +
+          '<span style="color:var(--text-primary);font-size:0.85rem;font-weight:500;">' + escapeHtml(value) + '</span>' +
+        '</div>';
+      };
+
+      var personalCard = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header"><div class="card-title">Personal Information</div></div>' +
+        '<div class="card-body">' +
+          '<div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">' +
+            '<div style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff;">' + (user.name ? user.name.split(' ').map(function(w){return w[0]}).join('').toUpperCase().slice(0,2) : '?') + '</div>' +
+            '<div><div style="font-size:1.2rem;font-weight:600;color:var(--text-primary);">' + escapeHtml(profileData.name) + '</div>' +
+            '<div style="color:var(--text-secondary);font-size:0.85rem;">' + profileData.title + ' &bull; ' + profileData.department + '</div>' +
+            '<div style="color:var(--text-dim);font-size:0.8rem;">Employee ID: ' + profileData.employeeId + '</div></div>' +
+          '</div>' +
+          infoRow('Email', profileData.email) +
+          infoRow('Phone', profileData.phone) +
+          infoRow('Location', profileData.location) +
+          infoRow('Start Date', profileData.startDate) +
+          infoRow('Manager', profileData.manager) +
+          infoRow('Emergency Contact', profileData.emergencyContact) +
+        '</div></div>';
+
+      var compCard = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header"><div class="card-title">Compensation & Benefits</div></div>' +
+        '<div class="card-body">' +
+          infoRow('Base Salary', profileData.salary) +
+          infoRow('Pay Frequency', profileData.payFrequency) +
+          '<div style="margin-top:16px;">' +
+            '<div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Active Benefits</div>' +
+            profileData.benefits.map(function(b) {
+              return '<span style="display:inline-block;background:var(--accent-light);color:var(--accent);padding:4px 12px;border-radius:20px;font-size:0.75rem;margin:2px 4px 2px 0;">' + b + '</span>';
+            }).join('') +
+          '</div>' +
+        '</div></div>';
+
+      var docsCard = '<div class="card" style="margin-bottom:20px;">' +
+        '<div class="card-header"><div class="card-title">My Documents</div></div>' +
+        '<div class="card-body" style="padding:0;">' +
+          ['Offer Letter (2024-03-01)', 'Employment Agreement (2024-03-15)', 'NDA & IP Agreement (2024-03-15)', 'Benefits Enrollment Confirmation', 'T4 - 2025 Tax Year', 'Most Recent Pay Stub'].map(function(doc) {
+            return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border-light);">' +
+              '<span style="color:var(--text-primary);font-size:0.85rem;">' + doc + '</span>' +
+              '<button onclick="showToast(\'Downloading ' + doc.split('(')[0].trim() + '...\')" style="background:none;border:1px solid var(--border);color:var(--accent);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.75rem;">Download</button>' +
+            '</div>';
+          }).join('') +
+        '</div></div>';
+
+      var quickActions = '<div class="card">' +
+        '<div class="card-header"><div class="card-title">Quick Actions</div></div>' +
+        '<div class="card-body" style="padding:0;">' +
+          '<a class="quick-action" onclick="navigate(\'timeoff\')"><span class="quick-action-icon">&#x1F3D6;</span>Request Time Off</a>' +
+          '<a class="quick-action" onclick="navigate(\'performance\')"><span class="quick-action-icon">&#x1F3AF;</span>View My Performance Review</a>' +
+          '<a class="quick-action" onclick="navigate(\'policies\')"><span class="quick-action-icon">&#x2705;</span>Review Pending Policies</a>' +
+          '<a class="quick-action" onclick="showToast(\'Opening profile editor...\')"><span class="quick-action-icon">&#x270F;&#xFE0F;</span>Update My Information</a>' +
+        '</div></div>';
+
+      return '' +
+        '<div class="welcome-message">My Profile</div>' +
+        '<p class="welcome-sub">View your personal information, compensation, benefits, and documents.</p>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;">' +
+          '<div>' + personalCard + docsCard + '</div>' +
+          '<div>' + compCard + quickActions + '</div>' +
+        '</div>';
+    }
+
+    /* ================================================================
+       REPORTS & ANALYTICS PAGE
+       ================================================================ */
+
+    function renderReports() {
+      var reports = [
+        {
+          name: 'Headcount Summary', icon: '&#x1F465;', description: 'Current headcount by department, location, and employment type.',
+          metrics: [
+            { label: 'Total Employees', value: '47' }, { label: 'Full-Time', value: '39' },
+            { label: 'Part-Time', value: '5' }, { label: 'Contract', value: '3' }
+          ]
+        },
+        {
+          name: 'Turnover Analysis', icon: '&#x1F4C9;', description: 'Voluntary and involuntary turnover rates by department and tenure.',
+          metrics: [
+            { label: 'Annual Turnover', value: '12.4%' }, { label: 'Voluntary', value: '8.1%' },
+            { label: 'Involuntary', value: '4.3%' }, { label: 'Avg Tenure', value: '2.4 yrs' }
+          ]
+        },
+        {
+          name: 'Time-to-Hire', icon: '&#x23F1;', description: 'Average days from job posting to accepted offer, by department and role level.',
+          metrics: [
+            { label: 'Avg Time-to-Hire', value: '34 days' }, { label: 'Engineering', value: '42 days' },
+            { label: 'Sales', value: '28 days' }, { label: 'Operations', value: '31 days' }
+          ]
+        },
+        {
+          name: 'PTO Utilization', icon: '&#x1F3D6;', description: 'Time-off usage patterns, remaining balances, and accrual liability.',
+          metrics: [
+            { label: 'Avg Usage Rate', value: '72%' }, { label: 'Accrual Liability', value: '$84,200' },
+            { label: 'Unused Days', value: '142' }, { label: 'At Risk (Forfeit)', value: '23 days' }
+          ]
+        },
+        {
+          name: 'Compensation Overview', icon: '&#x1F4B0;', description: 'Salary distribution, pay equity analysis, and comp ratio by department.',
+          metrics: [
+            { label: 'Avg Salary', value: '$87,400' }, { label: 'Median', value: '$82,000' },
+            { label: 'Comp Ratio', value: '0.96' }, { label: 'Pay Gap', value: '3.2%' }
+          ]
+        },
+        {
+          name: 'Training Completion', icon: '&#x1F393;', description: 'Compliance training completion rates, overdue items, and upcoming deadlines.',
+          metrics: [
+            { label: 'Overall Rate', value: '84%' }, { label: 'Harassment (OHSA)', value: '100%' },
+            { label: 'Safety', value: '91%' }, { label: 'Overdue', value: '7 items' }
+          ]
+        },
+        {
+          name: 'Onboarding Progress', icon: '&#x1F680;', description: 'New hire onboarding completion, time-to-productivity, and satisfaction scores.',
+          metrics: [
+            { label: 'Active Onboarding', value: '3' }, { label: 'Avg Completion', value: '65%' },
+            { label: 'Avg Time-to-Prod', value: '47 days' }, { label: 'Satisfaction', value: '4.3/5' }
+          ]
+        },
+        {
+          name: 'Compliance Dashboard', icon: '&#x1F6E1;', description: 'Policy acknowledgment status, expiring certifications, and audit readiness.',
+          metrics: [
+            { label: 'Policy Compliance', value: '89%' }, { label: 'Expiring Certs', value: '4' },
+            { label: 'Open Incidents', value: '0' }, { label: 'Audit Score', value: 'A-' }
+          ]
+        }
+      ];
+
+      var reportCards = reports.map(function(r) {
+        var metricsHtml = r.metrics.map(function(m) {
+          return '<div style="background:var(--bg-secondary);padding:10px;border-radius:var(--radius-sm);text-align:center;">' +
+            '<div style="font-size:1.1rem;font-weight:700;color:var(--accent);">' + m.value + '</div>' +
+            '<div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;">' + m.label + '</div>' +
+          '</div>';
+        }).join('');
+
+        return '<div class="card" style="margin-bottom:16px;">' +
+          '<div class="card-header" style="display:flex;align-items:center;justify-content:space-between;">' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+              '<span style="font-size:1.3rem;">' + r.icon + '</span>' +
+              '<div class="card-title">' + r.name + '</div>' +
+            '</div>' +
+            '<button onclick="showToast(\'Generating ' + r.name + ' report...\')" style="background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:var(--radius-sm);cursor:pointer;font-size:0.75rem;">Export</button>' +
+          '</div>' +
+          '<div class="card-body">' +
+            '<p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:14px;">' + r.description + '</p>' +
+            '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">' + metricsHtml + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      return '' +
+        '<div class="welcome-message">Reports & Analytics</div>' +
+        '<p class="welcome-sub">Workforce intelligence at a glance. Export any report as PDF or Excel.</p>' +
+        reportCards;
     }
 
     /* ================================================================
