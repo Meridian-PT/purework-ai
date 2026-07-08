@@ -2876,6 +2876,28 @@
 
     /* Static demo mode - works without backend (GitHub Pages, etc.) */
     const DEMO_MODE = !window.location.hostname.includes('workers.dev');
+
+    /* In demo mode, intercept all API calls and return sensible defaults */
+    if (DEMO_MODE) {
+      const _realFetch = window.fetch;
+      window.fetch = function(url, opts) {
+        if (typeof url === 'string' && url.includes('/api/')) {
+          /* Return a mock response for any API call */
+          var mockData = {};
+          if (url.includes('/api/dashboard/activity')) mockData = { activities: [] };
+          else if (url.includes('/api/dashboard')) mockData = { assessments_completed: 3, total_assessments: 13, policies_acknowledged: 7, total_policies: 38, onboarding_percent: 65, content_count: 74 };
+          else if (url.includes('/api/assessments/results')) mockData = { results: [] };
+          else if (url.includes('/api/policies/status')) mockData = { acknowledgments: [] };
+          else if (url.includes('/api/policies/team')) mockData = { policies: [] };
+          else if (url.includes('/api/onboarding/me')) mockData = { tasks: [], percent: 65 };
+          else if (url.includes('/api/users')) mockData = [];
+          else mockData = { ok: true };
+          return Promise.resolve(new Response(JSON.stringify(mockData), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        return _realFetch.apply(window, arguments);
+      };
+    }
+
     const DEMO_USERS = {
       'admin@demo.com': { password: 'password123', user: { id: 1, name: 'Sarah Mitchell', email: 'admin@demo.com', role: 'admin', company: 'Pure Technology' }},
       'manager@demo.com': { password: 'password123', user: { id: 2, name: 'James Rodriguez', email: 'manager@demo.com', role: 'manager', company: 'Pure Technology' }},
@@ -3462,6 +3484,7 @@
 
     /** Fetch activity feed from API */
     async function fetchDashboardActivity() {
+      if (DEMO_MODE) { APP_STATE.dashboardActivity = []; renderTeamOverviewTable(); return; }
       try {
         var response = await fetch(API_BASE + '/api/dashboard/activity', {
           headers: { 'Authorization': 'Bearer ' + APP_STATE.token }
@@ -3732,6 +3755,7 @@
 
     /** Fetch all assessment results for the current user */
     async function fetchAssessmentResults() {
+      if (DEMO_MODE) { APP_STATE.assessmentResults = []; return; }
       try {
         var response = await fetch(API_BASE + '/api/assessments/results', {
           headers: { 'Authorization': 'Bearer ' + APP_STATE.token }
@@ -4573,6 +4597,7 @@
 
     /** Fetch policy acknowledgments for current user */
     async function fetchPolicyStatus() {
+      if (DEMO_MODE) { APP_STATE.policyAcknowledgments = []; return; }
       try {
         var response = await fetch(API_BASE + '/api/policies/status', {
           headers: { 'Authorization': 'Bearer ' + APP_STATE.token }
