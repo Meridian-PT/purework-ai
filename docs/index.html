@@ -2874,6 +2874,16 @@
       return '';
     })();
 
+    /* Static demo mode - works without backend (GitHub Pages, etc.) */
+    const DEMO_MODE = !window.location.hostname.includes('workers.dev');
+    const DEMO_USERS = {
+      'admin@demo.com': { password: 'password123', user: { id: 1, name: 'Sarah Mitchell', email: 'admin@demo.com', role: 'admin', company: 'Pure Technology' }},
+      'manager@demo.com': { password: 'password123', user: { id: 2, name: 'James Rodriguez', email: 'manager@demo.com', role: 'manager', company: 'Pure Technology' }},
+      'employee@demo.com': { password: 'password123', user: { id: 3, name: 'Alex Chen', email: 'employee@demo.com', role: 'employee', company: 'Pure Technology' }},
+      'lisa@demo.com': { password: 'password123', user: { id: 4, name: 'Lisa Thompson', email: 'lisa@demo.com', role: 'employee', company: 'Pure Technology' }},
+      'marcus@demo.com': { password: 'password123', user: { id: 5, name: 'Marcus Williams', email: 'marcus@demo.com', role: 'employee', company: 'Pure Technology' }}
+    };
+
     /* ================================================================
        ASSESSMENTS DATA
        ================================================================ */
@@ -3027,6 +3037,23 @@
       /* Show loading state */
       btnEl.disabled = true;
       btnEl.innerHTML = '<div class="spinner"></div> Signing in...';
+
+      /* Demo mode: authenticate locally without backend */
+      if (DEMO_MODE) {
+        var demoUser = DEMO_USERS[email];
+        if (demoUser && demoUser.password === password) {
+          APP_STATE.token = 'demo-token-' + Date.now();
+          APP_STATE.user = demoUser.user;
+          localStorage.setItem('pw_token', APP_STATE.token);
+          localStorage.setItem('pw_user', JSON.stringify(demoUser.user));
+          showApp();
+        } else {
+          showLoginError('Invalid credentials. Try admin@demo.com / password123');
+        }
+        btnEl.disabled = false;
+        btnEl.innerHTML = 'Sign In';
+        return;
+      }
 
       try {
         const response = await fetch(API_BASE + '/api/auth/login', {
@@ -3517,6 +3544,18 @@
 
     /** Fetch dashboard data from API */
     async function fetchDashboardData() {
+      if (DEMO_MODE) {
+        APP_STATE.dashboardData = {
+          assessments_completed: 3, total_assessments: 13,
+          policies_acknowledged: 7, total_policies: 38,
+          onboarding_percent: 65, content_count: 74
+        };
+        if (APP_STATE.currentRoute === 'dashboard') {
+          var contentEl = document.getElementById('content-area');
+          contentEl.innerHTML = '<div class="page-content">' + renderDashboard() + '</div>';
+        }
+        return;
+      }
       try {
         var response = await fetch(API_BASE + '/api/dashboard', {
           headers: { 'Authorization': 'Bearer ' + APP_STATE.token }
