@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Culture & Values Alignment Assessment | Pure Work AI</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#2d3748;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a3a5c 0%,#2c5282 100%);color:#fff;padding:28px 20px;text-align:center}
+.header h1{font-size:1.75rem;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:.85rem;opacity:.85;letter-spacing:.5px}
+.brand{font-size:.7rem;opacity:.6;margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+.progress-container{background:#e2e8f0;height:6px;width:100%;position:sticky;top:0;z-index:100}
+.progress-bar{height:100%;background:linear-gradient(90deg,#2c7be5,#38bdf8);transition:width .4s ease;width:0%}
+.container{max-width:680px;margin:0 auto;padding:20px}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(26,58,92,.08);padding:32px 28px;margin-bottom:20px}
+.card.hidden{display:none}
+.dimension-label{display:inline-block;background:#e8f0fe;color:#1a3a5c;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.question-num{font-size:.8rem;color:#718096;margin-bottom:8px}
+.question-text{font-size:1.1rem;font-weight:600;color:#1a3a5c;margin-bottom:24px;line-height:1.5}
+.likert{display:flex;flex-direction:column;gap:10px}
+.likert label{display:flex;align-items:center;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.95rem}
+.likert label:hover{border-color:#2c7be5;background:#f7faff}
+.likert input[type="radio"]{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:2px solid #cbd5e0;border-radius:50%;margin-right:12px;flex-shrink:0;transition:all .2s;position:relative}
+.likert input[type="radio"]:checked{border-color:#2c7be5;background:#2c7be5}
+.likert input[type="radio"]:checked::after{content:'';position:absolute;width:8px;height:8px;background:#fff;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.likert label:has(input:checked){border-color:#2c7be5;background:#eef4ff}
+.nav-buttons{display:flex;justify-content:space-between;margin-top:24px;gap:12px}
+.btn{padding:12px 28px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-secondary{background:#e2e8f0;color:#4a5568}
+.btn-secondary:hover{background:#cbd5e0}
+.btn-primary{background:linear-gradient(135deg,#2c7be5,#1a6fd4);color:#fff;flex:1}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(44,123,229,.3)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.results{display:none}
+.results.show{display:block}
+.chart-container{position:relative;width:100%;max-width:450px;margin:20px auto}
+.score-grid{display:grid;gap:14px;margin-top:24px}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:8px;border-left:4px solid}
+.score-row.strong{background:#f0fff4;border-color:#38a169}
+.score-row.moderate{background:#fffff0;border-color:#ecc94b}
+.score-row.gap{background:#fff5f5;border-color:#e53e3e}
+.score-row .dim-name{font-weight:600;color:#1a3a5c}
+.score-row .dim-score{font-weight:700;font-size:1.1rem}
+.score-row .dim-label{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:12px;color:#fff}
+.label-strong{background:#38a169}
+.label-moderate{background:#d69e2e}
+.label-gap{background:#e53e3e}
+.overall-score{text-align:center;padding:28px;background:linear-gradient(135deg,#1a3a5c,#2c5282);border-radius:12px;color:#fff;margin-top:24px}
+.overall-score .pct{font-size:3rem;font-weight:800}
+.overall-score .lbl{font-size:.9rem;opacity:.8;margin-top:4px}
+.strengths-section{margin-top:20px;padding:16px;background:#f0fff4;border-radius:8px;border:1px solid #c6f6d5}
+.strengths-section h3{color:#276749;margin-bottom:8px;font-size:1rem}
+.gaps-section{margin-top:12px;padding:16px;background:#fff5f5;border-radius:8px;border:1px solid #fed7d7}
+.gaps-section h3{color:#9b2c2c;margin-bottom:8px;font-size:1rem}
+.interp{margin-top:12px;padding:12px 16px;background:#f7fafc;border-radius:8px;font-size:.9rem;line-height:1.6;color:#4a5568}
+.btn-print{background:linear-gradient(135deg,#2c7be5,#1a6fd4);color:#fff;margin-top:20px;width:100%}
+.btn-restart{background:#e2e8f0;color:#4a5568;margin-top:10px;width:100%}
+.welcome-text{text-align:center;color:#4a5568;line-height:1.7;font-size:.95rem}
+.welcome-text h2{color:#1a3a5c;font-size:1.4rem;margin-bottom:12px}
+.start-btn{display:block;margin:24px auto 0;padding:14px 48px;font-size:1.05rem}
+@media print{.btn,.nav-buttons,.progress-container,.header{display:none!important}.container{max-width:100%}.card{box-shadow:none;page-break-inside:avoid}.results{display:block!important}}
+@media(max-width:600px){.container{padding:14px}.card{padding:22px 18px}.header h1{font-size:1.4rem}.likert label{padding:10px 12px;font-size:.9rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Culture & Values Alignment Assessment</h1>
+<div class="subtitle">Measure alignment across 6 core organizational values</div>
+<div class="brand">Pure Work AI &bull; Powered by Pure Technology</div>
+</div>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="container">
+
+<div class="card" id="welcome">
+<div class="welcome-text">
+<h2>Welcome to the Culture & Values Assessment</h2>
+<p>This assessment measures how closely an individual's behaviors and beliefs align with <strong>6 core organizational values</strong>: Integrity, Collaboration, Innovation, Accountability, Excellence, and Respect.</p>
+<p style="margin-top:12px">You will answer <strong>18 questions</strong> using a 5-point scale. The assessment takes approximately <strong>6-8 minutes</strong>.</p>
+<p style="margin-top:12px;font-size:.85rem;color:#718096">All responses are scored locally in your browser. No data is transmitted.</p>
+</div>
+<button class="btn btn-primary start-btn" onclick="startAssessment()">Begin Assessment</button>
+</div>
+
+<div id="questionArea"></div>
+
+<div class="results" id="results">
+<div class="card">
+<h2 style="color:#1a3a5c;text-align:center;margin-bottom:20px">Your Results</h2>
+<div class="chart-container"><canvas id="radarChart"></canvas></div>
+<div class="overall-score" id="overallScore"></div>
+<div id="strengthsGaps"></div>
+<div class="score-grid" id="scoreGrid"></div>
+<div id="interpretations"></div>
+<button class="btn btn-print" onclick="window.print()">Print Results</button>
+<button class="btn btn-restart" onclick="location.reload()">Retake Assessment</button>
+</div>
+</div>
+</div>
+
+<script>
+const questions=[
+{d:"Integrity",q:"I am honest and transparent in my communications, even when the truth is uncomfortable."},
+{d:"Integrity",q:"I follow through on promises and commitments, regardless of whether anyone is watching."},
+{d:"Integrity",q:"I consistently do the right thing, even when it is not the easiest or most popular option."},
+{d:"Collaboration",q:"I actively seek input and ideas from others before making decisions that affect the team."},
+{d:"Collaboration",q:"I freely share knowledge, resources, and expertise with colleagues to help them succeed."},
+{d:"Collaboration",q:"I support my teammates during high-pressure situations, stepping in to help without being asked."},
+{d:"Innovation",q:"I am open to changing established processes when a better approach is identified."},
+{d:"Innovation",q:"I proactively suggest creative solutions to problems rather than waiting for direction."},
+{d:"Innovation",q:"I view mistakes as learning opportunities and encourage experimentation in my work."},
+{d:"Accountability",q:"I take full ownership of my work outcomes, including mistakes and missed targets."},
+{d:"Accountability",q:"I reliably follow through on commitments and meet deadlines without needing reminders."},
+{d:"Accountability",q:"I learn from setbacks and adjust my approach rather than repeating the same mistakes."},
+{d:"Excellence",q:"I consistently deliver work that meets or exceeds quality standards and expectations."},
+{d:"Excellence",q:"I pay close attention to detail and review my work thoroughly before considering it complete."},
+{d:"Excellence",q:"I take genuine pride in the quality of my contributions and strive for continuous improvement."},
+{d:"Respect",q:"I treat all people with dignity and fairness, regardless of their role, background, or opinions."},
+{d:"Respect",q:"I communicate with empathy and consideration, especially during disagreements."},
+{d:"Respect",q:"I actively seek to understand and value perspectives that are different from my own."}
+];
+const dims=["Integrity","Collaboration","Innovation","Accountability","Excellence","Respect"];
+const options=["Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"];
+let current=0;const answers=new Array(questions.length).fill(null);
+
+function startAssessment(){document.getElementById('welcome').classList.add('hidden');renderQuestion();}
+
+function renderQuestion(){
+const area=document.getElementById('questionArea');
+const q=questions[current];
+let html=`<div class="card"><div class="dimension-label">${q.d}</div><div class="question-num">Question ${current+1} of ${questions.length}</div><div class="question-text">${q.q}</div><div class="likert">`;
+options.forEach((o,i)=>{html+=`<label><input type="radio" name="q${current}" value="${i+1}" ${answers[current]===i+1?'checked':''} onchange="answers[${current}]=${i+1};checkNav()"> ${o}</label>`;});
+html+=`</div><div class="nav-buttons">`;
+html+=current>0?`<button class="btn btn-secondary" onclick="navigate(-1)">Previous</button>`:`<span></span>`;
+if(current<questions.length-1) html+=`<button class="btn btn-primary" id="nextBtn" onclick="navigate(1)" ${answers[current]===null?'disabled':''}>Next</button>`;
+else html+=`<button class="btn btn-primary" id="nextBtn" onclick="showResults()" ${answers[current]===null?'disabled':''}>View Results</button>`;
+html+=`</div></div>`;
+area.innerHTML=html;
+updateProgress();
+}
+
+function checkNav(){const b=document.getElementById('nextBtn');if(b)b.disabled=false;}
+function navigate(dir){current+=dir;renderQuestion();}
+function updateProgress(){document.getElementById('progressBar').style.width=((current+1)/questions.length*100)+'%';}
+
+function showResults(){
+document.getElementById('questionArea').innerHTML='';
+document.getElementById('progressBar').style.width='100%';
+document.getElementById('results').classList.add('show');
+const dimScores={};dims.forEach(d=>{dimScores[d]=0;});
+questions.forEach((q,i)=>{dimScores[q.d]+=answers[i];});
+const total=Object.values(dimScores).reduce((a,b)=>a+b,0);
+const maxTotal=questions.length*5;
+const pct=Math.round(total/maxTotal*100);
+document.getElementById('overallScore').innerHTML=`<div class="pct">${pct}%</div><div class="lbl">Culture Match Score</div>`;
+
+const sorted=dims.map(d=>({name:d,score:dimScores[d],pct:Math.round(dimScores[d]/(questions.filter(q=>q.d===d).length*5)*100)})).sort((a,b)=>b.pct-a.pct);
+const strongest=sorted.slice(0,2);
+const weakest=sorted.slice(-2).filter(s=>s.pct<80);
+let sgHtml='<div class="strengths-section"><h3>Strongest Alignments</h3>';
+strongest.forEach(s=>{sgHtml+=`<p style="margin:4px 0;font-size:.9rem">${s.name}: ${s.pct}% alignment</p>`;});
+sgHtml+='</div>';
+if(weakest.length>0){
+sgHtml+='<div class="gaps-section"><h3>Values Gaps to Address</h3>';
+weakest.forEach(s=>{sgHtml+=`<p style="margin:4px 0;font-size:.9rem">${s.name}: ${s.pct}% alignment</p>`;});
+sgHtml+='</div>';
+}
+document.getElementById('strengthsGaps').innerHTML=sgHtml;
+
+const grid=document.getElementById('scoreGrid');let gridHtml='';
+const interps=document.getElementById('interpretations');let interpHtml='';
+const interpText={
+"Integrity":{strong:"Strong integrity alignment. This individual demonstrates consistent honesty, reliability, and ethical behavior even in challenging situations.",moderate:"Moderate integrity alignment. Some situations may test consistency. Explore whether discomfort with difficult truths or pressure creates lapses.",gap:"Integrity alignment needs attention. This is a foundational value, and gaps here can undermine trust across all other areas."},
+"Collaboration":{strong:"Strong collaboration alignment. This person actively shares, supports, and seeks input from others, building team cohesion.",moderate:"Moderate collaboration alignment. May prefer independent work. Coaching on the value of collective problem-solving could strengthen this area.",gap:"Collaboration is a significant gap. The individual may operate in silos. Structured team activities and shared goals can help build collaborative habits."},
+"Innovation":{strong:"Strong innovation alignment. Open to change, proactive with ideas, and comfortable with experimentation and learning from failure.",moderate:"Moderate innovation alignment. May be cautious about change. Encourage safe experimentation and celebrate creative problem-solving attempts.",gap:"Innovation alignment is low. Resistance to change may be present. Start with small process improvements and build comfort with controlled experimentation."},
+"Accountability":{strong:"Strong accountability alignment. Takes full ownership, meets commitments reliably, and learns from setbacks constructively.",moderate:"Moderate accountability alignment. Follow-through may be inconsistent. Clear expectations and regular check-ins can reinforce accountability habits.",gap:"Accountability is a critical gap. Without ownership of outcomes, growth and trust are difficult to build. Direct coaching recommended."},
+"Excellence":{strong:"Strong excellence alignment. Consistently delivers high-quality work with attention to detail and a drive for continuous improvement.",moderate:"Moderate excellence alignment. Quality may fluctuate under pressure. Help establish consistent standards and review habits.",gap:"Excellence alignment needs development. Quality standards may not be internalized. Pair with quality-focused mentors and establish clear benchmarks."},
+"Respect":{strong:"Strong respect alignment. Treats others with dignity, communicates with empathy, and actively values diverse perspectives.",moderate:"Moderate respect alignment. Generally respectful but may struggle in high-stress or disagreement situations. Emotional intelligence coaching can help.",gap:"Respect alignment needs immediate attention. This value is non-negotiable for healthy team dynamics. Address specific behaviors through coaching."}
+};
+
+dims.forEach(d=>{
+const s=dimScores[d];const max=questions.filter(q=>q.d===d).length*5;const p=Math.round(s/max*100);
+let cls,lbl,lcls;
+if(p>=80){cls='strong';lbl='Strong';lcls='label-strong';}
+else if(p>=60){cls='moderate';lbl='Moderate';lcls='label-moderate';}
+else{cls='gap';lbl='Gap';lcls='label-gap';}
+gridHtml+=`<div class="score-row ${cls}"><div><div class="dim-name">${d}</div></div><div style="display:flex;align-items:center;gap:10px"><span class="dim-score">${s}/${max} (${p}%)</span><span class="dim-label ${lcls}">${lbl}</span></div></div>`;
+interpHtml+=`<div class="interp"><strong>${d}:</strong> ${interpText[d][cls]}</div>`;
+});
+grid.innerHTML=gridHtml;interps.innerHTML=interpHtml;
+
+const ctx=document.getElementById('radarChart').getContext('2d');
+new Chart(ctx,{type:'radar',data:{labels:dims,datasets:[{label:'Your Score',data:dims.map(d=>dimScores[d]),backgroundColor:'rgba(44,123,229,0.15)',borderColor:'#2c7be5',borderWidth:2,pointBackgroundColor:'#2c7be5',pointRadius:5},{label:'Maximum',data:dims.map(d=>questions.filter(q=>q.d===d).length*5),backgroundColor:'rgba(26,58,92,0.05)',borderColor:'rgba(26,58,92,0.2)',borderWidth:1,borderDash:[5,5],pointRadius:0}]},options:{responsive:true,scales:{r:{beginAtZero:true,max:15,ticks:{stepSize:3,font:{size:10},backdropColor:'transparent'},grid:{color:'rgba(0,0,0,0.08)'},pointLabels:{font:{size:11,weight:'600'},color:'#1a3a5c'}}},plugins:{legend:{position:'bottom',labels:{font:{size:11},usePointStyle:true,padding:16}}}}});
+
+// Send results to parent platform
+if (window.parent !== window) {
+    window.parent.postMessage({
+        type: 'assessment-complete',
+        assessment: 'culture-fit',
+        scores: dimScores,
+        overall: pct
+    }, '*');
+}
+}
+</script>
+</body>
+</html>

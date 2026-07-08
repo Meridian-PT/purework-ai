@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workplace Safety Competency Assessment | Pure Work AI</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#2d3748;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a3a5c 0%,#2c5282 100%);color:#fff;padding:28px 20px;text-align:center}
+.header h1{font-size:1.75rem;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:.85rem;opacity:.85;letter-spacing:.5px}
+.brand{font-size:.7rem;opacity:.6;margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+.progress-container{background:#e2e8f0;height:6px;width:100%;position:sticky;top:0;z-index:100}
+.progress-bar{height:100%;background:linear-gradient(90deg,#2c7be5,#38bdf8);transition:width .4s ease;width:0%}
+.container{max-width:680px;margin:0 auto;padding:20px}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(26,58,92,.08);padding:32px 28px;margin-bottom:20px;transition:opacity .3s,transform .3s}
+.card.hidden{display:none}
+.dimension-label{display:inline-block;background:#e8f0fe;color:#1a3a5c;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.question-num{font-size:.8rem;color:#718096;margin-bottom:8px}
+.question-text{font-size:1.1rem;font-weight:600;color:#1a3a5c;margin-bottom:24px;line-height:1.5}
+.likert{display:flex;flex-direction:column;gap:10px}
+.likert label{display:flex;align-items:center;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.95rem}
+.likert label:hover{border-color:#2c7be5;background:#f7faff}
+.likert input[type="radio"]{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:2px solid #cbd5e0;border-radius:50%;margin-right:12px;flex-shrink:0;transition:all .2s;position:relative}
+.likert input[type="radio"]:checked{border-color:#2c7be5;background:#2c7be5}
+.likert input[type="radio"]:checked::after{content:'';position:absolute;width:8px;height:8px;background:#fff;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.likert label:has(input:checked){border-color:#2c7be5;background:#eef4ff}
+.nav-buttons{display:flex;justify-content:space-between;margin-top:24px;gap:12px}
+.btn{padding:12px 28px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-secondary{background:#e2e8f0;color:#4a5568}
+.btn-secondary:hover{background:#cbd5e0}
+.btn-primary{background:linear-gradient(135deg,#2c7be5,#1a6fd4);color:#fff;flex:1}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(44,123,229,.3)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.results{display:none}
+.results.show{display:block}
+.chart-container{position:relative;width:100%;max-width:450px;margin:20px auto}
+.score-grid{display:grid;gap:14px;margin-top:24px}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:8px;border-left:4px solid}
+.score-row.champion{background:#f0fff4;border-color:#38a169}
+.score-row.competent{background:#f0fff4;border-color:#68d391}
+.score-row.needs-training{background:#fffff0;border-color:#ecc94b}
+.score-row.intervention{background:#fff5f5;border-color:#e53e3e}
+.score-row .dim-name{font-weight:600;color:#1a3a5c}
+.score-row .dim-score{font-weight:700;font-size:1.1rem}
+.score-row .dim-label{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:12px;color:#fff}
+.label-champion{background:#38a169}
+.label-competent{background:#68d391;color:#1a3a5c!important}
+.label-needs-training{background:#d69e2e}
+.label-intervention{background:#e53e3e}
+.overall-score{text-align:center;padding:28px;background:linear-gradient(135deg,#1a3a5c,#2c5282);border-radius:12px;color:#fff;margin-top:24px}
+.overall-score .pct{font-size:3rem;font-weight:800}
+.overall-score .lbl{font-size:.9rem;opacity:.8;margin-top:4px}
+.overall-level{font-size:1rem;margin-top:8px;font-weight:600;padding:4px 16px;border-radius:20px;display:inline-block}
+.interp{margin-top:12px;padding:12px 16px;background:#f7fafc;border-radius:8px;font-size:.9rem;line-height:1.6;color:#4a5568}
+.btn-print{background:linear-gradient(135deg,#2c7be5,#1a6fd4);color:#fff;margin-top:20px;width:100%}
+.btn-restart{background:#e2e8f0;color:#4a5568;margin-top:10px;width:100%}
+.welcome-text{text-align:center;color:#4a5568;line-height:1.7;font-size:.95rem}
+.welcome-text h2{color:#1a3a5c;font-size:1.4rem;margin-bottom:12px}
+.start-btn{display:block;margin:24px auto 0;padding:14px 48px;font-size:1.05rem}
+@media print{.btn,.nav-buttons,.progress-container,.header{display:none!important}.container{max-width:100%}.card{box-shadow:none;page-break-inside:avoid}.results{display:block!important}}
+@media(max-width:600px){.container{padding:14px}.card{padding:22px 18px}.header h1{font-size:1.4rem}.likert label{padding:10px 12px;font-size:.9rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Workplace Safety Competency Assessment</h1>
+<div class="subtitle">Evaluate safety knowledge, behavior, and leadership</div>
+<div class="brand">Pure Work AI &bull; Powered by Pure Technology</div>
+</div>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="container">
+
+<div class="card" id="welcome">
+<div class="welcome-text">
+<h2>Welcome to the Safety Competency Assessment</h2>
+<p>This assessment measures workplace safety competency across <strong>3 critical dimensions</strong>: Safety Knowledge, Safety Behavior, and Safety Leadership.</p>
+<p style="margin-top:12px">You will answer <strong>15 questions</strong> using a 5-point scale. The assessment takes approximately <strong>5-7 minutes</strong>.</p>
+<p style="margin-top:12px;font-size:.85rem;color:#718096">All responses are scored locally in your browser. No data is transmitted.</p>
+</div>
+<button class="btn btn-primary start-btn" onclick="startAssessment()">Begin Assessment</button>
+</div>
+
+<div id="questionArea"></div>
+
+<div class="results" id="results">
+<div class="card">
+<h2 style="color:#1a3a5c;text-align:center;margin-bottom:20px">Your Results</h2>
+<div class="chart-container"><canvas id="radarChart"></canvas></div>
+<div class="overall-score" id="overallScore"></div>
+<div class="score-grid" id="scoreGrid"></div>
+<div id="interpretations"></div>
+<button class="btn btn-print" onclick="window.print()">Print Results</button>
+<button class="btn btn-restart" onclick="location.reload()">Retake Assessment</button>
+</div>
+</div>
+</div>
+
+<script>
+const questions=[
+{d:"Safety Knowledge",q:"I can identify the correct Personal Protective Equipment (PPE) required for different tasks and hazards."},
+{d:"Safety Knowledge",q:"I understand WHMIS/GHS labeling systems and can read Safety Data Sheets (SDS) correctly."},
+{d:"Safety Knowledge",q:"I know the emergency procedures for my workplace, including evacuation routes and assembly points."},
+{d:"Safety Knowledge",q:"I understand lockout/tagout procedures and when they must be applied."},
+{d:"Safety Knowledge",q:"I know the proper process for reporting workplace incidents and near-misses."},
+{d:"Safety Behavior",q:"I consistently follow established safety procedures, even when under time pressure."},
+{d:"Safety Behavior",q:"I stop work immediately when I observe an unsafe condition, even if it causes delays."},
+{d:"Safety Behavior",q:"I proactively report hazards and unsafe conditions to supervisors or safety personnel."},
+{d:"Safety Behavior",q:"I maintain a clean and organized workspace to prevent slips, trips, and falls."},
+{d:"Safety Behavior",q:"I always use the required PPE correctly and ensure it is in good condition before use."},
+{d:"Safety Leadership",q:"I coach and mentor coworkers on proper safety practices when I see opportunities."},
+{d:"Safety Leadership",q:"I speak up about safety hazards regardless of who is involved or their seniority."},
+{d:"Safety Leadership",q:"I lead by example in following all safety protocols, setting the standard for others."},
+{d:"Safety Leadership",q:"I actively participate in safety meetings, toolbox talks, and safety committees."},
+{d:"Safety Leadership",q:"I encourage and support the reporting of near-misses without judgment or blame."}
+];
+const dims=["Safety Knowledge","Safety Behavior","Safety Leadership"];
+const options=["Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"];
+let current=0;const answers=new Array(questions.length).fill(null);
+
+function startAssessment(){document.getElementById('welcome').classList.add('hidden');renderQuestion();}
+
+function renderQuestion(){
+const area=document.getElementById('questionArea');
+const q=questions[current];
+let html=`<div class="card"><div class="dimension-label">${q.d}</div><div class="question-num">Question ${current+1} of ${questions.length}</div><div class="question-text">${q.q}</div><div class="likert">`;
+options.forEach((o,i)=>{html+=`<label><input type="radio" name="q${current}" value="${i+1}" ${answers[current]===i+1?'checked':''} onchange="answers[${current}]=${i+1};checkNav()"> ${o}</label>`;});
+html+=`</div><div class="nav-buttons">`;
+html+=current>0?`<button class="btn btn-secondary" onclick="navigate(-1)">Previous</button>`:`<span></span>`;
+if(current<questions.length-1) html+=`<button class="btn btn-primary" id="nextBtn" onclick="navigate(1)" ${answers[current]===null?'disabled':''}>Next</button>`;
+else html+=`<button class="btn btn-primary" id="nextBtn" onclick="showResults()" ${answers[current]===null?'disabled':''}>View Results</button>`;
+html+=`</div></div>`;
+area.innerHTML=html;
+updateProgress();
+}
+
+function checkNav(){const b=document.getElementById('nextBtn');if(b)b.disabled=false;}
+function navigate(dir){current+=dir;renderQuestion();}
+function updateProgress(){document.getElementById('progressBar').style.width=((current+1)/questions.length*100)+'%';}
+
+function showResults(){
+document.getElementById('questionArea').innerHTML='';
+document.getElementById('progressBar').style.width='100%';
+const res=document.getElementById('results');res.classList.add('show');
+const dimScores={};dims.forEach(d=>{dimScores[d]=0;});
+questions.forEach((q,i)=>{dimScores[q.d]+=answers[i];});
+const total=Object.values(dimScores).reduce((a,b)=>a+b,0);
+const maxTotal=questions.length*5;
+const pct=Math.round(total/maxTotal*100);
+
+function getLevel(p){
+if(p>=90)return{cls:'champion',label:'Safety Champion',lcls:'label-champion',bg:'#e6fffa'};
+if(p>=75)return{cls:'competent',label:'Competent',lcls:'label-competent',bg:'#f0fff4'};
+if(p>=60)return{cls:'needs-training',label:'Needs Training',lcls:'label-needs-training',bg:'#fffff0'};
+return{cls:'intervention',label:'Immediate Intervention',lcls:'label-intervention',bg:'#fff5f5'};
+}
+
+const overallLvl=getLevel(pct);
+document.getElementById('overallScore').innerHTML=`<div class="pct">${pct}%</div><div class="lbl">Overall Safety Competency Score</div><div class="overall-level" style="background:rgba(255,255,255,0.15)">${overallLvl.label}</div>`;
+
+const grid=document.getElementById('scoreGrid');let gridHtml='';
+const interps=document.getElementById('interpretations');let interpHtml='';
+const interpText={
+"Safety Knowledge":{champion:"Outstanding safety knowledge. You demonstrate thorough understanding of PPE, WHMIS/GHS, emergency procedures, and incident reporting protocols.",competent:"Solid safety knowledge foundation. Minor gaps may exist in specialized areas like lockout/tagout or SDS interpretation.",
+"needs-training":"Safety knowledge gaps present. Targeted training recommended in areas like WHMIS/GHS, emergency procedures, or incident reporting.",intervention:"Critical safety knowledge deficiencies. Comprehensive safety training is required before performing tasks with significant hazard exposure."},
+"Safety Behavior":{champion:"Exemplary safety behavior. You consistently follow procedures, use PPE correctly, and proactively report hazards even under pressure.",competent:"Good safety habits are established. Continue reinforcing consistent behavior, especially under time pressure or production demands.",
+"needs-training":"Safety behavior is inconsistent. Focus on building habits around hazard reporting, workspace organization, and consistent PPE use.",intervention:"Safety behavior requires immediate corrective action. Behavioral safety coaching and close supervision are recommended."},
+"Safety Leadership":{champion:"Outstanding safety leader. You coach others, speak up regardless of hierarchy, and actively foster a reporting culture.",competent:"Developing safety leadership. You participate in safety initiatives but may benefit from more proactive coaching and advocacy.",
+"needs-training":"Safety leadership potential not yet realized. Begin by speaking up about hazards more frequently and supporting near-miss reporting.",intervention:"Safety leadership awareness is minimal. Begin with participating in safety meetings and observing how experienced safety leaders operate."}
+};
+
+dims.forEach(d=>{
+const s=dimScores[d];const max=5*questions.filter(q=>q.d===d).length;
+const p=Math.round(s/max*100);const lvl=getLevel(p);
+gridHtml+=`<div class="score-row ${lvl.cls}"><div><div class="dim-name">${d}</div></div><div style="display:flex;align-items:center;gap:10px"><span class="dim-score">${s}/${max} (${p}%)</span><span class="dim-label ${lvl.lcls}">${lvl.label}</span></div></div>`;
+interpHtml+=`<div class="interp"><strong>${d}:</strong> ${interpText[d][lvl.cls]}</div>`;
+});
+grid.innerHTML=gridHtml;interps.innerHTML=interpHtml;
+
+const ctx=document.getElementById('radarChart').getContext('2d');
+new Chart(ctx,{type:'radar',data:{labels:dims,datasets:[{label:'Your Score',data:dims.map(d=>dimScores[d]),backgroundColor:'rgba(44,123,229,0.15)',borderColor:'#2c7be5',borderWidth:2,pointBackgroundColor:'#2c7be5',pointRadius:5},{label:'Maximum',data:dims.map(d=>questions.filter(q=>q.d===d).length*5),backgroundColor:'rgba(26,58,92,0.05)',borderColor:'rgba(26,58,92,0.2)',borderWidth:1,borderDash:[5,5],pointRadius:0}]},options:{responsive:true,scales:{r:{beginAtZero:true,max:25,ticks:{stepSize:5,font:{size:10},backdropColor:'transparent'},grid:{color:'rgba(0,0,0,0.08)'},pointLabels:{font:{size:12,weight:'600'},color:'#1a3a5c'}}},plugins:{legend:{position:'bottom',labels:{font:{size:11},usePointStyle:true,padding:16}}}}});
+
+// Send results to parent platform
+if (window.parent !== window) {
+    window.parent.postMessage({
+        type: 'assessment-complete',
+        assessment: 'safety-competency',
+        scores: dimScores,
+        overall: pct
+    }, '*');
+}
+}
+</script>
+</body>
+</html>

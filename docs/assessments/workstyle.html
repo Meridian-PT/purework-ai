@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work Style Quadrant | The People Group</title>
+<style>
+:root {
+  --primary: #1a3a5c;
+  --accent: #2c7be5;
+  --accent-light: #e8f0fe;
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --border: #dee2e6;
+  --driver: #dc3545;
+  --expressor: #f0a500;
+  --harmonizer: #28a745;
+  --analyst: #2c7be5;
+  --driver-bg: #fef0f0;
+  --expressor-bg: #fef9e7;
+  --harmonizer-bg: #eafaf1;
+  --analyst-bg: #eaf2fd;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 760px; margin: 0 auto; padding: 20px; }
+.header { text-align: center; padding: 40px 20px 20px; }
+.header h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 4px; }
+.header .brand { font-size: 0.85rem; color: var(--text-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.header p { color: var(--text-light); font-size: 0.95rem; max-width: 540px; margin: 0 auto; }
+.card { background: var(--card); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; margin-bottom: 20px; }
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+.page-number { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+.diff-row { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
+.diff-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.diff-statements { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.diff-left, .diff-right { flex: 1; font-size: 0.9rem; font-weight: 500; line-height: 1.4; }
+.diff-left { text-align: left; color: var(--primary); }
+.diff-right { text-align: right; color: var(--primary); }
+.diff-scale { display: flex; justify-content: center; align-items: center; gap: 0; }
+.diff-option { display: flex; flex-direction: column; align-items: center; padding: 0 8px; cursor: pointer; }
+.diff-option input[type="radio"] { width: 24px; height: 24px; accent-color: var(--accent); cursor: pointer; }
+.diff-labels { display: flex; justify-content: space-between; margin-top: 2px; }
+.diff-labels span { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; }
+.btn { display: inline-block; padding: 12px 32px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn:hover { background: #1a68d1; transform: translateY(-1px); }
+.btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+.btn-group { display: flex; justify-content: space-between; margin-top: 24px; }
+.btn-secondary { background: transparent; color: var(--text-light); border: 2px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px;
+  font-size: 1rem; margin-bottom: 16px; transition: border-color 0.2s;
+}
+input:focus { outline: none; border-color: var(--accent); }
+label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.hidden { display: none !important; }
+.error { color: #dc3545; font-size: 0.85rem; margin-top: -8px; margin-bottom: 12px; }
+
+/* Quadrant Chart */
+.quadrant-wrapper { position: relative; max-width: 420px; margin: 0 auto 32px; }
+.axis-label-h { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.axis-label-h span { font-size: 0.75rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+.quadrant-outer { position: relative; }
+.axis-label-v { position: absolute; left: -24px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+.axis-label-v span { font-size: 0.75rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; writing-mode: vertical-rl; transform: rotate(180deg); }
+.quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; position: relative; margin-left: 24px; border: 2px solid var(--border); }
+.quad { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; text-align: center; position: relative; }
+.quad .quad-icon { font-size: 2rem; margin-bottom: 4px; }
+.quad .quad-name { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.quad .quad-pct { font-size: 1.4rem; font-weight: 800; margin-top: 4px; }
+.quad.harmonizer { background: var(--harmonizer-bg); color: var(--harmonizer); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.quad.expressor { background: var(--expressor-bg); color: var(--expressor); border-bottom: 1px solid var(--border); }
+.quad.analyst { background: var(--analyst-bg); color: var(--analyst); border-right: 1px solid var(--border); }
+.quad.driver { background: var(--driver-bg); color: var(--driver); }
+.quadrant-dot { position: absolute; width: 20px; height: 20px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.3); transform: translate(-50%, -50%); z-index: 10; transition: all 0.8s ease; }
+.quadrant-crosshair-h { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(0,0,0,0.12); z-index: 5; }
+.quadrant-crosshair-v { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(0,0,0,0.12); z-index: 5; }
+.you-label { position: absolute; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; transform: translate(-50%, -130%); z-index: 11; white-space: nowrap; }
+
+/* Results */
+.results-header { text-align: center; margin-bottom: 32px; }
+.results-header h2 { font-size: 1.6rem; color: var(--primary); }
+.results-header .profile-type { font-size: 2.2rem; font-weight: 700; margin: 8px 0 4px; }
+.results-header .profile-label { font-size: 1rem; color: var(--text-light); }
+.energy-bars { margin: 24px 0; }
+.energy-row { display: flex; align-items: center; margin-bottom: 12px; }
+.energy-label { width: 120px; font-weight: 600; font-size: 0.9rem; }
+.energy-bar-bg { flex: 1; height: 28px; background: var(--bg); border-radius: 14px; overflow: hidden; }
+.energy-bar-fill { height: 100%; border-radius: 14px; transition: width 1s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; }
+.energy-bar-fill span { font-size: 0.75rem; font-weight: 700; color: #fff; }
+.trait-card { padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid; }
+.trait-card h3 { margin-bottom: 8px; }
+.trait-card p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 6px; }
+.trait-card.driver-card { border-color: var(--driver); background: var(--driver-bg); }
+.trait-card.expressor-card { border-color: var(--expressor); background: var(--expressor-bg); }
+.trait-card.harmonizer-card { border-color: var(--harmonizer); background: var(--harmonizer-bg); }
+.trait-card.analyst-card { border-color: var(--analyst); background: var(--analyst-bg); }
+.footer { text-align: center; padding: 20px; color: var(--text-light); font-size: 0.8rem; }
+@media (max-width: 600px) {
+  .container { padding: 12px; }
+  .card { padding: 20px; }
+  .header h1 { font-size: 1.4rem; }
+  .diff-statements { flex-direction: row; gap: 8px; }
+  .diff-left, .diff-right { font-size: 0.82rem; }
+  .diff-option { padding: 0 5px; }
+  .diff-option input[type="radio"] { width: 20px; height: 20px; }
+  .quadrant-grid { margin-left: 20px; }
+  .axis-label-v { left: -20px; }
+  .quad .quad-name { font-size: 0.75rem; }
+  .quad .quad-pct { font-size: 1.1rem; }
+  .energy-label { width: 100px; font-size: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="brand">The People Group</div>
+    <h1>Work Style Quadrant</h1>
+    <p>Discover where you sit on the leadership map &mdash; how you take action and what drives your decisions.</p>
+  </div>
+
+  <!-- PASSWORD SCREEN -->
+  <div id="screen-password" class="card">
+    <h2 style="margin-bottom:16px;color:var(--primary)">Welcome</h2>
+    <p style="margin-bottom:24px;color:var(--text-light)">Please enter the access code provided by your facilitator to begin.</p>
+    <label for="password">Access Code</label>
+    <input type="password" id="password" placeholder="Enter access code">
+    <div id="password-error" class="error hidden">Incorrect access code. Please try again.</div>
+    <button class="btn" onclick="checkPassword()">Continue</button>
+  </div>
+
+  <!-- INFO SCREEN -->
+  <div id="screen-info" class="card hidden">
+    <h2 style="margin-bottom:16px;color:var(--primary)">About You</h2>
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" placeholder="First name">
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" placeholder="Last name">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="your@email.com">
+    <div id="info-error" class="error hidden">Please fill in all fields.</div>
+    <div style="background:var(--accent-light);border-radius:8px;padding:16px;margin-bottom:20px">
+      <p style="font-size:0.9rem;color:var(--primary)"><strong>How this works:</strong> You'll see 20 pairs of statements. For each pair, choose where you fall on the scale between them. Go with your gut &mdash; there are no right or wrong answers. Takes about 5 minutes.</p>
+    </div>
+    <button class="btn" onclick="startAssessment()">Start Assessment</button>
+  </div>
+
+  <!-- ASSESSMENT SCREEN -->
+  <div id="screen-assessment" class="card hidden">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="page-number" id="page-number"></div>
+    <div id="questions-container"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="btn-prev" onclick="prevPage()">Back</button>
+      <button class="btn" id="btn-next" onclick="nextPage()" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="screen-results" class="hidden">
+    <div class="card">
+      <div class="results-header">
+        <h2>Your Work Style</h2>
+        <div class="profile-type" id="profile-type"></div>
+        <div class="profile-label" id="profile-label"></div>
+      </div>
+
+      <!-- Quadrant Chart -->
+      <div class="quadrant-wrapper">
+        <div class="axis-label-h">
+          <span>&larr; Reserved</span>
+          <span style="color:var(--primary);font-weight:700">ASSERTIVENESS</span>
+          <span>Direct &rarr;</span>
+        </div>
+        <div class="quadrant-outer">
+          <div class="axis-label-v">
+            <span>People &uarr;</span>
+            <span style="color:var(--primary);font-weight:700;writing-mode:vertical-rl;transform:rotate(180deg)">FOCUS</span>
+            <span>&darr; Tasks</span>
+          </div>
+          <div class="quadrant-grid" id="quadrant-grid">
+            <div class="quad harmonizer">
+              <div class="quad-icon">🌿</div>
+              <div class="quad-name">Harmonizer</div>
+              <div class="quad-pct" id="pct-harmonizer"></div>
+            </div>
+            <div class="quad expressor">
+              <div class="quad-icon">☀️</div>
+              <div class="quad-name">Expressor</div>
+              <div class="quad-pct" id="pct-expressor"></div>
+            </div>
+            <div class="quad analyst">
+              <div class="quad-icon">🧊</div>
+              <div class="quad-name">Analyst</div>
+              <div class="quad-pct" id="pct-analyst"></div>
+            </div>
+            <div class="quad driver">
+              <div class="quad-icon">🔥</div>
+              <div class="quad-name">Driver</div>
+              <div class="quad-pct" id="pct-driver"></div>
+            </div>
+            <div class="quadrant-crosshair-h"></div>
+            <div class="quadrant-crosshair-v"></div>
+            <div class="you-label" id="you-label">YOU</div>
+            <div class="quadrant-dot" id="quadrant-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Energy Bars -->
+      <div class="energy-bars" id="energy-bars"></div>
+    </div>
+
+    <!-- Trait Cards -->
+    <div id="trait-cards"></div>
+
+    <div class="card" style="text-align:center">
+      <p style="color:var(--text-light);margin-bottom:16px">Your results have been recorded. You'll receive a copy by email.</p>
+      <button class="btn" onclick="window.print()">Print Results</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 The People Group &middot; Work Style Quadrant Assessment &middot; Confidential
+  </div>
+</div>
+
+<script>
+const ACCESS_CODE = 'WorkStyle2026';
+
+// Google Sheets Web App URL — replace with your deployed script URL
+let SHEETS_URL = '';
+
+// 20 semantic differential questions
+// axis: 'A' = Assertiveness (1=direct, 5=reserved), 'F' = Focus (1=task, 5=people)
+const questions = [
+  // Page 1
+  { left: "I speak up first in meetings", right: "I listen carefully before contributing", axis: "A" },
+  { left: "I focus on getting results", right: "I focus on how people are doing", axis: "F" },
+  { left: "I make decisions quickly and move on", right: "I take time to consider all angles", axis: "A" },
+  { left: "I value efficiency above all else", right: "I value team harmony above all else", axis: "F" },
+  { left: "I'm comfortable with confrontation when needed", right: "I prefer to find common ground", axis: "A" },
+  // Page 2
+  { left: "I lead with logic and data", right: "I lead with empathy and intuition", axis: "F" },
+  { left: "I take charge naturally in group settings", right: "I support others to take the lead", axis: "A" },
+  { left: "I measure success by what was achieved", right: "I measure success by how people felt about it", axis: "F" },
+  { left: "I express my opinions boldly and directly", right: "I share my thoughts diplomatically", axis: "A" },
+  { left: "I'm energized by solving tough problems", right: "I'm energized by meaningful connections", axis: "F" },
+  // Page 3
+  { left: "I prefer a fast-paced environment", right: "I prefer a calm, steady environment", axis: "A" },
+  { left: "I'd rather be respected than liked", right: "I'd rather be liked than feared", axis: "F" },
+  { left: "I push for immediate action", right: "I advocate for careful planning first", axis: "A" },
+  { left: "I focus on the what", right: "I focus on the who", axis: "F" },
+  { left: "I thrive under pressure and deadlines", right: "I do my best work with space and time", axis: "A" },
+  // Page 4
+  { left: "Facts and evidence drive my decisions", right: "Values and feelings drive my decisions", axis: "F" },
+  { left: "I say exactly what I think", right: "I consider my audience before speaking", axis: "A" },
+  { left: "I prioritize the goal over the process", right: "I prioritize the people over the plan", axis: "F" },
+  { left: "Debate energizes me", right: "Debate drains me", axis: "A" },
+  { left: "I'd rather deliver a perfect result alone", right: "I'd rather deliver a good result together", axis: "F" },
+];
+
+const ITEMS_PER_PAGE = 5;
+const TOTAL_PAGES = Math.ceil(questions.length / ITEMS_PER_PAGE);
+
+const typeInfo = {
+  Driver: {
+    color: 'var(--driver)',
+    icon: '🔥',
+    cardClass: 'driver-card',
+    desc: 'You are direct, decisive, and results-driven. You take charge, move fast, and hold yourself and others to high standards. You bring energy, urgency, and accountability to everything you do.',
+    strengths: 'Decisiveness, accountability, goal achievement, taking initiative, driving results under pressure',
+    watchouts: 'May come across as impatient or overly blunt, could overlook team morale in pursuit of results, might struggle to delegate',
+    blends: {
+      Expressor: 'Dynamic force — you combine decisiveness with charisma. You don\'t just push for results, you rally people toward them. High energy, high impact.',
+      Analyst: 'Strategic operator — you combine speed with analytical depth. You move fast, but always with data behind your decisions.',
+      Harmonizer: 'Firm but fair leader — you push for results while staying aware of the human impact. You deliver tough feedback with genuine care.'
+    }
+  },
+  Expressor: {
+    color: 'var(--expressor)',
+    icon: '☀️',
+    cardClass: 'expressor-card',
+    desc: 'You are enthusiastic, inspiring, and people-powered. You build relationships naturally, generate excitement, and bring creative energy to teams. You thrive when you can influence, collaborate, and make work feel meaningful.',
+    strengths: 'Inspiring others, building relationships, creative thinking, team energy, communication and persuasion',
+    watchouts: 'May overcommit or lose focus on details, could prioritize enthusiasm over planning, might struggle with routine tasks',
+    blends: {
+      Driver: 'Charismatic achiever — you combine big energy with a bias for action. You inspire people AND make things happen.',
+      Harmonizer: 'The connector — you bring warmth, creativity, and social intelligence. People love working with you because you make work feel meaningful.',
+      Analyst: 'Creative thinker with substance — you combine big ideas with enough rigour to execute them. You can sell a vision AND build the plan.'
+    }
+  },
+  Harmonizer: {
+    color: 'var(--harmonizer)',
+    icon: '🌿',
+    cardClass: 'harmonizer-card',
+    desc: 'You are supportive, patient, and team-oriented. You build trust through consistency, resolve conflicts with empathy, and create environments where people feel safe to do their best work. You are the steady anchor others rely on.',
+    strengths: 'Building trust, conflict resolution, active listening, team cohesion, creating psychological safety',
+    watchouts: 'May avoid necessary confrontation, could have difficulty saying no, might resist change even when it\'s needed',
+    blends: {
+      Expressor: 'The heart of the team — you combine deep caring with social energy. You check on people, celebrate wins, and keep morale strong.',
+      Analyst: 'Quiet strength — you combine patience and empathy with thoughtful analysis. People come to you for both advice and a listening ear.',
+      Driver: 'Resilient supporter — you care about people AND outcomes. You go the extra mile for the team, but you also know when to push for action.'
+    }
+  },
+  Analyst: {
+    color: 'var(--analyst)',
+    icon: '🧊',
+    cardClass: 'analyst-card',
+    desc: 'You are methodical, precise, and quality-driven. You think before you act, gather evidence before you decide, and hold yourself to high standards of accuracy. You bring rigour, structure, and clarity to complex situations.',
+    strengths: 'Analytical depth, attention to detail, quality assurance, systematic problem-solving, thorough planning',
+    watchouts: 'May over-analyse and delay action, could be perceived as overly cautious or detached, might struggle with ambiguity',
+    blends: {
+      Driver: 'Precision executor — you combine deep analysis with a bias toward action. You don\'t just find the answer, you implement it.',
+      Harmonizer: 'Thoughtful advisor — you combine analytical depth with genuine empathy. People trust your judgment because it\'s both fair and well-reasoned.',
+      Expressor: 'Creative analyst — you bring curiosity and energy to your work. You can deep-dive into data AND present findings in a way that excites people.'
+    }
+  }
+};
+
+let currentPage = 0;
+let responses = new Array(questions.length).fill(0);
+let userName = '', userEmail = '';
+
+function checkPassword() {
+  const pwd = document.getElementById('password').value;
+  if (pwd === ACCESS_CODE) {
+    document.getElementById('screen-password').classList.add('hidden');
+    document.getElementById('screen-info').classList.remove('hidden');
+  } else {
+    document.getElementById('password-error').classList.remove('hidden');
+  }
+}
+
+document.getElementById('password').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function startAssessment() {
+  const fn = document.getElementById('fname').value.trim();
+  const ln = document.getElementById('lname').value.trim();
+  const em = document.getElementById('email').value.trim();
+  if (!fn || !ln || !em) {
+    document.getElementById('info-error').classList.remove('hidden');
+    return;
+  }
+  userName = fn + ' ' + ln;
+  userEmail = em;
+  document.getElementById('screen-info').classList.add('hidden');
+  document.getElementById('screen-assessment').classList.remove('hidden');
+  renderPage();
+}
+
+function renderPage() {
+  const startIdx = currentPage * ITEMS_PER_PAGE;
+  const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, questions.length);
+
+  document.getElementById('page-number').textContent = `Page ${currentPage + 1} of ${TOTAL_PAGES}`;
+  document.getElementById('progress-fill').style.width = `${((currentPage + 1) / TOTAL_PAGES) * 100}%`;
+  document.getElementById('btn-prev').style.visibility = currentPage === 0 ? 'hidden' : 'visible';
+
+  const isLast = currentPage === TOTAL_PAGES - 1;
+  document.getElementById('btn-next').textContent = isLast ? 'See Results' : 'Next';
+
+  let html = '';
+  for (let i = startIdx; i < endIdx; i++) {
+    const q = questions[i];
+    html += `<div class="diff-row">
+      <div class="diff-statements">
+        <div class="diff-left">${q.left}</div>
+        <div class="diff-right">${q.right}</div>
+      </div>
+      <div class="diff-scale">`;
+    for (let v = 1; v <= 5; v++) {
+      const checked = responses[i] === v ? 'checked' : '';
+      const size = v === 3 ? '20px' : (v === 1 || v === 5) ? '28px' : '24px';
+      html += `<div class="diff-option">
+        <input type="radio" name="q${i}" value="${v}" ${checked} style="width:${size};height:${size}" onchange="selectResponse(${i},${v})">
+      </div>`;
+    }
+    html += `</div>
+      <div class="diff-labels"><span>Strongly left</span><span>Neutral</span><span>Strongly right</span></div>
+    </div>`;
+  }
+  document.getElementById('questions-container').innerHTML = html;
+  updateNextBtn();
+}
+
+function selectResponse(idx, val) {
+  responses[idx] = val;
+  updateNextBtn();
+}
+
+function updateNextBtn() {
+  const startIdx = currentPage * ITEMS_PER_PAGE;
+  const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, questions.length);
+  let allAnswered = true;
+  for (let i = startIdx; i < endIdx; i++) {
+    if (responses[i] === 0) { allAnswered = false; break; }
+  }
+  document.getElementById('btn-next').disabled = !allAnswered;
+}
+
+function nextPage() {
+  if (currentPage < TOTAL_PAGES - 1) {
+    currentPage++;
+    renderPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage();
+  }
+}
+
+function calculateScores() {
+  let aSum = 0, aCount = 0, fSum = 0, fCount = 0;
+
+  questions.forEach((q, i) => {
+    if (q.axis === 'A') { aSum += responses[i]; aCount++; }
+    else { fSum += responses[i]; fCount++; }
+  });
+
+  const aAvg = aSum / aCount; // 1=direct, 5=reserved
+  const fAvg = fSum / fCount; // 1=task, 5=people
+
+  // Percentages for each pole
+  const directPct = ((5 - aAvg) / 4) * 100;
+  const reservedPct = ((aAvg - 1) / 4) * 100;
+  const taskPct = ((5 - fAvg) / 4) * 100;
+  const peoplePct = ((fAvg - 1) / 4) * 100;
+
+  // Quadrant energies (sum to 100)
+  const driver = Math.round(directPct * taskPct / 100);
+  const expressor = Math.round(directPct * peoplePct / 100);
+  const harmonizer = Math.round(reservedPct * peoplePct / 100);
+  const analyst = Math.round(reservedPct * taskPct / 100);
+
+  // Normalize to exactly 100
+  const total = driver + expressor + harmonizer + analyst;
+  const energies = {
+    Driver: Math.round(driver / total * 100),
+    Expressor: Math.round(expressor / total * 100),
+    Harmonizer: Math.round(harmonizer / total * 100),
+    Analyst: Math.round(analyst / total * 100)
+  };
+
+  // Coordinates for dot placement (-100 to +100)
+  const x = (3 - aAvg) * 50; // positive = direct (right)
+  const y = (fAvg - 3) * 50; // positive = people (top)
+
+  // Dot position as percentages (0-100)
+  const dotLeft = ((x + 100) / 200) * 100;
+  const dotTop = ((100 - y) / 200) * 100;
+
+  const sorted = Object.entries(energies).sort((a, b) => b[1] - a[1]);
+  const primary = sorted[0][0];
+  const secondary = sorted[1][0];
+
+  return { energies, primary, secondary, dotLeft, dotTop, directPct: Math.round(directPct), reservedPct: Math.round(reservedPct), taskPct: Math.round(taskPct), peoplePct: Math.round(peoplePct) };
+}
+
+function showResults() {
+  const result = calculateScores();
+  document.getElementById('screen-assessment').classList.add('hidden');
+  document.getElementById('screen-results').classList.remove('hidden');
+
+  const primary = typeInfo[result.primary];
+  const secondary = typeInfo[result.secondary];
+
+  document.getElementById('profile-type').innerHTML = `<span style="color:${primary.color}">${result.primary}</span>`;
+  document.getElementById('profile-label').textContent = result.primary + ' with ' + result.secondary + ' energy';
+
+  // Quadrant percentages
+  document.getElementById('pct-driver').textContent = result.energies.Driver + '%';
+  document.getElementById('pct-expressor').textContent = result.energies.Expressor + '%';
+  document.getElementById('pct-harmonizer').textContent = result.energies.Harmonizer + '%';
+  document.getElementById('pct-analyst').textContent = result.energies.Analyst + '%';
+
+  // Position the dot
+  const dot = document.getElementById('quadrant-dot');
+  dot.style.left = result.dotLeft + '%';
+  dot.style.top = result.dotTop + '%';
+
+  const youLabel = document.getElementById('you-label');
+  youLabel.style.left = result.dotLeft + '%';
+  youLabel.style.top = result.dotTop + '%';
+
+  // Energy bars
+  const types = [
+    { key: 'Driver', color: 'var(--driver)' },
+    { key: 'Expressor', color: 'var(--expressor)' },
+    { key: 'Harmonizer', color: 'var(--harmonizer)' },
+    { key: 'Analyst', color: 'var(--analyst)' }
+  ];
+
+  let barsHtml = '';
+  types.forEach(t => {
+    const pct = result.energies[t.key];
+    barsHtml += `
+      <div class="energy-row">
+        <div class="energy-label" style="color:${t.color}">${t.key}</div>
+        <div class="energy-bar-bg">
+          <div class="energy-bar-fill" style="width:${Math.max(pct, 3)}%;background:${t.color}"><span>${pct}%</span></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('energy-bars').innerHTML = barsHtml;
+
+  // Trait cards — primary and secondary only
+  let cardsHtml = '';
+
+  // Primary card
+  const pInfo = typeInfo[result.primary];
+  const blendDesc = pInfo.blends[result.secondary];
+  cardsHtml += `
+    <div class="card trait-card ${pInfo.cardClass}">
+      <h3 style="color:${pInfo.color}">${pInfo.icon} ${result.primary} — Your Primary Style (${result.energies[result.primary]}%)</h3>
+      <p>${pInfo.desc}</p>
+      <p><strong>Your blend:</strong> ${blendDesc}</p>
+      <p><strong>Strengths:</strong> ${pInfo.strengths}</p>
+      <p><strong>Watch out for:</strong> ${pInfo.watchouts}</p>
+    </div>`;
+
+  // Secondary card
+  const sInfo = typeInfo[result.secondary];
+  cardsHtml += `
+    <div class="card trait-card ${sInfo.cardClass}" style="opacity:0.8">
+      <h3 style="color:${sInfo.color}">${sInfo.icon} ${result.secondary} — Your Secondary Style (${result.energies[result.secondary]}%)</h3>
+      <p>${sInfo.desc}</p>
+      <p><strong>Strengths:</strong> ${sInfo.strengths}</p>
+    </div>`;
+
+  // Axis summary card
+  cardsHtml += `
+    <div class="card">
+      <h3 style="color:var(--primary);margin-bottom:12px">Your Two Axes</h3>
+      <p style="margin-bottom:8px"><strong>Assertiveness:</strong> ${result.directPct}% Direct / ${result.reservedPct}% Reserved</p>
+      <p style="margin-bottom:4px"><strong>Focus:</strong> ${result.taskPct}% Task-oriented / ${result.peoplePct}% People-oriented</p>
+    </div>`;
+
+  document.getElementById('trait-cards').innerHTML = cardsHtml;
+
+  submitToSheet(result);
+
+  // Send results to parent platform
+  if (window.parent !== window) {
+    window.parent.postMessage({
+        type: 'assessment-complete',
+        assessment: 'workstyle',
+        scores: result.energies,
+        overall: result.energies[result.primary]
+    }, '*');
+  }
+}
+
+function submitToSheet(result) {
+  if (!SHEETS_URL) {
+    console.log('Google Sheets URL not configured. Results:', {
+      name: userName, email: userEmail,
+      Driver: result.energies.Driver, Expressor: result.energies.Expressor,
+      Harmonizer: result.energies.Harmonizer, Analyst: result.energies.Analyst,
+      primary: result.primary, secondary: result.secondary,
+      directPct: result.directPct, peoplePct: result.peoplePct
+    });
+    return;
+  }
+
+  const data = new URLSearchParams();
+  data.append('name', userName);
+  data.append('email', userEmail);
+  data.append('Driver', result.energies.Driver);
+  data.append('Expressor', result.energies.Expressor);
+  data.append('Harmonizer', result.energies.Harmonizer);
+  data.append('Analyst', result.energies.Analyst);
+  data.append('primary', result.primary);
+  data.append('secondary', result.secondary);
+  data.append('directPct', result.directPct);
+  data.append('peoplePct', result.peoplePct);
+  data.append('timestamp', new Date().toISOString());
+
+  fetch(SHEETS_URL, { method: 'POST', body: data, mode: 'no-cors' })
+    .then(() => console.log('Results submitted to Google Sheet'))
+    .catch(err => console.error('Sheet submission error:', err));
+}
+</script>
+</body>
+</html>
