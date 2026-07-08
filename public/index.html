@@ -2902,7 +2902,7 @@
           /* Return a mock response for any API call */
           var mockData = {};
           if (url.includes('/api/dashboard/activity')) mockData = { activities: [] };
-          else if (url.includes('/api/dashboard')) mockData = { assessments_completed: 3, total_assessments: 13, policies_acknowledged: 7, total_policies: 38, onboarding_percent: 65, content_count: 74 };
+          else if (url.includes('/api/dashboard')) mockData = { assessments_completed: 3, total_assessments: 13, policies_acknowledged: 7, total_policies: 44, onboarding_percent: 65, content_count: 83 };
           else if (url.includes('/api/assessments/results')) mockData = { results: [] };
           else if (url.includes('/api/policies/status')) mockData = { acknowledgments: [] };
           else if (url.includes('/api/policies/team')) mockData = { policies: [] };
@@ -3323,9 +3323,9 @@
         assessments_completed: 0,
         total_assessments: 13,
         policies_acknowledged: 0,
-        total_policies: 38,
+        total_policies: 44,
         onboarding_percent: 0,
-        content_count: 74
+        content_count: 83
       };
       var isAdmin = user && (user.role === 'admin' || user.role === 'manager');
 
