@@ -1,0 +1,25 @@
+{
+  "weights": {
+    "hard_skills": 0.25,
+    "soft_skills": 0.10,
+    "experience_level": 0.20,
+    "industry_alignment": 0.10,
+    "education_fit": 0.08,
+    "culture_indicators": 0.10,
+    "growth_trajectory": 0.07,
+    "availability_logistics": 0.10
+  },
+  "tier_thresholds": {
+    "strong_match": 85,
+    "good_match": 70,
+    "partial_match": 55,
+    "weak_match": 0
+  },
+  "notes": {
+    "hard_skills": "Heaviest weight — skills are the #1 predictor of job performance in technical roles",
+    "experience_level": "Second heaviest — but 'slope over level' (Adam Grant) means trajectory matters more than raw years",
+    "culture_indicators": "Pure Technology pillar: Love. Culture fit is non-negotiable",
+    "growth_trajectory": "Lower weight but critical flag — short tenure patterns = flight risk",
+    "education_fit": "Lowest weight — many roles don't strictly require degrees. Skills > credentials"
+  }
+}

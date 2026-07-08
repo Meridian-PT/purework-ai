@@ -1,0 +1,25 @@
+{
+  "weights": {
+    "glassdoor_rating": 0.20,
+    "retention_rate": 0.20,
+    "culture_indicators": 0.15,
+    "growth_trajectory": 0.15,
+    "comp_competitiveness": 0.15,
+    "dei_alignment": 0.15
+  },
+  "grade_thresholds": {
+    "exceptional": 90,
+    "strong": 75,
+    "average": 60,
+    "below_average": 40,
+    "poor": 0
+  },
+  "data_sources": {
+    "glassdoor_rating": "Glassdoor API or manual entry",
+    "retention_rate": "Company-reported, LinkedIn tenure analysis",
+    "culture_indicators": "Job posting NLP, benefits analysis, employee surveys",
+    "growth_trajectory": "Hiring velocity, headcount change, revenue signals",
+    "comp_competitiveness": "Compensation benchmarks vs market percentile",
+    "dei_alignment": "Public DEI commitments, leadership diversity, pay equity"
+  }
+}

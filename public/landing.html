@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pure Work AI — AI-Powered Workforce Operating System</title>
+  <meta name="description" content="One Platform. Every Employee. Every Process. AI-Powered Workforce Operating System from hiring to payroll, training to compliance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ================================================================
+       PURE WORK AI - Landing Page Styles
+       Prospect-facing sales page — same design language as the app
+       ================================================================ */
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2332;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #2c7be5;
+      --accent-hover: #1d6fd3;
+      --accent-light: rgba(44, 123, 229, 0.15);
+      --accent-glow: rgba(44, 123, 229, 0.3);
+      --success: #22c55e;
+      --success-bg: rgba(34, 197, 94, 0.12);
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --border: #2a3f55;
+      --border-light: #1e2d3d;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
+      --transition-fast: 150ms ease;
+      --transition-normal: 250ms ease;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+
+    /* ================================================================
+       NAVIGATION BAR
+       ================================================================ */
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: rgba(10, 14, 26, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .navbar-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), #60a5fa);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 24px;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+    }
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .btn-outline:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(44, 123, 229, 0.3);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 16px rgba(44, 123, 229, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-lg {
+      padding: 14px 36px;
+      font-size: 1rem;
+      border-radius: var(--radius-lg);
+    }
+
+    /* ================================================================
+       HERO SECTION
+       ================================================================ */
+
+    .hero {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 120px 24px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 1000px;
+      background: radial-gradient(ellipse, rgba(44, 123, 229, 0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(96, 165, 250, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Subtle grid pattern background */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(44, 123, 229, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(44, 123, 229, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--accent-light);
+      border: 1px solid rgba(44, 123, 229, 0.25);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 32px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 640px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats-bar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-light);
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* ================================================================
+       SECTIONS (shared)
+       ================================================================ */
+
+    .section {
+      padding: 100px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-dark {
+      background: var(--bg-secondary);
+      max-width: none;
+    }
+    .section-dark > .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .section-header .section-desc {
+      margin: 0 auto;
+    }
+
+    /* ================================================================
+       THE FIVE LAYERS
+       ================================================================ */
+
+    .layers-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    .layer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+    }
+
+    .layer-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(44, 123, 229, 0.15);
+    }
+    .layer-card:hover::before {
+      opacity: 1;
+    }
+
+    .layer-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .layer-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .layer-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ================================================================
+       BY THE NUMBERS
+       ================================================================ */
+
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .number-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 28px;
+      text-align: center;
+      transition: all var(--transition-normal);
+    }
+
+    .number-card:hover {
+      border-color: rgba(44, 123, 229, 0.4);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .number-value {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .number-label {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .number-detail {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* ================================================================
+       HOW IT WORKS
+       ================================================================ */
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+
+    /* Connector line between steps */
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: calc(16.66% + 36px);
+      right: calc(16.66% + 36px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), rgba(44, 123, 229, 0.3), var(--accent));
+    }
+
+    .step-card {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      background-color: var(--bg-primary);
+    }
+
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ================================================================
+       WHAT MAKES US DIFFERENT
+       ================================================================ */
+
+    .diff-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .diff-text {
+      padding-top: 20px;
+    }
+
+    .diff-quote {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      border-left: 3px solid var(--accent);
+      padding-left: 24px;
+    }
+
+    .diff-detail {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .diff-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .diff-table th {
+      padding: 16px 24px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .diff-table th:first-child {
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.2);
+      width: 35%;
+    }
+    .diff-table th:nth-child(2) {
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.15);
+    }
+    .diff-table th:nth-child(3) {
+      color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .diff-table td {
+      padding: 14px 24px;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .diff-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .diff-table td:first-child {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .diff-table td:nth-child(2) {
+      color: var(--text-dim);
+    }
+    .diff-table td:nth-child(3) {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    /* ================================================================
+       CTA SECTION
+       ================================================================ */
+
+    .cta-section {
+      text-align: center;
+      padding: 100px 24px;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(44, 123, 229, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-desc {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-buttons {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
+
+    .footer {
+      border-top: 1px solid var(--border-light);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    .footer-brand strong {
+      color: var(--text-secondary);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      transition: color var(--transition-fast);
+    }
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    /* ================================================================
+       ANIMATIONS
+       ================================================================ */
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .animate-delay-1 { animation-delay: 0.1s; }
+    .animate-delay-2 { animation-delay: 0.2s; }
+    .animate-delay-3 { animation-delay: 0.3s; }
+    .animate-delay-4 { animation-delay: 0.4s; }
+    .animate-delay-5 { animation-delay: 0.5s; }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+
+    @media (max-width: 1024px) {
+      .layers-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .numbers-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .diff-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 24px;
+      }
+      .hero h1 {
+        font-size: 2.25rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+      }
+      .layers-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .numbers-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .steps-grid::before {
+        display: none;
+      }
+      .hero-stats-bar {
+        gap: 32px;
+      }
+      .section {
+        padding: 64px 24px;
+      }
+      .section-title {
+        font-size: 1.75rem;
+      }
+      .hero-ctas {
+        flex-direction: column;
+      }
+      .footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px;
+      }
+      .footer-links {
+        gap: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .layers-grid {
+        grid-template-columns: 1fr;
+      }
+      .numbers-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 1.85rem;
+      }
+      .navbar-logo span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================================================================
+       NAVIGATION
+       ================================================================ -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <div class="navbar-logo-icon">PW</div>
+      <span>Pure Work AI</span>
+    </div>
+    <div class="navbar-actions">
+      <a href="#features" class="btn btn-ghost">Features</a>
+      <a href="#numbers" class="btn btn-ghost">Platform</a>
+      <a href="index.html" class="btn btn-outline">Sign In</a>
+      <a href="mailto:sales@puretechnology.nyc" class="btn btn-primary">Request a Demo</a>
+    </div>
+  </nav>
+
+  <!-- ================================================================
+       HERO SECTION
+       ================================================================ -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge animate-in">
+        <span class="hero-badge-dot"></span>
+        AI-Powered Workforce Operating System
+      </div>
+      <h1 class="animate-in animate-delay-1">
+        One Platform.<br>Every Employee.<br><span>Every Process.</span>
+      </h1>
+      <p class="hero-subtitle animate-in animate-delay-2">
+        From hiring to payroll, training to compliance &mdash; every employee
+        has an AI-powered partner. Pure Work AI replaces the HR tool stack
+        with a single intelligent platform.
+      </p>
+      <div class="hero-ctas animate-in animate-delay-3">
+        <a href="mailto:sales@puretechnology.nyc" class="btn btn-primary btn-lg">
+          Request a Demo
+        </a>
+        <a href="index.html" class="btn btn-outline btn-lg">
+          Sign In
+        </a>
+      </div>
+      <div class="hero-stats-bar animate-in animate-delay-4">
+        <div class="hero-stat">
+          <div class="hero-stat-value">8</div>
+          <div class="hero-stat-label">Digital Assessments</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">34</div>
+          <div class="hero-stat-label">Content Documents</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">63</div>
+          <div class="hero-stat-label">Jurisdictions</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">4</div>
+          <div class="hero-stat-label">Onboarding Playbooks</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       THE FIVE LAYERS
+       ================================================================ -->
+  <section class="section-dark" id="features">
+    <div class="section-inner" style="padding: 100px 24px;">
+      <div class="section-header">
+        <span class="section-label">The Platform</span>
+        <h2 class="section-title">Five Layers of Workforce Intelligence</h2>
+        <p class="section-desc">
+          Every stage of the employee lifecycle, managed in one place.
+          From the moment a candidate applies to the day they retire.
+        </p>
+      </div>
+      <div class="layers-grid">
+        <div class="layer-card animate-in animate-delay-1">
+          <span class="layer-icon">&#127919;</span>
+          <div class="layer-name">Recruit</div>
+          <p class="layer-desc">
+            AI recruitment agents, candidate scoring, interview packages,
+            and offer generation. Find the right people, faster.
+          </p>
+        </div>
+        <div class="layer-card animate-in animate-delay-2">
+          <span class="layer-icon">&#128101;</span>
+          <div class="layer-name">Manage</div>
+          <p class="layer-desc">
+            Onboarding automation, employee records, policy management,
+            and lifecycle tracking from Day 1 through exit.
+          </p>
+        </div>
+        <div class="layer-card animate-in animate-delay-3">
+          <span class="layer-icon">&#128202;</span>
+          <div class="layer-name">Perform</div>
+          <p class="layer-desc">
+            Continuous coaching, KPI tracking, compensation benchmarking,
+            and pulse surveys. Develop your people in real-time.
+          </p>
+        </div>
+        <div class="layer-card animate-in animate-delay-4">
+          <span class="layer-icon">&#127891;</span>
+          <div class="layer-name">Learn</div>
+          <p class="layer-desc">
+            8 digital assessments, training programs, DISC workshops,
+            and safety calendars. Every employee grows every day.
+          </p>
+        </div>
+        <div class="layer-card animate-in animate-delay-5">
+          <span class="layer-icon">&#128274;</span>
+          <div class="layer-name">Protect</div>
+          <p class="layer-desc">
+            63-jurisdiction compliance, progressive discipline, audit trails,
+            and working alone plans. Stay protected, everywhere.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       BY THE NUMBERS
+       ================================================================ -->
+  <section class="section" id="numbers">
+    <div class="section-header">
+      <span class="section-label">By the Numbers</span>
+      <h2 class="section-title">Built for Real Work</h2>
+      <p class="section-desc">
+        Not a prototype. Not a proof of concept. A production-ready platform
+        with real content, real assessments, and real compliance coverage.
+      </p>
+    </div>
+    <div class="numbers-grid">
+      <div class="number-card">
+        <div class="number-value">8</div>
+        <div class="number-label">Digital Assessments</div>
+        <div class="number-detail">Auto-scoring with radar charts &mdash; DISC, Big Five, Culture Fit, Manager Readiness, Safety, Sales, Customer Service, Workstyle</div>
+      </div>
+      <div class="number-card">
+        <div class="number-value">34</div>
+        <div class="number-label">Content Documents</div>
+        <div class="number-detail">SOPs, policies, job descriptions, training programs, onboarding playbooks, and comp benchmarking &mdash; ready to deploy</div>
+      </div>
+      <div class="number-card">
+        <div class="number-value">63</div>
+        <div class="number-label">Jurisdictions</div>
+        <div class="number-detail">50 US states + 13 Canadian provinces and territories &mdash; compliance coverage across North America</div>
+      </div>
+      <div class="number-card">
+        <div class="number-value">4</div>
+        <div class="number-label">Onboarding Playbooks</div>
+        <div class="number-detail">Manufacturing, Professional Services, Tech/SaaS, and General SMB &mdash; industry-specific Day 1 to Day 90</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       HOW IT WORKS
+       ================================================================ -->
+  <section class="section-dark">
+    <div class="section-inner" style="padding: 100px 24px;">
+      <div class="section-header">
+        <span class="section-label">How It Works</span>
+        <h2 class="section-title">Three Steps to a Smarter Workforce</h2>
+        <p class="section-desc">
+          Get your entire team on one platform in days, not months.
+        </p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Upload Your Content</h3>
+          <p class="step-desc">
+            Upload your SOPs, policies, job descriptions, and training
+            materials. Or start with our 34 ready-made templates and
+            customize from there.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Your Team Gets Access</h3>
+          <p class="step-desc">
+            Every employee accesses everything through one platform &mdash;
+            assessments, training, policies, onboarding checklists. Role-based
+            permissions keep the right content with the right people.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Track Everything</h3>
+          <p class="step-desc">
+            Real-time dashboards show assessment completion, policy
+            compliance, onboarding progress, and content engagement.
+            No more spreadsheet tracking.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       WHAT MAKES US DIFFERENT
+       ================================================================ -->
+  <section class="section" id="different">
+    <div class="section-header" style="text-align: left; margin-bottom: 48px;">
+      <span class="section-label">Why Pure Work AI</span>
+      <h2 class="section-title">This Is Not Another HR Tool</h2>
+    </div>
+    <div class="diff-content">
+      <div class="diff-text">
+        <p class="diff-quote">
+          Traditional HR suites solve HR processes. Pure Work AI solves
+          how work gets done &mdash; before, during, and after HR.
+        </p>
+        <p class="diff-detail">
+          Most platforms give you a place to store employee data. We give
+          your employees a partner that helps them onboard faster, learn
+          continuously, stay compliant, and perform better &mdash; all
+          from one unified platform. No more juggling BambooHR for records,
+          Lessonly for training, ADP for compliance, and SharePoint for SOPs.
+        </p>
+      </div>
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Traditional HR Suites</th>
+            <th>Pure Work AI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Assessments</td>
+            <td>Third-party add-on, extra cost</td>
+            <td>8 built-in, auto-scored with analytics</td>
+          </tr>
+          <tr>
+            <td>Onboarding</td>
+            <td>Form-filling and checklists</td>
+            <td>Industry-specific playbooks with supervisor sign-off</td>
+          </tr>
+          <tr>
+            <td>Content Library</td>
+            <td>Upload and hope people find it</td>
+            <td>Organized, searchable, tracked per employee</td>
+          </tr>
+          <tr>
+            <td>Compliance</td>
+            <td>Single-jurisdiction, manual updates</td>
+            <td>63 jurisdictions, policy acknowledgment audit trail</td>
+          </tr>
+          <tr>
+            <td>Implementation</td>
+            <td>3-6 months, expensive consultants</td>
+            <td>Days. 34 templates included, customize and go</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       BOTTOM CTA
+       ================================================================ -->
+  <section class="cta-section">
+    <h2 class="cta-title">Ready to See It in Action?</h2>
+    <p class="cta-desc">
+      Book a 15-minute demo and see how Pure Work AI can replace your
+      entire HR tool stack.
+    </p>
+    <div class="cta-buttons">
+      <a href="mailto:sales@puretechnology.nyc" class="btn btn-primary btn-lg">
+        Request a Demo
+      </a>
+      <a href="index.html" class="btn btn-outline btn-lg">
+        Sign In
+      </a>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <footer class="footer">
+    <div class="footer-brand">
+      <strong>Pure Work AI</strong> &mdash; Powered by Pure Technology
+    </div>
+    <ul class="footer-links">
+      <li><a href="mailto:sales@puretechnology.nyc">Request Demo</a></li>
+      <li><a href="index.html">Sign In</a></li>
+      <li><a href="mailto:sales@puretechnology.nyc">Contact</a></li>
+    </ul>
+    <div class="footer-copy">&copy; 2026 Pure Technology. All rights reserved.</div>
+  </footer>
+
+  <!-- ================================================================
+       SCROLL ANIMATION
+       ================================================================ -->
+  <script>
+    /* Intersection Observer for scroll-triggered animations */
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      /* Observe layer cards, number cards, step cards */
+      document.querySelectorAll('.layer-card, .number-card, .step-card').forEach(function(el) {
+        /* Remove the animate-in class so observer can re-add it on scroll */
+        el.classList.remove('animate-in');
+        observer.observe(el);
+      });
+    })();
+  </script>
+
+</body>
+</html>

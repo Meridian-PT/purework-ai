@@ -1,0 +1,44 @@
+{
+  "salary_transparency_states": ["NY", "CA", "CO", "WA", "CT", "MD", "NV", "RI", "HI"],
+  "salary_transparency_provinces": ["BC", "PE"],
+  "stage_order": [
+    "applied",
+    "screening",
+    "interview",
+    "assessment",
+    "reference_check",
+    "offer",
+    "hired"
+  ],
+  "max_days_per_stage": {
+    "applied": 5,
+    "screening": 7,
+    "interview": 14,
+    "assessment": 10,
+    "reference_check": 10,
+    "offer": 7
+  },
+  "target_time_to_hire_days": 45,
+  "rejected_data_retention_days": 730,
+  "social_media_review_policy": {
+    "allowed": true,
+    "requires_documentation": true,
+    "prohibited_factors": [
+      "race", "religion", "gender", "sexual_orientation", "age",
+      "disability", "pregnancy", "national_origin", "marital_status"
+    ],
+    "allowed_factors": [
+      "professional_conduct", "public_safety_concerns",
+      "qualification_verification", "cultural_fit_indicators"
+    ],
+    "no_friend_requests": true,
+    "no_fake_profiles": true,
+    "reviewer_must_be_documented": true
+  },
+  "background_check_policy": {
+    "requires_fcra_consent": true,
+    "ban_the_box_states": ["CA", "CO", "CT", "HI", "IL", "MA", "MN", "NJ", "NM", "OR", "RI", "VT", "WA"],
+    "credit_check_restricted_states": ["CA", "CO", "CT", "HI", "IL", "MD", "NV", "OR", "VT", "WA"],
+    "max_lookback_years": 7
+  }
+}

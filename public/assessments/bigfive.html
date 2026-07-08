@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Five Personality Assessment | The People Group</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --primary: #1a3a5c;
+  --accent: #2c7be5;
+  --accent-light: #e8f0fe;
+  --success: #28ae60;
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --border: #dee2e6;
+  --o-color: #8e44ad;
+  --c-color: #2c7be5;
+  --e-color: #e67e22;
+  --a-color: #27ae60;
+  --es-color: #2980b9;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 760px; margin: 0 auto; padding: 20px; }
+.header { text-align: center; padding: 40px 20px 20px; }
+.header h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 4px; }
+.header .brand { font-size: 0.85rem; color: var(--text-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.header p { color: var(--text-light); font-size: 0.95rem; max-width: 540px; margin: 0 auto; }
+.card { background: var(--card); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; margin-bottom: 20px; }
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+.page-number { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+.likert-legend { display: grid; grid-template-columns: 1fr repeat(5, 48px); gap: 8px; align-items: center; padding: 0 0 12px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+.likert-legend span { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; text-align: center; letter-spacing: 0.3px; font-weight: 600; }
+.likert-legend span:first-child { text-align: left; }
+.statement-row { display: grid; grid-template-columns: 1fr repeat(5, 48px); gap: 8px; align-items: center; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+.statement-row:last-child { border-bottom: none; }
+.statement-text { font-size: 0.95rem; font-weight: 500; color: var(--text); line-height: 1.4; }
+.likert-radio { display: flex; justify-content: center; }
+.likert-radio input[type="radio"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--accent); }
+.btn { display: inline-block; padding: 12px 32px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn:hover { background: #1a68d1; transform: translateY(-1px); }
+.btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+.btn-group { display: flex; justify-content: space-between; margin-top: 24px; }
+.btn-secondary { background: transparent; color: var(--text-light); border: 2px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px;
+  font-size: 1rem; margin-bottom: 16px; transition: border-color 0.2s;
+}
+input:focus { outline: none; border-color: var(--accent); }
+label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.hidden { display: none !important; }
+.error { color: #dc3545; font-size: 0.85rem; margin-top: -8px; margin-bottom: 12px; }
+/* Results */
+.results-header { text-align: center; margin-bottom: 32px; }
+.results-header h2 { font-size: 1.6rem; color: var(--primary); }
+.results-header .profile-type { font-size: 2rem; font-weight: 700; margin: 8px 0; }
+.results-header .profile-label { font-size: 1.1rem; color: var(--text-light); margin-top: 4px; }
+.score-bars { margin: 24px 0; }
+.score-row { display: flex; align-items: center; margin-bottom: 12px; }
+.score-label { width: 160px; font-weight: 600; font-size: 0.9rem; }
+.score-bar-bg { flex: 1; height: 28px; background: var(--bg); border-radius: 14px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 14px; transition: width 1s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; }
+.score-bar-fill span { font-size: 0.75rem; font-weight: 700; color: #fff; }
+.trait-card { padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid; }
+.trait-card h3 { margin-bottom: 8px; }
+.trait-card p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 6px; }
+.trait-card.o { border-color: var(--o-color); background: #f5eef8; }
+.trait-card.c { border-color: var(--c-color); background: #eaf2fd; }
+.trait-card.e { border-color: var(--e-color); background: #fef5e7; }
+.trait-card.a { border-color: var(--a-color); background: #eafaf1; }
+.trait-card.es { border-color: var(--es-color); background: #ebf5fb; }
+.chart-container { max-width: 420px; margin: 0 auto 32px; }
+.footer { text-align: center; padding: 20px; color: var(--text-light); font-size: 0.8rem; }
+@media (max-width: 600px) {
+  .container { padding: 12px; }
+  .card { padding: 20px; }
+  .header h1 { font-size: 1.4rem; }
+  .likert-legend { grid-template-columns: 1fr repeat(5, 36px); gap: 4px; }
+  .statement-row { grid-template-columns: 1fr repeat(5, 36px); gap: 4px; padding: 12px 0; }
+  .likert-radio input[type="radio"] { width: 20px; height: 20px; }
+  .likert-legend span { font-size: 0.55rem; }
+  .statement-text { font-size: 0.88rem; }
+  .score-label { width: 130px; font-size: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="brand">The People Group</div>
+    <h1>Big Five Personality Assessment</h1>
+    <p>Discover your core personality traits and how they shape the way you work, lead, and collaborate.</p>
+  </div>
+
+  <!-- PASSWORD SCREEN -->
+  <div id="screen-password" class="card">
+    <h2 style="margin-bottom:16px;color:var(--primary)">Welcome</h2>
+    <p style="margin-bottom:24px;color:var(--text-light)">Please enter the access code provided by your facilitator to begin.</p>
+    <label for="password">Access Code</label>
+    <input type="password" id="password" placeholder="Enter access code">
+    <div id="password-error" class="error hidden">Incorrect access code. Please try again.</div>
+    <button class="btn" onclick="checkPassword()">Continue</button>
+  </div>
+
+  <!-- INFO SCREEN -->
+  <div id="screen-info" class="card hidden">
+    <h2 style="margin-bottom:16px;color:var(--primary)">About You</h2>
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" placeholder="First name">
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" placeholder="Last name">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="your@email.com">
+    <div id="info-error" class="error hidden">Please fill in all fields.</div>
+    <div style="background:var(--accent-light);border-radius:8px;padding:16px;margin-bottom:20px">
+      <p style="font-size:0.9rem;color:var(--primary)"><strong>How this works:</strong> You'll rate 40 statements about how you typically think, feel, and behave at work. For each, choose how much you agree or disagree. Go with your first instinct &mdash; there are no right or wrong answers. Takes about 10 minutes.</p>
+    </div>
+    <button class="btn" onclick="startAssessment()">Start Assessment</button>
+  </div>
+
+  <!-- ASSESSMENT SCREEN -->
+  <div id="screen-assessment" class="card hidden">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="page-number" id="page-number"></div>
+    <div class="likert-legend">
+      <span></span>
+      <span>Strongly Disagree</span>
+      <span>Disagree</span>
+      <span>Neutral</span>
+      <span>Agree</span>
+      <span>Strongly Agree</span>
+    </div>
+    <div id="statements-container"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="btn-prev" onclick="prevPage()">Back</button>
+      <button class="btn" id="btn-next" onclick="nextPage()" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="screen-results" class="hidden">
+    <div class="card">
+      <div class="results-header">
+        <h2>Your Big Five Profile</h2>
+        <div class="profile-type" id="profile-type"></div>
+        <div class="profile-label" id="profile-label"></div>
+        <p id="profile-summary" style="color:var(--text-light);margin-top:12px"></p>
+      </div>
+      <div class="chart-container"><canvas id="big5-chart"></canvas></div>
+      <div class="score-bars" id="score-bars"></div>
+    </div>
+    <div id="trait-cards"></div>
+    <div class="card" style="text-align:center">
+      <p style="color:var(--text-light);margin-bottom:16px">Your results have been recorded. You'll receive a copy by email.</p>
+      <button class="btn" onclick="window.print()">Print Results</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 The People Group &middot; Big Five Personality Assessment &middot; Confidential
+  </div>
+</div>
+
+<script>
+const ACCESS_CODE = 'BigFive2026';
+
+// Google Sheets Web App URL — replace with your deployed script URL
+let SHEETS_URL = '';
+
+// 40 statements: 8 per dimension, alternating positive (+1) and reverse-keyed (-1)
+// Dimensions: O=Openness, C=Conscientiousness, E=Extraversion, A=Agreeableness, ES=Emotional Stability
+const statements = [
+  // Page 1: all positive-keyed
+  { text: "I enjoy exploring new ideas and approaches at work.", dim: "O", key: 1 },
+  { text: "I am thorough and pay attention to details.", dim: "C", key: 1 },
+  { text: "I feel energized after spending time with a group of people.", dim: "E", key: 1 },
+  { text: "I genuinely care about my coworkers' well-being.", dim: "A", key: 1 },
+  { text: "I stay calm and level-headed under pressure.", dim: "ES", key: 1 },
+  // Page 2: all reverse-keyed
+  { text: "I prefer sticking with tried-and-true methods.", dim: "O", key: -1 },
+  { text: "I sometimes miss deadlines or forget commitments.", dim: "C", key: -1 },
+  { text: "I prefer working independently to collaborating with others.", dim: "E", key: -1 },
+  { text: "I can be direct to the point of coming across as blunt.", dim: "A", key: -1 },
+  { text: "I get stressed easily when things don't go as planned.", dim: "ES", key: -1 },
+  // Page 3: all positive-keyed
+  { text: "I am curious about how things work in different industries.", dim: "O", key: 1 },
+  { text: "I create plans and follow them carefully.", dim: "C", key: 1 },
+  { text: "I find it easy to strike up a conversation with someone new.", dim: "E", key: 1 },
+  { text: "I go out of my way to help colleagues, even when it's not my job.", dim: "A", key: 1 },
+  { text: "I bounce back quickly from setbacks or criticism.", dim: "ES", key: 1 },
+  // Page 4: all reverse-keyed
+  { text: "I find abstract or theoretical discussions unproductive.", dim: "O", key: -1 },
+  { text: "My workspace tends to be disorganized.", dim: "C", key: -1 },
+  { text: "Large meetings or social events drain my energy.", dim: "E", key: -1 },
+  { text: "I prioritize results over people's feelings when making decisions.", dim: "A", key: -1 },
+  { text: "I often worry about things that might go wrong.", dim: "ES", key: -1 },
+  // Page 5: all positive-keyed
+  { text: "I get excited when asked to solve a problem no one has tackled before.", dim: "O", key: 1 },
+  { text: "I follow through on tasks even when they become tedious.", dim: "C", key: 1 },
+  { text: "I enjoy being in a leadership role where I'm front and center.", dim: "E", key: 1 },
+  { text: "I try to see things from the other person's perspective before reacting.", dim: "A", key: 1 },
+  { text: "I maintain a positive outlook even during difficult projects.", dim: "ES", key: 1 },
+  // Page 6: all reverse-keyed
+  { text: "I am most comfortable when following established procedures.", dim: "O", key: -1 },
+  { text: "I tend to act on impulse rather than planning ahead.", dim: "C", key: -1 },
+  { text: "I tend to let others take the lead in group discussions.", dim: "E", key: -1 },
+  { text: "I find it hard to compromise when I believe I'm right.", dim: "A", key: -1 },
+  { text: "I get frustrated or irritated more quickly than most people.", dim: "ES", key: -1 },
+  // Page 7: all positive-keyed
+  { text: "I often suggest unconventional solutions to problems.", dim: "O", key: 1 },
+  { text: "I hold myself to high standards in everything I do.", dim: "C", key: 1 },
+  { text: "I am talkative and enjoy sharing my ideas out loud.", dim: "E", key: 1 },
+  { text: "I am patient and forgiving when others make mistakes.", dim: "A", key: 1 },
+  { text: "I handle conflict without taking things personally.", dim: "ES", key: 1 },
+  // Page 8: all reverse-keyed
+  { text: "I would rather perfect an existing process than invent a new one.", dim: "O", key: -1 },
+  { text: "I find it difficult to stay focused on long-term goals.", dim: "C", key: -1 },
+  { text: "I need quiet time alone to recharge after a busy day of meetings.", dim: "E", key: -1 },
+  { text: "I tend to be skeptical of other people's motives.", dim: "A", key: -1 },
+  { text: "Unexpected changes to plans or priorities tend to throw me off.", dim: "ES", key: -1 },
+];
+
+const ITEMS_PER_PAGE = 5;
+const TOTAL_PAGES = Math.ceil(statements.length / ITEMS_PER_PAGE);
+
+const traitInfo = {
+  O: {
+    name: "Openness",
+    color: "var(--o-color)",
+    highDesc: "You are a creative and curious thinker who embraces new ideas, enjoys intellectual exploration, and thrives when tackling novel challenges. You naturally gravitate toward innovation and unconventional approaches.",
+    lowDesc: "You are practical and grounded, preferring proven methods and clear procedures. You bring stability and focus to teams by keeping things realistic and executable.",
+    strengths_high: "Innovation, creative problem-solving, adaptability to change, big-picture thinking",
+    strengths_low: "Practical execution, consistency, focus on proven solutions, reliability",
+    watchouts_high: "May lose interest in routine tasks, can overcomplicate simple problems, might chase novelty over reliability",
+    watchouts_low: "May resist beneficial change, could miss creative solutions, might dismiss unconventional ideas too quickly"
+  },
+  C: {
+    name: "Conscientiousness",
+    color: "var(--c-color)",
+    highDesc: "You are organized, disciplined, and dependable. You set high standards, plan carefully, and follow through on commitments. Others can count on you to deliver quality work on time.",
+    lowDesc: "You are flexible, spontaneous, and comfortable adapting on the fly. You bring a relaxed energy and can pivot quickly when plans change.",
+    strengths_high: "Reliability, attention to detail, goal achievement, quality assurance",
+    strengths_low: "Flexibility, spontaneity, adaptability, comfort with ambiguity",
+    watchouts_high: "May be overly rigid, could struggle to delegate, might prioritize process over outcomes",
+    watchouts_low: "May miss details, could struggle with deadlines, might underestimate the value of planning"
+  },
+  E: {
+    name: "Extraversion",
+    color: "var(--e-color)",
+    highDesc: "You are energetic, sociable, and assertive. You draw energy from people, enjoy leading conversations, and naturally build relationships. You bring enthusiasm and momentum to teams.",
+    lowDesc: "You are thoughtful, independent, and focused. You do your best work with space to think deeply and prefer meaningful one-on-one conversations over large group dynamics.",
+    strengths_high: "Team energy, networking, leadership presence, communication",
+    strengths_low: "Deep focus, independent work, thoughtful analysis, active listening",
+    watchouts_high: "May dominate conversations, could undervalue quiet contributions, might struggle with solo deep work",
+    watchouts_low: "May be overlooked in group settings, could avoid necessary networking, might under-communicate ideas"
+  },
+  A: {
+    name: "Agreeableness",
+    color: "var(--a-color)",
+    highDesc: "You are empathetic, cooperative, and genuinely invested in others. You build trust naturally, resolve conflicts diplomatically, and create psychologically safe environments for your team.",
+    lowDesc: "You are direct, candid, and results-driven. You challenge ideas, hold people accountable, and don't shy away from difficult conversations when performance demands it.",
+    strengths_high: "Team cohesion, conflict resolution, mentorship, building trust",
+    strengths_low: "Direct feedback, accountability, tough decisions, constructive challenge",
+    watchouts_high: "May avoid necessary confrontation, could prioritize harmony over truth, might struggle to give tough feedback",
+    watchouts_low: "May come across as abrasive, could undervalue relationships, might create unnecessary friction"
+  },
+  ES: {
+    name: "Emotional Stability",
+    color: "var(--es-color)",
+    highDesc: "You are calm, resilient, and even-tempered. You handle pressure without losing composure, bounce back from setbacks quickly, and provide a steady anchor for your team during turbulent times.",
+    lowDesc: "You are emotionally attuned and passionate. You feel things deeply, which gives you strong intuition and empathy. You pick up on team dynamics and undercurrents that others might miss.",
+    strengths_high: "Crisis management, steady leadership, resilience, composure under pressure",
+    strengths_low: "Emotional awareness, intuition, empathy, sensitivity to team dynamics",
+    watchouts_high: "May seem detached, could miss emotional undercurrents, might underreact to situations that need urgency",
+    watchouts_low: "May take things personally, could be overwhelmed by stress, might react emotionally in high-stakes moments"
+  }
+};
+
+// Profile archetype labels based on top two traits
+const profileLabels = {
+  'O/C': 'Creative Strategist', 'O/E': 'Visionary Leader', 'O/A': 'Empathetic Innovator', 'O/ES': 'Calm Creator',
+  'C/O': 'Strategic Thinker', 'C/E': 'Driven Organizer', 'C/A': 'Reliable Partner', 'C/ES': 'Steady Executor',
+  'E/O': 'Inspiring Explorer', 'E/C': 'Dynamic Achiever', 'E/A': 'Natural Connector', 'E/ES': 'Confident Communicator',
+  'A/O': 'Thoughtful Helper', 'A/C': 'Dependable Teammate', 'A/E': 'Warm Influencer', 'A/ES': 'Calm Mediator',
+  'ES/O': 'Resilient Thinker', 'ES/C': 'Cool Professional', 'ES/E': 'Grounded Leader', 'ES/A': 'Steady Supporter'
+};
+
+let currentPage = 0;
+let responses = new Array(statements.length).fill(0); // 0 = unanswered, 1-5 = response
+let userName = '', userEmail = '';
+
+function checkPassword() {
+  const pwd = document.getElementById('password').value;
+  if (pwd === ACCESS_CODE) {
+    document.getElementById('screen-password').classList.add('hidden');
+    document.getElementById('screen-info').classList.remove('hidden');
+  } else {
+    document.getElementById('password-error').classList.remove('hidden');
+  }
+}
+
+document.getElementById('password').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function startAssessment() {
+  const fn = document.getElementById('fname').value.trim();
+  const ln = document.getElementById('lname').value.trim();
+  const em = document.getElementById('email').value.trim();
+  if (!fn || !ln || !em) {
+    document.getElementById('info-error').classList.remove('hidden');
+    return;
+  }
+  userName = fn + ' ' + ln;
+  userEmail = em;
+  document.getElementById('screen-info').classList.add('hidden');
+  document.getElementById('screen-assessment').classList.remove('hidden');
+  renderPage();
+}
+
+function renderPage() {
+  const startIdx = currentPage * ITEMS_PER_PAGE;
+  const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, statements.length);
+
+  document.getElementById('page-number').textContent = `Page ${currentPage + 1} of ${TOTAL_PAGES}`;
+  document.getElementById('progress-fill').style.width = `${((currentPage + 1) / TOTAL_PAGES) * 100}%`;
+  document.getElementById('btn-prev').style.visibility = currentPage === 0 ? 'hidden' : 'visible';
+
+  const isLast = currentPage === TOTAL_PAGES - 1;
+  document.getElementById('btn-next').textContent = isLast ? 'See Results' : 'Next';
+
+  let html = '';
+  for (let i = startIdx; i < endIdx; i++) {
+    const s = statements[i];
+    html += `<div class="statement-row">
+      <div class="statement-text">${s.text}</div>`;
+    for (let v = 1; v <= 5; v++) {
+      const checked = responses[i] === v ? 'checked' : '';
+      html += `<div class="likert-radio">
+        <input type="radio" name="q${i}" value="${v}" ${checked} onchange="selectResponse(${i}, ${v})">
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  document.getElementById('statements-container').innerHTML = html;
+  updateNextBtn();
+}
+
+function selectResponse(idx, val) {
+  responses[idx] = val;
+  updateNextBtn();
+}
+
+function updateNextBtn() {
+  const startIdx = currentPage * ITEMS_PER_PAGE;
+  const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, statements.length);
+  let allAnswered = true;
+  for (let i = startIdx; i < endIdx; i++) {
+    if (responses[i] === 0) { allAnswered = false; break; }
+  }
+  document.getElementById('btn-next').disabled = !allAnswered;
+}
+
+function nextPage() {
+  if (currentPage < TOTAL_PAGES - 1) {
+    currentPage++;
+    renderPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage();
+  }
+}
+
+function calculateScores() {
+  const raw = { O: 0, C: 0, E: 0, A: 0, ES: 0 };
+  const counts = { O: 0, C: 0, E: 0, A: 0, ES: 0 };
+
+  statements.forEach((s, i) => {
+    let score = responses[i];
+    if (s.key === -1) score = 6 - score; // reverse-key
+    raw[s.dim] += score;
+    counts[s.dim]++;
+  });
+
+  // Convert to percentage: each item max=5, min=1
+  // So dimension max = count*5, min = count*1
+  // Pct = ((raw - min) / (max - min)) * 100
+  const pct = {};
+  for (const dim of ['O', 'C', 'E', 'A', 'ES']) {
+    const min = counts[dim];
+    const max = counts[dim] * 5;
+    pct[dim] = Math.round(((raw[dim] - min) / (max - min)) * 100);
+  }
+
+  const sorted = Object.entries(pct).sort((a, b) => b[1] - a[1]);
+  const primary = sorted[0][0];
+  const secondary = sorted[1][0];
+  const profile = primary + '/' + secondary;
+  const archetype = profileLabels[profile] || (traitInfo[primary].name + ' / ' + traitInfo[secondary].name);
+
+  return { raw, pct, primary, secondary, profile, archetype, sorted };
+}
+
+function showResults() {
+  const result = calculateScores();
+  document.getElementById('screen-assessment').classList.add('hidden');
+  document.getElementById('screen-results').classList.remove('hidden');
+
+  const primary = traitInfo[result.primary];
+  const secondary = traitInfo[result.secondary];
+
+  document.getElementById('profile-type').innerHTML =
+    `<span style="color:${primary.color}">${result.primary}</span>` +
+    `<span style="color:var(--text-light);font-weight:400">/${result.secondary}</span>`;
+  document.getElementById('profile-label').textContent = result.archetype;
+
+  const isHigh = result.pct[result.primary] >= 50;
+  document.getElementById('profile-summary').textContent = isHigh ? primary.highDesc : primary.lowDesc;
+
+  // Score bars
+  const dims = [
+    { key: 'O', label: 'Openness', color: 'var(--o-color)' },
+    { key: 'C', label: 'Conscientiousness', color: 'var(--c-color)' },
+    { key: 'E', label: 'Extraversion', color: 'var(--e-color)' },
+    { key: 'A', label: 'Agreeableness', color: 'var(--a-color)' },
+    { key: 'ES', label: 'Emotional Stability', color: 'var(--es-color)' }
+  ];
+
+  let barsHtml = '';
+  dims.forEach(d => {
+    const pct = result.pct[d.key];
+    barsHtml += `
+      <div class="score-row">
+        <div class="score-label" style="color:${d.color}">${d.key === 'ES' ? 'ES' : d.key} - ${d.label}</div>
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" style="width:${Math.max(pct, 3)}%;background:${d.color}"><span>${pct}%</span></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('score-bars').innerHTML = barsHtml;
+
+  // Trait cards
+  let cardsHtml = '';
+  dims.forEach(d => {
+    const info = traitInfo[d.key];
+    const pct = result.pct[d.key];
+    const isHigh = pct >= 50;
+    const isPrimary = d.key === result.primary;
+    const strengths = isHigh ? info.strengths_high : info.strengths_low;
+    const watchouts = isHigh ? info.watchouts_high : info.watchouts_low;
+    const desc = isHigh ? info.highDesc : info.lowDesc;
+    const levelLabel = pct >= 70 ? 'High' : pct >= 40 ? 'Moderate' : 'Low';
+
+    cardsHtml += `
+      <div class="card trait-card ${d.key.toLowerCase()}" ${!isPrimary ? 'style="opacity:0.75"' : ''}>
+        <h3 style="color:${d.color}">${d.label} &mdash; ${levelLabel} (${pct}%) ${isPrimary ? '&#9733; Primary' : ''}</h3>
+        <p>${desc}</p>
+        <p><strong>Strengths:</strong> ${strengths}</p>
+        <p><strong>Watch out for:</strong> ${watchouts}</p>
+      </div>`;
+  });
+  document.getElementById('trait-cards').innerHTML = cardsHtml;
+
+  // Radar chart
+  const ctx = document.getElementById('big5-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Emotional Stability'],
+      datasets: [{
+        data: [result.pct.O, result.pct.C, result.pct.E, result.pct.A, result.pct.ES],
+        backgroundColor: 'rgba(44,123,229,0.12)',
+        borderColor: 'rgba(44,123,229,0.7)',
+        borderWidth: 2,
+        pointBackgroundColor: ['#8e44ad', '#2c7be5', '#e67e22', '#27ae60', '#2980b9'],
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 6
+      }]
+    },
+    options: {
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { stepSize: 25, display: false },
+          grid: { color: 'rgba(0,0,0,0.08)' },
+          pointLabels: { font: { size: 12, weight: '600' } }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  submitToSheet(result);
+
+  // Send results to parent platform
+  if (window.parent !== window) {
+    const avgPct = Math.round((result.pct.O + result.pct.C + result.pct.E + result.pct.A + result.pct.ES) / 5);
+    window.parent.postMessage({
+        type: 'assessment-complete',
+        assessment: 'bigfive',
+        scores: result.pct,
+        overall: avgPct
+    }, '*');
+  }
+}
+
+function submitToSheet(result) {
+  if (!SHEETS_URL) {
+    console.log('Google Sheets URL not configured. Results:', {
+      name: userName, email: userEmail,
+      O: result.pct.O, C: result.pct.C, E: result.pct.E, A: result.pct.A, ES: result.pct.ES,
+      primary: result.primary, secondary: result.secondary,
+      profile: result.profile, archetype: result.archetype
+    });
+    return;
+  }
+
+  const data = new URLSearchParams();
+  data.append('name', userName);
+  data.append('email', userEmail);
+  data.append('O', result.pct.O);
+  data.append('C', result.pct.C);
+  data.append('E', result.pct.E);
+  data.append('A', result.pct.A);
+  data.append('ES', result.pct.ES);
+  data.append('primary', result.primary);
+  data.append('secondary', result.secondary);
+  data.append('profile', result.profile);
+  data.append('archetype', result.archetype);
+  data.append('timestamp', new Date().toISOString());
+
+  fetch(SHEETS_URL, { method: 'POST', body: data, mode: 'no-cors' })
+    .then(() => console.log('Results submitted to Google Sheet'))
+    .catch(err => console.error('Sheet submission error:', err));
+}
+</script>
+</body>
+</html>

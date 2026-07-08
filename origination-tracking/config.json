@@ -1,0 +1,27 @@
+{
+  "attribution_model": "multi_touch",
+  "attribution_weights": {
+    "first_touch_bonus": 0.10,
+    "last_touch_bonus": 0.10,
+    "base_equal_split": true
+  },
+  "known_sources": {
+    "indeed_paid": {"channel": "paid", "avg_cost_per_click": 0.50},
+    "indeed_organic": {"channel": "organic", "avg_cost_per_click": 0},
+    "linkedin_paid": {"channel": "paid", "avg_cost_per_click": 5.00},
+    "linkedin_organic": {"channel": "organic", "avg_cost_per_click": 0},
+    "linkedin_recruiter": {"channel": "paid", "monthly_cost": 835},
+    "glassdoor": {"channel": "organic", "avg_cost_per_click": 0},
+    "ziprecruiter": {"channel": "paid", "avg_cost_per_post": 299},
+    "career_page": {"channel": "direct", "avg_cost_per_click": 0},
+    "employee_referral": {"channel": "referral", "avg_bonus": 2000},
+    "agency": {"channel": "paid", "avg_fee_pct": 0.20},
+    "job_fair": {"channel": "event", "avg_cost_per_event": 5000},
+    "campus_recruiting": {"channel": "event", "avg_cost_per_event": 3000}
+  },
+  "budget_allocation_rules": {
+    "min_allocation_pct": 0.05,
+    "max_single_source_pct": 0.40,
+    "referral_always_funded": true
+  }
+}

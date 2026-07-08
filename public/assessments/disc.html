@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DISC Assessment | The People Group</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --primary: #1a3a5c;
+  --accent: #2c7be5;
+  --accent-light: #e8f0fe;
+  --success: #28a745;
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --border: #dee2e6;
+  --d-color: #dc3545;
+  --i-color: #ffc107;
+  --s-color: #28a745;
+  --c-color: #2c7be5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 720px; margin: 0 auto; padding: 20px; }
+.header { text-align: center; padding: 40px 20px 20px; }
+.header h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 4px; }
+.header .brand { font-size: 0.85rem; color: var(--text-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.header p { color: var(--text-light); font-size: 0.95rem; max-width: 500px; margin: 0 auto; }
+.card { background: var(--card); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; margin-bottom: 20px; }
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+.question-number { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.question-text { font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 24px; }
+.options-grid { display: grid; gap: 12px; }
+.option-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; padding: 14px 16px; border: 2px solid var(--border); border-radius: 8px; transition: all 0.2s; }
+.option-row:hover { border-color: var(--accent); background: var(--accent-light); }
+.option-label { font-size: 1rem; font-weight: 500; }
+.radio-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.radio-group span { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+.radio-group input[type="radio"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
+.btn { display: inline-block; padding: 12px 32px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn:hover { background: #1a68d1; transform: translateY(-1px); }
+.btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+.btn-group { display: flex; justify-content: space-between; margin-top: 24px; }
+.btn-secondary { background: transparent; color: var(--text-light); border: 2px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px;
+  font-size: 1rem; margin-bottom: 16px; transition: border-color 0.2s;
+}
+input:focus { outline: none; border-color: var(--accent); }
+label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.hidden { display: none !important; }
+.error { color: #dc3545; font-size: 0.85rem; margin-top: -8px; margin-bottom: 12px; }
+/* Results */
+.results-header { text-align: center; margin-bottom: 32px; }
+.results-header h2 { font-size: 1.6rem; color: var(--primary); }
+.results-header .profile-type { font-size: 2rem; font-weight: 700; margin: 8px 0; }
+.score-bars { margin: 24px 0; }
+.score-row { display: flex; align-items: center; margin-bottom: 12px; }
+.score-label { width: 140px; font-weight: 600; font-size: 0.9rem; }
+.score-bar-bg { flex: 1; height: 28px; background: var(--bg); border-radius: 14px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 14px; transition: width 1s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; }
+.score-bar-fill span { font-size: 0.75rem; font-weight: 700; color: #fff; }
+.trait-card { padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid; }
+.trait-card h3 { margin-bottom: 8px; }
+.trait-card p { font-size: 0.9rem; color: var(--text-light); }
+.trait-card.d { border-color: var(--d-color); background: #fdf0f0; }
+.trait-card.i { border-color: var(--i-color); background: #fefcf0; }
+.trait-card.s { border-color: var(--s-color); background: #f0fdf4; }
+.trait-card.c { border-color: var(--c-color); background: #f0f4fd; }
+.chart-container { max-width: 400px; margin: 0 auto 32px; }
+.footer { text-align: center; padding: 20px; color: var(--text-light); font-size: 0.8rem; }
+@media (max-width: 600px) {
+  .container { padding: 12px; }
+  .card { padding: 20px; }
+  .option-row { grid-template-columns: 1fr auto auto; gap: 8px; padding: 12px; }
+  .header h1 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="brand">The People Group</div>
+    <h1>DISC Behavioural Assessment</h1>
+    <p>Understand your natural behavioural style and how you work best with others.</p>
+  </div>
+
+  <!-- PASSWORD SCREEN -->
+  <div id="screen-password" class="card">
+    <h2 style="margin-bottom:16px;color:var(--primary)">Welcome</h2>
+    <p style="margin-bottom:24px;color:var(--text-light)">Please enter the access code provided by your facilitator to begin.</p>
+    <label for="password">Access Code</label>
+    <input type="password" id="password" placeholder="Enter access code">
+    <div id="password-error" class="error hidden">Incorrect access code. Please try again.</div>
+    <button class="btn" onclick="checkPassword()">Continue</button>
+  </div>
+
+  <!-- INFO SCREEN -->
+  <div id="screen-info" class="card hidden">
+    <h2 style="margin-bottom:16px;color:var(--primary)">About You</h2>
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" placeholder="First name">
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" placeholder="Last name">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="your@email.com">
+    <div id="info-error" class="error hidden">Please fill in all fields.</div>
+    <div style="background:var(--accent-light);border-radius:8px;padding:16px;margin-bottom:20px">
+      <p style="font-size:0.9rem;color:var(--primary)"><strong>How this works:</strong> You'll see 28 sets of four words. For each set, choose the word that is <strong>MOST</strong> like you and the word that is <strong>LEAST</strong> like you. Go with your gut — there are no right or wrong answers. Takes about 10 minutes.</p>
+    </div>
+    <button class="btn" onclick="startAssessment()">Start Assessment</button>
+  </div>
+
+  <!-- ASSESSMENT SCREEN -->
+  <div id="screen-assessment" class="card hidden">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="question-number" id="q-number"></div>
+    <div class="question-text">Choose the word that is <strong>MOST</strong> like you and <strong>LEAST</strong> like you.</div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">Back</button>
+      <button class="btn" id="btn-next" onclick="nextQuestion()" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="screen-results" class="hidden">
+    <div class="card">
+      <div class="results-header">
+        <h2>Your DISC Profile</h2>
+        <div class="profile-type" id="profile-type"></div>
+        <p id="profile-summary" style="color:var(--text-light)"></p>
+      </div>
+      <div class="chart-container"><canvas id="disc-chart"></canvas></div>
+      <div class="score-bars" id="score-bars"></div>
+    </div>
+    <div id="trait-cards"></div>
+    <div class="card" style="text-align:center">
+      <p style="color:var(--text-light);margin-bottom:16px">Your results have been recorded. You'll receive a copy by email.</p>
+      <button class="btn" onclick="window.print()">Print Results</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 The People Group &middot; DISC Behavioural Assessment &middot; Confidential
+  </div>
+</div>
+
+<script>
+const ACCESS_CODE = 'StrategyCollective2026';
+
+// Google Sheets Web App URL — replace with your deployed script URL
+let SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzwA3RC794L4z_ZQ0LFeu2pnADU677o5vE84HFmGqdqfisFIWjLGQIZHDA9q30z33fErA/exec';
+
+// 28 forced-choice question sets — each has 4 words, one per DISC dimension
+const questions = [
+  { options: [{text:"Decisive",dim:"D"},{text:"Enthusiastic",dim:"I"},{text:"Patient",dim:"S"},{text:"Accurate",dim:"C"}] },
+  { options: [{text:"Competitive",dim:"D"},{text:"Charming",dim:"I"},{text:"Loyal",dim:"S"},{text:"Systematic",dim:"C"}] },
+  { options: [{text:"Direct",dim:"D"},{text:"Optimistic",dim:"I"},{text:"Steady",dim:"S"},{text:"Careful",dim:"C"}] },
+  { options: [{text:"Assertive",dim:"D"},{text:"Persuasive",dim:"I"},{text:"Calm",dim:"S"},{text:"Precise",dim:"C"}] },
+  { options: [{text:"Bold",dim:"D"},{text:"Inspiring",dim:"I"},{text:"Supportive",dim:"S"},{text:"Analytical",dim:"C"}] },
+  { options: [{text:"Results-driven",dim:"D"},{text:"Fun-loving",dim:"I"},{text:"Dependable",dim:"S"},{text:"Thorough",dim:"C"}] },
+  { options: [{text:"Strong-willed",dim:"D"},{text:"Talkative",dim:"I"},{text:"Gentle",dim:"S"},{text:"Disciplined",dim:"C"}] },
+  { options: [{text:"Daring",dim:"D"},{text:"Expressive",dim:"I"},{text:"Accommodating",dim:"S"},{text:"Logical",dim:"C"}] },
+  { options: [{text:"Commanding",dim:"D"},{text:"Sociable",dim:"I"},{text:"Relaxed",dim:"S"},{text:"Reserved",dim:"C"}] },
+  { options: [{text:"Determined",dim:"D"},{text:"Cheerful",dim:"I"},{text:"Considerate",dim:"S"},{text:"Perfectionist",dim:"C"}] },
+  { options: [{text:"Forceful",dim:"D"},{text:"Lively",dim:"I"},{text:"Easygoing",dim:"S"},{text:"Methodical",dim:"C"}] },
+  { options: [{text:"Independent",dim:"D"},{text:"Spontaneous",dim:"I"},{text:"Thoughtful",dim:"S"},{text:"Organized",dim:"C"}] },
+  { options: [{text:"Adventurous",dim:"D"},{text:"Warm",dim:"I"},{text:"Humble",dim:"S"},{text:"Cautious",dim:"C"}] },
+  { options: [{text:"Firm",dim:"D"},{text:"Convincing",dim:"I"},{text:"Cooperative",dim:"S"},{text:"Detailed",dim:"C"}] },
+  { options: [{text:"Driven",dim:"D"},{text:"Outgoing",dim:"I"},{text:"Reliable",dim:"S"},{text:"Structured",dim:"C"}] },
+  { options: [{text:"Risk-taker",dim:"D"},{text:"Animated",dim:"I"},{text:"Predictable",dim:"S"},{text:"Restrained",dim:"C"}] },
+  { options: [{text:"Dominant",dim:"D"},{text:"Influential",dim:"I"},{text:"Stable",dim:"S"},{text:"Conscientious",dim:"C"}] },
+  { options: [{text:"Tough-minded",dim:"D"},{text:"Generous",dim:"I"},{text:"Even-tempered",dim:"S"},{text:"Compliant",dim:"C"}] },
+  { options: [{text:"Demanding",dim:"D"},{text:"Trusting",dim:"I"},{text:"Lenient",dim:"S"},{text:"Fact-finder",dim:"C"}] },
+  { options: [{text:"Ambitious",dim:"D"},{text:"Charismatic",dim:"I"},{text:"Harmonious",dim:"S"},{text:"Diplomatic",dim:"C"}] },
+  { options: [{text:"Fearless",dim:"D"},{text:"Popular",dim:"I"},{text:"Tolerant",dim:"S"},{text:"Conventional",dim:"C"}] },
+  { options: [{text:"Self-reliant",dim:"D"},{text:"Playful",dim:"I"},{text:"Agreeable",dim:"S"},{text:"Principled",dim:"C"}] },
+  { options: [{text:"Persistent",dim:"D"},{text:"Stimulating",dim:"I"},{text:"Neighbourly",dim:"S"},{text:"Exacting",dim:"C"}] },
+  { options: [{text:"Impatient",dim:"D"},{text:"Emotional",dim:"I"},{text:"Possessive",dim:"S"},{text:"Critical",dim:"C"}] },
+  { options: [{text:"Blunt",dim:"D"},{text:"Impulsive",dim:"I"},{text:"Indecisive",dim:"S"},{text:"Rigid",dim:"C"}] },
+  { options: [{text:"Controlling",dim:"D"},{text:"Disorganized",dim:"I"},{text:"Submissive",dim:"S"},{text:"Overcautious",dim:"C"}] },
+  { options: [{text:"Insensitive",dim:"D"},{text:"Unrealistic",dim:"I"},{text:"Resistant to change",dim:"S"},{text:"Overly critical",dim:"C"}] },
+  { options: [{text:"Argumentative",dim:"D"},{text:"Unfocused",dim:"I"},{text:"Complacent",dim:"S"},{text:"Withdrawn",dim:"C"}] }
+];
+
+const profileDescriptions = {
+  D: { name:"Dominance", color:"var(--d-color)", desc:"You are results-oriented, direct, and decisive. You thrive on challenge and competition. You value competency, action, and concrete results.", traits:"Direct, Results-oriented, Firm, Strong-willed, Forceful", strengths:"Getting immediate results, making quick decisions, challenging the status quo, taking charge", watchouts:"May come across as blunt or impatient, may overlook people's feelings, can be too controlling" },
+  I: { name:"Influence", color:"var(--i-color)", desc:"You are outgoing, enthusiastic, and optimistic. You thrive on collaboration and recognition. You value openness, relationships, and enthusiasm.", traits:"Outgoing, Enthusiastic, Optimistic, Collaborative, Expressive", strengths:"Motivating others, building relationships, generating enthusiasm, creative problem-solving", watchouts:"May overlook details, can be disorganized, may talk more than listen, overly optimistic about timelines" },
+  S: { name:"Steadiness", color:"var(--s-color)", desc:"You are even-tempered, patient, and supportive. You thrive on stability and cooperation. You value loyalty, security, and sincere appreciation.", traits:"Patient, Reliable, Team-oriented, Calm, Supportive", strengths:"Creating stable environments, being a patient listener, building trust, following through consistently", watchouts:"May resist change, can be indecisive, may avoid confrontation, might not speak up with concerns" },
+  C: { name:"Conscientiousness", color:"var(--c-color)", desc:"You are analytical, precise, and systematic. You thrive on quality and accuracy. You value expertise, competency, and attention to detail.", traits:"Analytical, Reserved, Precise, Systematic, Careful", strengths:"Ensuring accuracy, maintaining quality standards, systematic problem-solving, thorough analysis", watchouts:"May over-analyze, can be too critical, may struggle with ambiguity, might miss the big picture" }
+};
+
+let currentQ = 0;
+let responses = new Array(questions.length).fill(null).map(() => ({most:null, least:null}));
+let userName = '', userEmail = '';
+
+function checkPassword() {
+  const pwd = document.getElementById('password').value;
+  if (pwd === ACCESS_CODE) {
+    document.getElementById('screen-password').classList.add('hidden');
+    document.getElementById('screen-info').classList.remove('hidden');
+  } else {
+    document.getElementById('password-error').classList.remove('hidden');
+  }
+}
+
+document.getElementById('password').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function startAssessment() {
+  const fn = document.getElementById('fname').value.trim();
+  const ln = document.getElementById('lname').value.trim();
+  const em = document.getElementById('email').value.trim();
+  if (!fn || !ln || !em) {
+    document.getElementById('info-error').classList.remove('hidden');
+    return;
+  }
+  userName = fn + ' ' + ln;
+  userEmail = em;
+  document.getElementById('screen-info').classList.add('hidden');
+  document.getElementById('screen-assessment').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const resp = responses[currentQ];
+  document.getElementById('q-number').textContent = `Question ${currentQ + 1} of ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+  document.getElementById('btn-prev').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+  const isLast = currentQ === questions.length - 1;
+  document.getElementById('btn-next').textContent = isLast ? 'See Results' : 'Next';
+
+  let html = '';
+  q.options.forEach((opt, i) => {
+    const mostChecked = resp.most === i ? 'checked' : '';
+    const leastChecked = resp.least === i ? 'checked' : '';
+    html += `
+      <div class="option-row" id="opt-row-${i}">
+        <div class="option-label">${opt.text}</div>
+        <div class="radio-group">
+          <span>Most</span>
+          <input type="radio" name="most" value="${i}" ${mostChecked} onchange="selectOption('most',${i})">
+        </div>
+        <div class="radio-group">
+          <span>Least</span>
+          <input type="radio" name="least" value="${i}" ${leastChecked} onchange="selectOption('least',${i})">
+        </div>
+      </div>`;
+  });
+  document.getElementById('options-grid').innerHTML = html;
+  updateNextBtn();
+}
+
+function selectOption(type, idx) {
+  const resp = responses[currentQ];
+  // Can't pick same option for both most and least
+  if (type === 'most' && resp.least === idx) {
+    resp.least = null;
+    document.querySelectorAll('input[name="least"]').forEach(r => r.checked = false);
+  }
+  if (type === 'least' && resp.most === idx) {
+    resp.most = null;
+    document.querySelectorAll('input[name="most"]').forEach(r => r.checked = false);
+  }
+  resp[type] = idx;
+  updateNextBtn();
+}
+
+function updateNextBtn() {
+  const resp = responses[currentQ];
+  document.getElementById('btn-next').disabled = !(resp.most !== null && resp.least !== null);
+}
+
+function nextQuestion() {
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    showResults();
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+function calculateScores() {
+  const scores = {D:0, I:0, S:0, C:0};
+  responses.forEach((resp, qi) => {
+    const q = questions[qi];
+    // Most = +2
+    scores[q.options[resp.most].dim] += 2;
+    // Least = 0
+    // Unchosen = +1 each
+    q.options.forEach((opt, oi) => {
+      if (oi !== resp.most && oi !== resp.least) scores[opt.dim] += 1;
+    });
+  });
+  // Convert to percentages (max per dimension = 2*28 = 56)
+  const maxScore = 2 * questions.length;
+  const pct = {};
+  for (const dim of ['D','I','S','C']) {
+    pct[dim] = Math.round((scores[dim] / maxScore) * 100);
+  }
+  // Determine primary and secondary
+  const sorted = Object.entries(pct).sort((a,b) => b[1] - a[1]);
+  return { raw: scores, pct, primary: sorted[0][0], secondary: sorted[1][0], sorted };
+}
+
+function showResults() {
+  const result = calculateScores();
+  document.getElementById('screen-assessment').classList.add('hidden');
+  document.getElementById('screen-results').classList.remove('hidden');
+
+  const primary = profileDescriptions[result.primary];
+  const secondary = profileDescriptions[result.secondary];
+  document.getElementById('profile-type').innerHTML = `<span style="color:${primary.color}">${result.primary}</span><span style="color:var(--text-light);font-weight:400">/${result.secondary}</span>`;
+  document.getElementById('profile-summary').textContent = primary.desc;
+
+  // Score bars
+  let barsHtml = '';
+  const dims = [
+    {key:'D',label:'Dominance',color:'var(--d-color)'},
+    {key:'I',label:'Influence',color:'var(--i-color)'},
+    {key:'S',label:'Steadiness',color:'var(--s-color)'},
+    {key:'C',label:'Conscientiousness',color:'var(--c-color)'}
+  ];
+  dims.forEach(d => {
+    const pct = result.pct[d.key];
+    barsHtml += `
+      <div class="score-row">
+        <div class="score-label" style="color:${d.color}">${d.key} - ${d.label}</div>
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" style="width:${pct}%;background:${d.color}"><span>${pct}%</span></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('score-bars').innerHTML = barsHtml;
+
+  // Trait cards
+  let cardsHtml = '';
+  dims.forEach(d => {
+    const info = profileDescriptions[d.key];
+    const isPrimary = d.key === result.primary;
+    cardsHtml += `
+      <div class="card trait-card ${d.key.toLowerCase()}" ${!isPrimary ? 'style="opacity:0.7"' : ''}>
+        <h3 style="color:${d.color}">${d.key} - ${info.name} ${isPrimary ? '(Your Primary Style)' : ''}</h3>
+        <p><strong>Traits:</strong> ${info.traits}</p>
+        <p><strong>Strengths:</strong> ${info.strengths}</p>
+        <p><strong>Watch out for:</strong> ${info.watchouts}</p>
+      </div>`;
+  });
+  document.getElementById('trait-cards').innerHTML = cardsHtml;
+
+  // Radar chart
+  const ctx = document.getElementById('disc-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Dominance','Influence','Steadiness','Conscientiousness'],
+      datasets: [{
+        data: [result.pct.D, result.pct.I, result.pct.S, result.pct.C],
+        backgroundColor: 'rgba(44,123,229,0.15)',
+        borderColor: 'rgba(44,123,229,0.8)',
+        borderWidth: 2,
+        pointBackgroundColor: [
+          'var(--d-color)','var(--i-color)','var(--s-color)','var(--c-color)'
+        ],
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 6
+      }]
+    },
+    options: {
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { stepSize: 25, display: false },
+          grid: { color: 'rgba(0,0,0,0.08)' },
+          pointLabels: { font: { size: 13, weight: '600' } }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Send to Google Sheet
+  submitToSheet(result);
+
+  // Send results to parent platform
+  if (window.parent !== window) {
+    const overallMax = Math.max(result.pct.D, result.pct.I, result.pct.S, result.pct.C);
+    window.parent.postMessage({
+        type: 'assessment-complete',
+        assessment: 'disc',
+        scores: result.pct,
+        overall: overallMax
+    }, '*');
+  }
+}
+
+function submitToSheet(result) {
+  // If SHEETS_URL is configured, send results
+  if (!SHEETS_URL) {
+    console.log('Google Sheets URL not configured. Results:', {
+      name: userName, email: userEmail,
+      D: result.pct.D, I: result.pct.I, S: result.pct.S, C: result.pct.C,
+      primary: result.primary, secondary: result.secondary,
+      profile: result.primary + '/' + result.secondary
+    });
+    return;
+  }
+
+  const data = new URLSearchParams();
+  data.append('name', userName);
+  data.append('email', userEmail);
+  data.append('D', result.pct.D);
+  data.append('I', result.pct.I);
+  data.append('S', result.pct.S);
+  data.append('C', result.pct.C);
+  data.append('primary', result.primary);
+  data.append('secondary', result.secondary);
+  data.append('profile', result.primary + '/' + result.secondary);
+  data.append('timestamp', new Date().toISOString());
+
+  fetch(SHEETS_URL, { method: 'POST', body: data, mode: 'no-cors' })
+    .then(() => console.log('Results submitted to Google Sheet'))
+    .catch(err => console.error('Sheet submission error:', err));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+{
+  "categories": [
+    {
+      "id": "sops",
+      "name": "Standard Operating Procedures",
+      "icon": "\ud83d\udccb",
+      "description": "Standardized procedures across 8 industry verticals \u2014 manufacturing, professional services, tech, safety, healthcare, hospitality, and construction",
+      "items": [
+        {"id": "sop-master-template", "title": "SOP Master Template", "description": "Universal SOP template with 12 sections. Use as the starting point for any new SOP.", "filename": "SOP_Master_Template.docx", "path": "content/sop-templates/SOP_Master_Template.docx", "type": "docx", "tags": ["template", "universal"]},
+        {"id": "sop-manufacturing", "title": "Manufacturing SOP Pack", "description": "Five manufacturing SOPs: CNC setup, FAI, incoming material, preventive maintenance/5S, non-conforming product.", "filename": "SOP_Manufacturing_Pack.docx", "path": "content/sop-templates/SOP_Manufacturing_Pack.docx", "type": "docx", "tags": ["manufacturing"]},
+        {"id": "sop-professional-services", "title": "Professional Services SOP Pack", "description": "Five SOPs: client onboarding, document management, deliverable QA, invoicing/AR, confidential info handling.", "filename": "SOP_ProfessionalServices_Pack.docx", "path": "content/sop-templates/SOP_ProfessionalServices_Pack.docx", "type": "docx", "tags": ["professional-services"]},
+        {"id": "sop-tech-saas", "title": "Tech/SaaS SOP Pack", "description": "Five SOPs: deployment/release, support escalation, incident response, access management, backup/DR.", "filename": "SOP_TechSaaS_Pack.docx", "path": "content/sop-templates/SOP_TechSaaS_Pack.docx", "type": "docx", "tags": ["tech", "saas"]},
+        {"id": "sop-safety", "title": "Safety SOP Pack", "description": "Five SOPs: LOTO, incident reporting, PPE, emergency evacuation, hazmat handling (WHMIS/GHS).", "filename": "SOP_Safety_Pack.docx", "path": "content/sop-templates/SOP_Safety_Pack.docx", "type": "docx", "tags": ["safety"]},
+        {"id": "sop-healthcare", "title": "Healthcare SOP Pack", "description": "Healthcare-specific SOPs covering infection control, medication handling, patient privacy, scope of practice, and sharps injury protocols.", "filename": "SOP_Healthcare_Pack.docx", "path": "content/sop-templates/SOP_Healthcare_Pack.docx", "type": "docx", "tags": ["healthcare"]},
+        {"id": "sop-hospitality", "title": "Hospitality SOP Pack", "description": "Hospitality SOPs covering food safety, alcohol service, allergen management, guest privacy, and tip pooling.", "filename": "SOP_Hospitality_Pack.docx", "path": "content/sop-templates/SOP_Hospitality_Pack.docx", "type": "docx", "tags": ["hospitality"]},
+        {"id": "sop-construction", "title": "Construction SOP Pack", "description": "Construction SOPs covering fall protection, confined space, crane/rigging, excavation, and hot work.", "filename": "SOP_Construction_Pack.docx", "path": "content/sop-templates/SOP_Construction_Pack.docx", "type": "docx", "tags": ["construction"]}
+      ]
+    },
+    {
+      "id": "policies",
+      "name": "Workplace Policies",
+      "icon": "\ud83d\udcdc",
+      "description": "38 jurisdiction-aware workplace policies \u2014 Universal, Ontario, Healthcare, Hospitality, and Construction",
+      "items": [
+        {"id": "pol-harassment", "title": "Workplace Harassment (Ontario)", "filename": "Policy_WorkplaceHarassment_Ontario.docx", "path": "content/policies/Policy_WorkplaceHarassment_Ontario.docx", "type": "docx", "tags": ["ontario", "compliance"], "jurisdiction": "Ontario"},
+        {"id": "pol-ai-use", "title": "AI Use Policy", "filename": "Policy_AIUse_Universal.docx", "path": "content/policies/Policy_AIUse_Universal.docx", "type": "docx", "tags": ["universal", "ai"], "jurisdiction": "Universal"},
+        {"id": "pol-working-alone", "title": "Working Alone (Ontario)", "filename": "Policy_WorkingAlone_Ontario.docx", "path": "content/policies/Policy_WorkingAlone_Ontario.docx", "type": "docx", "tags": ["ontario", "safety"], "jurisdiction": "Ontario"},
+        {"id": "pol-health-safety", "title": "Health & Safety (Ontario)", "filename": "Policy_HealthSafety_Ontario.docx", "path": "content/policies/Policy_HealthSafety_Ontario.docx", "type": "docx", "tags": ["ontario", "safety"], "jurisdiction": "Ontario"},
+        {"id": "pol-social-media", "title": "Social Media Policy", "filename": "Policy_SocialMedia_Universal.docx", "path": "content/policies/Policy_SocialMedia_Universal.docx", "type": "docx", "tags": ["universal"], "jurisdiction": "Universal"},
+        {"id": "pol-travel", "title": "Travel & Expense Policy", "filename": "Policy_TravelExpense_Universal.docx", "path": "content/policies/Policy_TravelExpense_Universal.docx", "type": "docx", "tags": ["universal", "finance"], "jurisdiction": "Universal"},
+        {"id": "pol-personal-days", "title": "Personal Days (Ontario)", "filename": "Policy_PersonalDays_Ontario.docx", "path": "content/policies/Policy_PersonalDays_Ontario.docx", "type": "docx", "tags": ["ontario", "leave"], "jurisdiction": "Ontario"},
+        {"id": "pol-discipline", "title": "Progressive Discipline (Ontario)", "filename": "Policy_ProgressiveDiscipline_Ontario.docx", "path": "content/policies/Policy_ProgressiveDiscipline_Ontario.docx", "type": "docx", "tags": ["ontario", "discipline"], "jurisdiction": "Ontario"},
+        {"id": "pol-remote-work", "title": "Remote Work Policy", "filename": "Policy_RemoteWork_Universal.docx", "path": "content/policies/Policy_RemoteWork_Universal.docx", "type": "docx", "tags": ["universal", "remote"], "jurisdiction": "Universal"},
+        {"id": "pol-confidentiality", "title": "Confidentiality & IP Policy", "filename": "Policy_ConfidentialityIP_Universal.docx", "path": "content/policies/Policy_ConfidentialityIP_Universal.docx", "type": "docx", "tags": ["universal", "legal"], "jurisdiction": "Universal"},
+        {"id": "pol-accommodation", "title": "Accommodation Policy", "filename": "Policy_Accommodation_Universal.docx", "path": "content/policies/Policy_Accommodation_Universal.docx", "type": "docx", "tags": ["universal", "compliance"], "jurisdiction": "Universal"},
+        {"id": "pol-anti-bribery", "title": "Anti-Bribery Policy", "filename": "Policy_AntiBribery_Universal.docx", "path": "content/policies/Policy_AntiBribery_Universal.docx", "type": "docx", "tags": ["universal", "compliance"], "jurisdiction": "Universal"},
+        {"id": "pol-attendance", "title": "Attendance Policy", "filename": "Policy_Attendance_Universal.docx", "path": "content/policies/Policy_Attendance_Universal.docx", "type": "docx", "tags": ["universal"], "jurisdiction": "Universal"},
+        {"id": "pol-bereavement", "title": "Bereavement Leave Policy", "filename": "Policy_Bereavement_Universal.docx", "path": "content/policies/Policy_Bereavement_Universal.docx", "type": "docx", "tags": ["universal", "leave"], "jurisdiction": "Universal"},
+        {"id": "pol-data-breach", "title": "Data Breach Response Policy", "filename": "Policy_DataBreach_Universal.docx", "path": "content/policies/Policy_DataBreach_Universal.docx", "type": "docx", "tags": ["universal", "security"], "jurisdiction": "Universal"},
+        {"id": "pol-dress-code", "title": "Dress Code Policy", "filename": "Policy_DressCode_Universal.docx", "path": "content/policies/Policy_DressCode_Universal.docx", "type": "docx", "tags": ["universal"], "jurisdiction": "Universal"},
+        {"id": "pol-drug-alcohol", "title": "Drug & Alcohol Policy", "filename": "Policy_DrugAlcohol_Universal.docx", "path": "content/policies/Policy_DrugAlcohol_Universal.docx", "type": "docx", "tags": ["universal", "safety"], "jurisdiction": "Universal"},
+        {"id": "pol-jury-duty", "title": "Jury Duty Policy", "filename": "Policy_JuryDuty_Universal.docx", "path": "content/policies/Policy_JuryDuty_Universal.docx", "type": "docx", "tags": ["universal", "leave"], "jurisdiction": "Universal"},
+        {"id": "pol-vehicle", "title": "Vehicle & Fleet Policy", "filename": "Policy_VehicleFleet_Universal.docx", "path": "content/policies/Policy_VehicleFleet_Universal.docx", "type": "docx", "tags": ["universal", "safety"], "jurisdiction": "Universal"},
+        {"id": "pol-whistleblower", "title": "Whistleblower Policy", "filename": "Policy_Whistleblower_Universal.docx", "path": "content/policies/Policy_Whistleblower_Universal.docx", "type": "docx", "tags": ["universal", "compliance"], "jurisdiction": "Universal"},
+        {"id": "pol-infection", "title": "Infection Control (Healthcare)", "filename": "Policy_InfectionControl_Healthcare.docx", "path": "content/policies/Policy_InfectionControl_Healthcare.docx", "type": "docx", "tags": ["healthcare", "safety"], "jurisdiction": "Healthcare"},
+        {"id": "pol-medication", "title": "Medication Handling (Healthcare)", "filename": "Policy_MedicationHandling_Healthcare.docx", "path": "content/policies/Policy_MedicationHandling_Healthcare.docx", "type": "docx", "tags": ["healthcare"], "jurisdiction": "Healthcare"},
+        {"id": "pol-patient-privacy", "title": "Patient Privacy (Healthcare)", "filename": "Policy_PatientPrivacy_Healthcare.docx", "path": "content/policies/Policy_PatientPrivacy_Healthcare.docx", "type": "docx", "tags": ["healthcare", "privacy"], "jurisdiction": "Healthcare"},
+        {"id": "pol-scope", "title": "Scope of Practice (Healthcare)", "filename": "Policy_ScopeOfPractice_Healthcare.docx", "path": "content/policies/Policy_ScopeOfPractice_Healthcare.docx", "type": "docx", "tags": ["healthcare", "compliance"], "jurisdiction": "Healthcare"},
+        {"id": "pol-sharps", "title": "Sharps Injury (Healthcare)", "filename": "Policy_SharpsInjury_Healthcare.docx", "path": "content/policies/Policy_SharpsInjury_Healthcare.docx", "type": "docx", "tags": ["healthcare", "safety"], "jurisdiction": "Healthcare"},
+        {"id": "pol-alcohol-service", "title": "Alcohol Service (Hospitality)", "filename": "Policy_AlcoholService_Hospitality.docx", "path": "content/policies/Policy_AlcoholService_Hospitality.docx", "type": "docx", "tags": ["hospitality", "compliance"], "jurisdiction": "Hospitality"},
+        {"id": "pol-allergen", "title": "Allergen Management (Hospitality)", "filename": "Policy_AllergenManagement_Hospitality.docx", "path": "content/policies/Policy_AllergenManagement_Hospitality.docx", "type": "docx", "tags": ["hospitality", "safety"], "jurisdiction": "Hospitality"},
+        {"id": "pol-food-safety", "title": "Food Safety (Hospitality)", "filename": "Policy_FoodSafety_Hospitality.docx", "path": "content/policies/Policy_FoodSafety_Hospitality.docx", "type": "docx", "tags": ["hospitality", "safety"], "jurisdiction": "Hospitality"},
+        {"id": "pol-guest-privacy", "title": "Guest Privacy (Hospitality)", "filename": "Policy_GuestPrivacy_Hospitality.docx", "path": "content/policies/Policy_GuestPrivacy_Hospitality.docx", "type": "docx", "tags": ["hospitality", "privacy"], "jurisdiction": "Hospitality"},
+        {"id": "pol-tip-pooling", "title": "Tip Pooling (Hospitality)", "filename": "Policy_TipPooling_Hospitality.docx", "path": "content/policies/Policy_TipPooling_Hospitality.docx", "type": "docx", "tags": ["hospitality", "compensation"], "jurisdiction": "Hospitality"},
+        {"id": "pol-confined-space", "title": "Confined Space (Construction)", "filename": "Policy_ConfinedSpace_Construction.docx", "path": "content/policies/Policy_ConfinedSpace_Construction.docx", "type": "docx", "tags": ["construction", "safety"], "jurisdiction": "Construction"},
+        {"id": "pol-crane-rigging", "title": "Crane & Rigging (Construction)", "filename": "Policy_CraneRigging_Construction.docx", "path": "content/policies/Policy_CraneRigging_Construction.docx", "type": "docx", "tags": ["construction", "safety"], "jurisdiction": "Construction"},
+        {"id": "pol-excavation", "title": "Excavation Safety (Construction)", "filename": "Policy_Excavation_Construction.docx", "path": "content/policies/Policy_Excavation_Construction.docx", "type": "docx", "tags": ["construction", "safety"], "jurisdiction": "Construction"},
+        {"id": "pol-fall-protection", "title": "Fall Protection (Construction)", "filename": "Policy_FallProtection_Construction.docx", "path": "content/policies/Policy_FallProtection_Construction.docx", "type": "docx", "tags": ["construction", "safety"], "jurisdiction": "Construction"},
+        {"id": "pol-hot-work", "title": "Hot Work (Construction)", "filename": "Policy_HotWork_Construction.docx", "path": "content/policies/Policy_HotWork_Construction.docx", "type": "docx", "tags": ["construction", "safety"], "jurisdiction": "Construction"}
+      ]
+    },
+    {
+      "id": "jds",
+      "name": "Job Descriptions",
+      "icon": "\ud83d\udcbc",
+      "description": "50+ ready-to-customize job description templates across 9 industries",
+      "items": [
+        {"id": "jd-operations", "title": "Operations Roles (7 JDs)", "filename": "JD_Operations_Roles.docx", "path": "content/job-descriptions/JD_Operations_Roles.docx", "type": "docx", "tags": ["operations", "manufacturing"]},
+        {"id": "jd-professional-services", "title": "Professional Services Roles (5 JDs)", "filename": "JD_ProfessionalServices_Roles.docx", "path": "content/job-descriptions/JD_ProfessionalServices_Roles.docx", "type": "docx", "tags": ["professional-services"]},
+        {"id": "jd-sales", "title": "Sales Roles (4 JDs)", "filename": "JD_Sales_Roles.docx", "path": "content/job-descriptions/JD_Sales_Roles.docx", "type": "docx", "tags": ["sales"]},
+        {"id": "jd-tech", "title": "Tech Roles (4 JDs)", "filename": "JD_Tech_Roles.docx", "path": "content/job-descriptions/JD_Tech_Roles.docx", "type": "docx", "tags": ["tech"]},
+        {"id": "jd-hr", "title": "HR Roles (3 JDs)", "filename": "JD_HR_Roles.docx", "path": "content/job-descriptions/JD_HR_Roles.docx", "type": "docx", "tags": ["hr"]},
+        {"id": "jd-finance", "title": "Finance Roles (4 JDs)", "filename": "JD_Finance_Roles.docx", "path": "content/job-descriptions/JD_Finance_Roles.docx", "type": "docx", "tags": ["finance"]},
+        {"id": "jd-healthcare", "title": "Healthcare Roles", "filename": "JD_Healthcare_Roles.docx", "path": "content/job-descriptions/JD_Healthcare_Roles.docx", "type": "docx", "tags": ["healthcare"]},
+        {"id": "jd-hospitality", "title": "Hospitality Roles", "filename": "JD_Hospitality_Roles.docx", "path": "content/job-descriptions/JD_Hospitality_Roles.docx", "type": "docx", "tags": ["hospitality"]},
+        {"id": "jd-construction", "title": "Construction Roles", "filename": "JD_Construction_Roles.docx", "path": "content/job-descriptions/JD_Construction_Roles.docx", "type": "docx", "tags": ["construction"]}
+      ]
+    },
+    {
+      "id": "training",
+      "name": "Training Programs",
+      "icon": "\ud83c\udf93",
+      "description": "Complete training kits across leadership, safety, compliance, and industry-specific programs",
+      "items": [
+        {"id": "training-manager-dev", "title": "Pure Leader Manager Development", "filename": "Training_ManagerDevelopment_PureLeader.docx", "path": "content/training/Training_ManagerDevelopment_PureLeader.docx", "type": "docx", "tags": ["leadership", "development"]},
+        {"id": "training-safety-12mo", "title": "12-Month Safety Training Program", "filename": "Training_SafetyProgram_12Month.docx", "path": "content/training/Training_SafetyProgram_12Month.docx", "type": "docx", "tags": ["safety", "manufacturing"]},
+        {"id": "training-disc", "title": "DISC Workshop Kit", "filename": "Training_DISCWorkshop_Kit.docx", "path": "content/training/Training_DISCWorkshop_Kit.docx", "type": "docx", "tags": ["disc", "team-building"]},
+        {"id": "training-new-manager", "title": "New Manager Orientation Kit", "filename": "Training_NewManagerOrientation.docx", "path": "content/training/Training_NewManagerOrientation.docx", "type": "docx", "tags": ["onboarding", "management"]},
+        {"id": "training-harassment", "title": "Harassment Prevention Training", "filename": "Training_HarassmentPrevention.docx", "path": "content/training/Training_HarassmentPrevention.docx", "type": "docx", "tags": ["compliance", "ohsa"]},
+        {"id": "training-healthcare-safety", "title": "Healthcare Safety Training", "filename": "Training_HealthcareSafety.docx", "path": "content/training/Training_HealthcareSafety.docx", "type": "docx", "tags": ["healthcare", "safety"]},
+        {"id": "training-hospitality-safety", "title": "Hospitality Safety Training", "filename": "Training_HospitalitySafety.docx", "path": "content/training/Training_HospitalitySafety.docx", "type": "docx", "tags": ["hospitality", "safety"]},
+        {"id": "training-construction-safety", "title": "Construction Safety Training", "filename": "Training_ConstructionSafety.docx", "path": "content/training/Training_ConstructionSafety.docx", "type": "docx", "tags": ["construction", "safety"]}
+      ]
+    },
+    {
+      "id": "onboarding",
+      "name": "Onboarding Playbooks",
+      "icon": "\ud83d\ude80",
+      "description": "Industry-specific onboarding playbooks with Day 1 through 90-day milestone plans across 7 verticals",
+      "items": [
+        {"id": "ob-manufacturing", "title": "Manufacturing Onboarding", "filename": "Onboarding_Manufacturing.docx", "path": "content/onboarding/Onboarding_Manufacturing.docx", "type": "docx", "tags": ["manufacturing"]},
+        {"id": "ob-professional-services", "title": "Professional Services Onboarding", "filename": "Onboarding_ProfessionalServices.docx", "path": "content/onboarding/Onboarding_ProfessionalServices.docx", "type": "docx", "tags": ["professional-services"]},
+        {"id": "ob-tech-saas", "title": "Tech/SaaS Onboarding", "filename": "Onboarding_TechSaaS.docx", "path": "content/onboarding/Onboarding_TechSaaS.docx", "type": "docx", "tags": ["tech"]},
+        {"id": "ob-general-smb", "title": "General SMB Onboarding", "filename": "Onboarding_GeneralSMB.docx", "path": "content/onboarding/Onboarding_GeneralSMB.docx", "type": "docx", "tags": ["universal", "smb"]},
+        {"id": "ob-healthcare", "title": "Healthcare Onboarding", "filename": "Onboarding_Healthcare.docx", "path": "content/onboarding/Onboarding_Healthcare.docx", "type": "docx", "tags": ["healthcare"]},
+        {"id": "ob-hospitality", "title": "Hospitality Onboarding", "filename": "Onboarding_Hospitality.docx", "path": "content/onboarding/Onboarding_Hospitality.docx", "type": "docx", "tags": ["hospitality"]},
+        {"id": "ob-construction", "title": "Construction Onboarding", "filename": "Onboarding_Construction.docx", "path": "content/onboarding/Onboarding_Construction.docx", "type": "docx", "tags": ["construction"]}
+      ]
+    },
+    {
+      "id": "comp",
+      "name": "Compensation & Benchmarking",
+      "icon": "\ud83d\udcb0",
+      "description": "Duty-based compensation benchmarking methodology, templates, source guides, and adjustment tools",
+      "items": [
+        {"id": "comp-methodology", "title": "Benchmarking Methodology Guide", "filename": "CompBenchmarking_Methodology_Guide.docx", "path": "content/comp-benchmarking/CompBenchmarking_Methodology_Guide.docx", "type": "docx", "tags": ["compensation", "methodology"]},
+        {"id": "comp-report", "title": "Benchmarking Report Template", "filename": "CompBenchmarking_Report_Template.docx", "path": "content/comp-benchmarking/CompBenchmarking_Report_Template.docx", "type": "docx", "tags": ["compensation", "template"]},
+        {"id": "comp-source", "title": "Compensation Source Guide", "filename": "CompBenchmarking_Source_Guide.docx", "path": "content/comp-benchmarking/CompBenchmarking_Source_Guide.docx", "type": "docx", "tags": ["compensation", "data-sources"]},
+        {"id": "comp-cheatsheet", "title": "Adjustment Cheat Sheet", "filename": "CompBenchmarking_Adjustment_CheatSheet.docx", "path": "content/comp-benchmarking/CompBenchmarking_Adjustment_CheatSheet.docx", "type": "docx", "tags": ["compensation", "quick-reference"]}
+      ]
+    }
+  ]
+}

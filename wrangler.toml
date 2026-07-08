@@ -1,0 +1,11 @@
+name = "purework-api"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "purework-db"
+database_id = "placeholder-will-be-set-by-infra"
+
+[site]
+bucket = "./public"

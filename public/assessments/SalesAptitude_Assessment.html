@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Aptitude Assessment | Pure Work AI</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#2d3748;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a3a5c 0%,#2c5282 100%);color:#fff;padding:28px 20px;text-align:center}
+.header h1{font-size:1.75rem;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:.85rem;opacity:.85;letter-spacing:.5px}
+.brand{font-size:.7rem;opacity:.6;margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+.progress-container{background:#e2e8f0;height:6px;width:100%;position:sticky;top:0;z-index:100}
+.progress-bar{height:100%;background:linear-gradient(90deg,#2c7be5,#38bdf8);transition:width .4s ease;width:0%}
+.container{max-width:680px;margin:0 auto;padding:20px}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(26,58,92,.08);padding:32px 28px;margin-bottom:20px}
+.card.hidden{display:none}
+.dimension-label{display:inline-block;background:#e8f0fe;color:#1a3a5c;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.question-num{font-size:.8rem;color:#718096;margin-bottom:8px}
+.question-text{font-size:1.1rem;font-weight:600;color:#1a3a5c;margin-bottom:24px;line-height:1.5}
+.likert{display:flex;flex-direction:column;gap:10px}
+.likert label{display:flex;align-items:center;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.95rem}
+.likert label:hover{border-color:#2c7be5;background:#f7faff}
+.likert input[type="radio"]{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:2px solid #cbd5e0;border-radius:50%;margin-right:12px;flex-shrink:0;transition:all .2s;position:relative}
+.likert input[type="radio"]:checked{border-color:#2c7be5;background:#2c7be5}
+.likert input[type="radio"]:checked::after{content:'';position:absolute;width:8px;height:8px;background:#fff;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.likert label:has(input:checked){border-color:#2c7be5;background:#eef4ff}
+.nav-buttons{display:flex;justify-content:space-between;margin-top:24px;gap:12px}
+.btn{padding:12px 28px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-secondary{background:#e2e8f0;color:#4a5568}
+.btn-secondary:hover{background:#cbd5e0}
+.btn-primary{background:linear-gradient(135deg,#2c7be5,#1a6fd4);color:#fff;flex:1}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(44,123,229,.3)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.results{display:none}
+.results.show{display:block}
+.chart-container{position:relative;width:100%;max-width:450px;margin:20px auto}
+.score-grid{display:grid;gap:14px;margin-top:24px}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:8px;border-left:4px solid}
+.score-row.top{background:#f0fff4;border-color:#38a169}
+.score-row.strong{background:#f0fff4;border-color:#68d391}
+.score-row.developing{background:#fffff0;border-color:#ecc94b}
+.score-row.consider{background:#fff5f5;border-color:#e53e3e}
+.score-row .dim-name{font-weight:600;color:#1a3a5c}
+.score-row .dim-score{font-weight:700;font-size:1.1rem}
+.score-row .dim-label{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:12px;color:#fff}
+.label-top{background:#276749}
+.label-strong{background:#38a169}
+.label-developing{background:#d69e2e}
+.label-consider{background:#e53e3e}
+.overall-score{text-align:center;padding:28px;background:linear-gradient(135deg,#1a3a5c,#2c5282);border-radius:12px;color:#fff;margin-top:24px}
+.overall-score .pct{font-size:3rem;font-weight:800}
+.overall-score .lbl{font-size:.9rem;opacity:.8;margin-top:4px}
+.overall-level{font-size:1rem;margin-top:8px;font-weight:600;padding:4px 16px;border-radius:20px;display:inline-block;background:rgba(255,255,255,.15)}
+.interp{margin-top:12px;padding:12px 16px;background:#f7fafc;border-radius:8px;font-size:.9rem;line-height:1.6;color:#4a5568}
+.btn-print{background:linear-gradient(135deg,#2c7be5,#1a6fd4);color:#fff;margin-top:20px;width:100%}
+.btn-restart{background:#e2e8f0;color:#4a5568;margin-top:10px;width:100%}
+.welcome-text{text-align:center;color:#4a5568;line-height:1.7;font-size:.95rem}
+.welcome-text h2{color:#1a3a5c;font-size:1.4rem;margin-bottom:12px}
+.start-btn{display:block;margin:24px auto 0;padding:14px 48px;font-size:1.05rem}
+@media print{.btn,.nav-buttons,.progress-container,.header{display:none!important}.container{max-width:100%}.card{box-shadow:none;page-break-inside:avoid}.results{display:block!important}}
+@media(max-width:600px){.container{padding:14px}.card{padding:22px 18px}.header h1{font-size:1.4rem}.likert label{padding:10px 12px;font-size:.9rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Sales Aptitude Assessment</h1>
+<div class="subtitle">Evaluate natural sales talent across 4 key dimensions</div>
+<div class="brand">Pure Work AI &bull; Powered by Pure Technology</div>
+</div>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="container">
+
+<div class="card" id="welcome">
+<div class="welcome-text">
+<h2>Welcome to the Sales Aptitude Assessment</h2>
+<p>This assessment evaluates natural sales talent and readiness across <strong>4 critical dimensions</strong>: Drive & Motivation, Communication & Influence, Relationship Building, and Business Acumen.</p>
+<p style="margin-top:12px">You will answer <strong>20 questions</strong> using a 5-point scale. The assessment takes approximately <strong>8-10 minutes</strong>.</p>
+<p style="margin-top:12px;font-size:.85rem;color:#718096">All responses are scored locally in your browser. No data is transmitted.</p>
+</div>
+<button class="btn btn-primary start-btn" onclick="startAssessment()">Begin Assessment</button>
+</div>
+
+<div id="questionArea"></div>
+
+<div class="results" id="results">
+<div class="card">
+<h2 style="color:#1a3a5c;text-align:center;margin-bottom:20px">Your Results</h2>
+<div class="chart-container"><canvas id="radarChart"></canvas></div>
+<div class="overall-score" id="overallScore"></div>
+<div class="score-grid" id="scoreGrid"></div>
+<div id="interpretations"></div>
+<button class="btn btn-print" onclick="window.print()">Print Results</button>
+<button class="btn btn-restart" onclick="location.reload()">Retake Assessment</button>
+</div>
+</div>
+</div>
+
+<script>
+const questions=[
+{d:"Drive & Motivation",q:"I set ambitious personal goals and actively track my progress toward achieving them."},
+{d:"Drive & Motivation",q:"When I face rejection or setbacks, I bounce back quickly and maintain my motivation."},
+{d:"Drive & Motivation",q:"I thrive in competitive environments and am energized by the challenge of winning."},
+{d:"Drive & Motivation",q:"I do not wait for direction; I proactively seek out opportunities and take initiative."},
+{d:"Drive & Motivation",q:"I persist with prospects and follow up consistently, even when progress is slow."},
+{d:"Communication & Influence",q:"I can present ideas clearly and persuasively, adapting my message to different audiences."},
+{d:"Communication & Influence",q:"I am skilled at listening to understand needs before proposing solutions."},
+{d:"Communication & Influence",q:"I am comfortable presenting to groups and can command attention in a room."},
+{d:"Communication & Influence",q:"I can address objections calmly and turn resistance into productive conversation."},
+{d:"Communication & Influence",q:"I use stories and examples effectively to make my points memorable and relatable."},
+{d:"Relationship Building",q:"I build genuine rapport quickly with people I have just met."},
+{d:"Relationship Building",q:"I am naturally empathetic and can sense what others are feeling or thinking."},
+{d:"Relationship Building",q:"People trust me because I follow through and act with their best interests in mind."},
+{d:"Relationship Building",q:"I actively maintain and nurture my professional network over time."},
+{d:"Relationship Building",q:"I can manage multiple client relationships simultaneously without dropping the ball."},
+{d:"Business Acumen",q:"I stay current on market trends, competitor activities, and industry developments."},
+{d:"Business Acumen",q:"I think strategically about long-term revenue and growth, not just immediate transactions."},
+{d:"Business Acumen",q:"I understand financial concepts like ROI, margins, and value propositions and use them in conversations."},
+{d:"Business Acumen",q:"I can identify and qualify business opportunities based on fit, budget, and timing."},
+{d:"Business Acumen",q:"I can connect my product or service benefits directly to a client's specific business challenges."}
+];
+const dims=["Drive & Motivation","Communication & Influence","Relationship Building","Business Acumen"];
+const options=["Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"];
+let current=0;const answers=new Array(questions.length).fill(null);
+
+function startAssessment(){document.getElementById('welcome').classList.add('hidden');renderQuestion();}
+
+function renderQuestion(){
+const area=document.getElementById('questionArea');
+const q=questions[current];
+let html=`<div class="card"><div class="dimension-label">${q.d}</div><div class="question-num">Question ${current+1} of ${questions.length}</div><div class="question-text">${q.q}</div><div class="likert">`;
+options.forEach((o,i)=>{html+=`<label><input type="radio" name="q${current}" value="${i+1}" ${answers[current]===i+1?'checked':''} onchange="answers[${current}]=${i+1};checkNav()"> ${o}</label>`;});
+html+=`</div><div class="nav-buttons">`;
+html+=current>0?`<button class="btn btn-secondary" onclick="navigate(-1)">Previous</button>`:`<span></span>`;
+if(current<questions.length-1) html+=`<button class="btn btn-primary" id="nextBtn" onclick="navigate(1)" ${answers[current]===null?'disabled':''}>Next</button>`;
+else html+=`<button class="btn btn-primary" id="nextBtn" onclick="showResults()" ${answers[current]===null?'disabled':''}>View Results</button>`;
+html+=`</div></div>`;
+area.innerHTML=html;
+updateProgress();
+}
+
+function checkNav(){const b=document.getElementById('nextBtn');if(b)b.disabled=false;}
+function navigate(dir){current+=dir;renderQuestion();}
+function updateProgress(){document.getElementById('progressBar').style.width=((current+1)/questions.length*100)+'%';}
+
+function showResults(){
+document.getElementById('questionArea').innerHTML='';
+document.getElementById('progressBar').style.width='100%';
+document.getElementById('results').classList.add('show');
+const dimScores={};dims.forEach(d=>{dimScores[d]=0;});
+questions.forEach((q,i)=>{dimScores[q.d]+=answers[i];});
+const total=Object.values(dimScores).reduce((a,b)=>a+b,0);
+const maxTotal=questions.length*5;
+const pct=Math.round(total/maxTotal*100);
+
+function getLevel(p){
+if(p>=85)return{cls:'top',label:'Top Performer Potential',lcls:'label-top'};
+if(p>=70)return{cls:'strong',label:'Strong Contributor',lcls:'label-strong'};
+if(p>=55)return{cls:'developing',label:'Developing',lcls:'label-developing'};
+return{cls:'consider',label:'Consider Other Roles',lcls:'label-consider'};
+}
+
+const overallLvl=getLevel(pct);
+document.getElementById('overallScore').innerHTML=`<div class="pct">${pct}%</div><div class="lbl">Sales Readiness Score</div><div class="overall-level">${overallLvl.label}</div>`;
+
+const grid=document.getElementById('scoreGrid');let gridHtml='';
+const interps=document.getElementById('interpretations');let interpHtml='';
+const interpText={
+"Drive & Motivation":{top:"Exceptional drive. This individual is naturally goal-oriented, resilient, and self-motivated. They will thrive in commission-based and high-target environments.",strong:"Strong internal motivation. Demonstrates good resilience and goal-setting habits. May benefit from structured target-setting frameworks to maximize potential.",developing:"Motivation is present but inconsistent. May need mentoring on goal-setting, resilience techniques, and finding intrinsic motivation in sales outcomes.",consider:"Drive may not align with sales demands. This individual might find more fulfillment in roles that don't require persistent self-motivation under rejection pressure."},
+"Communication & Influence":{top:"Outstanding communicator. Natural persuasion skills, excellent objection handling, and the ability to captivate an audience. Sales presentations will be a strength.",strong:"Strong communication skills. Handles most sales situations well. Could further develop storytelling techniques and advanced objection-handling frameworks.",developing:"Communication skills need development for a sales role. Invest in presentation training, role-play exercises, and active listening workshops.",consider:"Communication and influence skills are a significant gap for sales. Consider roles where technical expertise or analytical ability is valued over persuasion."},
+"Relationship Building":{top:"Natural relationship builder. Builds trust instantly, maintains networks effortlessly, and manages multiple client relationships with ease. A client retention asset.",strong:"Good relationship skills. Builds rapport well and follows through on commitments. May benefit from formal CRM habits and strategic networking training.",developing:"Relationship skills are developing. Focus on active listening, empathy building, and establishing consistent follow-up habits with contacts.",consider:"Relationship building is challenging for this individual. Roles requiring deep technical expertise rather than extensive client interaction may be a better fit."},
+"Business Acumen":{top:"Sharp business mind. Understands markets, financials, and strategy. Can position solutions with executive-level credibility and drive strategic deals.",strong:"Good business sense. Understands value propositions and can qualify opportunities effectively. May benefit from deeper financial and strategic training.",developing:"Business acumen needs strengthening. Invest in market research skills, financial literacy training, and value-selling methodologies.",consider:"Business acumen is a significant gap. Without understanding of markets, ROI, and strategic positioning, consultative sales will be very challenging."}
+};
+
+dims.forEach(d=>{
+const s=dimScores[d];const max=questions.filter(q=>q.d===d).length*5;const p=Math.round(s/max*100);
+const lvl=getLevel(p);
+gridHtml+=`<div class="score-row ${lvl.cls}"><div><div class="dim-name">${d}</div></div><div style="display:flex;align-items:center;gap:10px"><span class="dim-score">${s}/${max} (${p}%)</span><span class="dim-label ${lvl.lcls}">${lvl.label}</span></div></div>`;
+interpHtml+=`<div class="interp"><strong>${d}:</strong> ${interpText[d][lvl.cls]}</div>`;
+});
+grid.innerHTML=gridHtml;interps.innerHTML=interpHtml;
+
+const ctx=document.getElementById('radarChart').getContext('2d');
+new Chart(ctx,{type:'radar',data:{labels:dims.map(d=>d.length>18?d.replace(' & ','\n& '):d),datasets:[{label:'Your Score',data:dims.map(d=>dimScores[d]),backgroundColor:'rgba(44,123,229,0.15)',borderColor:'#2c7be5',borderWidth:2,pointBackgroundColor:'#2c7be5',pointRadius:5},{label:'Maximum',data:dims.map(d=>questions.filter(q=>q.d===d).length*5),backgroundColor:'rgba(26,58,92,0.05)',borderColor:'rgba(26,58,92,0.2)',borderWidth:1,borderDash:[5,5],pointRadius:0}]},options:{responsive:true,scales:{r:{beginAtZero:true,max:25,ticks:{stepSize:5,font:{size:10},backdropColor:'transparent'},grid:{color:'rgba(0,0,0,0.08)'},pointLabels:{font:{size:11,weight:'600'},color:'#1a3a5c'}}},plugins:{legend:{position:'bottom',labels:{font:{size:11},usePointStyle:true,padding:16}}}}});
+}
+</script>
+</body>
+</html>

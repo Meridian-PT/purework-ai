@@ -1,0 +1,17 @@
+{
+  "quadrant_weights": {
+    "capability": 0.30,
+    "motivation": 0.25,
+    "environment": 0.25,
+    "trajectory": 0.20
+  },
+  "quadrant_minimum": 40,
+  "philosophy": "Born To Be Hired is Pure Technology's belief that the right match isn't just about skills — it's about brilliance actualization. We hire people we believe will become their best selves here.",
+  "verdict_thresholds": {
+    "born_to_be_hired": 90,
+    "strong_match": 80,
+    "good_match": 70,
+    "conditional": 55,
+    "not_this_role": 0
+  }
+}
