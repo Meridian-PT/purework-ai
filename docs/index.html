@@ -2899,7 +2899,7 @@
 
     /* Static demo mode - works without backend (GitHub Pages, etc.) */
     /* Backend mode: port 8080 = real FastAPI server; GitHub Pages = demo mode */
-    const DEMO_MODE = !(window.location.port === '8080' || window.location.hostname.includes('workers.dev'));
+    const DEMO_MODE = !(window.location.port === '8080' || window.location.port === '8081' || window.location.hostname.includes('workers.dev'));
 
     /* In demo mode, intercept all API calls and return sensible defaults */
     if (DEMO_MODE) {
@@ -5423,6 +5423,25 @@
     var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false };
 
     function renderStudio() {
+      /* Upload section */
+      var uploadHtml = '' +
+        '<div class="card" style="margin-bottom:20px;border-left:3px solid var(--accent);">' +
+          '<div class="card-body" style="padding:20px;">' +
+            '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+              '<span style="font-size:1.5rem;">&#x1F4E4;</span>' +
+              '<div>' +
+                '<div style="font-weight:700;color:var(--text-primary);">Upload Your Own SOP</div>' +
+                '<div style="font-size:0.8rem;color:var(--text-dim);">Upload a .docx or .txt file and training modules are generated automatically</div>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;">' +
+              '<input type="file" id="sop-upload" accept=".docx,.txt,.md" style="display:none;" onchange="handleSOPUpload(this)">' +
+              '<button onclick="document.getElementById(\'sop-upload\').click()" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;">Choose File</button>' +
+              '<span id="upload-status" style="font-size:0.82rem;color:var(--text-dim);"></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
       var sopCards = STUDIO_SOPS.map(function(sop) {
         return '<div class="card" style="cursor:pointer;transition:box-shadow 0.2s;" onclick="selectSOP(\'' + sop.id + '\')" onmouseover="this.style.boxShadow=\'var(--shadow-card-hover)\'" onmouseout="this.style.boxShadow=\'var(--shadow-card)\'">' +
           '<div class="card-body" style="padding:16px;">' +
@@ -5448,7 +5467,8 @@
       return '' +
         '<div class="welcome-message">Training Studio</div>' +
         '<p class="welcome-sub">Select any SOP to auto-generate training modules: presentations, quizzes, audio scripts, and flashcards.</p>' +
-        '<div class="section-label" style="color:var(--accent);margin-bottom:8px;">SELECT AN SOP</div>' +
+        uploadHtml +
+        '<div class="section-label" style="color:var(--accent);margin-bottom:8px;">OR SELECT A BUILT-IN SOP</div>' +
         '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:24px;">' + sopCards + '</div>' +
         selectedContent;
     }
@@ -5685,6 +5705,130 @@
       _studioState.flashcardFlipped = !_studioState.flashcardFlipped;
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    /* -- SOP Upload Handler -- */
+    async function handleSOPUpload(input) {
+      var file = input.files[0];
+      if (!file) return;
+
+      var statusEl = document.getElementById('upload-status');
+      statusEl.textContent = 'Parsing ' + file.name + '...';
+      statusEl.style.color = 'var(--accent)';
+
+      if (DEMO_MODE) {
+        /* Client-side parsing for demo mode (no backend) */
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var text = e.target.result;
+          var sections = parseTextClientSide(text, file.name);
+          if (sections.length === 0) {
+            statusEl.textContent = 'Could not extract sections. Try a .txt file with clear headings.';
+            statusEl.style.color = 'var(--error)';
+            return;
+          }
+          var sopId = 'upload-' + Date.now();
+          var newSop = {
+            id: sopId,
+            name: file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); }),
+            category: 'Uploaded',
+            industry: 'Custom',
+            sections: sections
+          };
+          STUDIO_SOPS.push(newSop);
+          statusEl.textContent = 'Parsed ' + sections.length + ' sections from ' + file.name;
+          statusEl.style.color = 'var(--success)';
+          selectSOP(sopId);
+        };
+        reader.readAsText(file);
+        return;
+      }
+
+      /* Backend mode: upload to API */
+      var formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        var response = await fetch('/api/studio/upload', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + APP_STATE.token },
+          body: formData
+        });
+
+        if (!response.ok) {
+          var err = await response.json();
+          statusEl.textContent = 'Error: ' + (err.detail || 'Upload failed');
+          statusEl.style.color = 'var(--error)';
+          return;
+        }
+
+        var data = await response.json();
+        var sop = data.sop;
+
+        /* Add to local SOP list */
+        var newSop = {
+          id: sop.id,
+          name: sop.name,
+          category: 'Uploaded',
+          industry: 'Custom',
+          sections: sop.sections
+        };
+        STUDIO_SOPS.push(newSop);
+
+        statusEl.textContent = 'Parsed ' + sop.section_count + ' sections from ' + sop.filename;
+        statusEl.style.color = 'var(--success)';
+
+        /* Auto-select the uploaded SOP */
+        selectSOP(sop.id);
+        showToast('SOP uploaded and parsed! Choose an output format below.');
+      } catch (err) {
+        statusEl.textContent = 'Upload failed: ' + err.message;
+        statusEl.style.color = 'var(--error)';
+      }
+    }
+
+    function parseTextClientSide(text, filename) {
+      /* Simple client-side text parser for demo mode */
+      var lines = text.split('\n').filter(function(l) { return l.trim(); });
+      var sections = [];
+      var currentTitle = null;
+      var currentContent = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        /* Heuristic: short ALL CAPS lines or lines ending in colon = heading */
+        var isHeading = (line === line.toUpperCase() && line.length < 100 && line.length > 2) ||
+                        (line.endsWith(':') && line.length < 80) ||
+                        (line.match(/^\d+\.\s+[A-Z]/) && line.length < 100);
+
+        if (isHeading) {
+          if (currentTitle && currentContent.length > 0) {
+            sections.push({ title: currentTitle, content: currentContent.join('\n') });
+          }
+          currentTitle = line.replace(/:$/, '');
+          currentContent = [];
+        } else {
+          currentContent.push(line);
+        }
+      }
+
+      if (currentTitle && currentContent.length > 0) {
+        sections.push({ title: currentTitle, content: currentContent.join('\n') });
+      }
+
+      /* Fallback: if no headings detected, chunk into ~6 sections */
+      if (sections.length === 0 && lines.length > 0) {
+        var chunkSize = Math.max(1, Math.floor(lines.length / 6));
+        for (var j = 0; j < lines.length; j += chunkSize) {
+          var chunk = lines.slice(j, j + chunkSize);
+          sections.push({
+            title: 'Section ' + (sections.length + 1),
+            content: chunk.join('\n')
+          });
+        }
+      }
+
+      return sections;
     }
 
     /* ================================================================

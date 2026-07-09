@@ -12,12 +12,14 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi import FastAPI, HTTPException, Header, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
+import tempfile
+import re
 
 app = FastAPI(title="Pure Work AI", version="1.0.0")
 
@@ -418,6 +420,143 @@ def get_users(user=Depends(get_current_user)):
         return [dict(r) for r in rows]
 
 
+# -- Routes: SOP Upload & Parse --
+
+UPLOADS_DIR = Path(__file__).parent / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
+
+
+def parse_docx_sections(file_path: str) -> list:
+    """Parse a .docx file into sections based on headings."""
+    from docx import Document as DocxDocument
+    doc = DocxDocument(file_path)
+    sections = []
+    current_title = None
+    current_content = []
+
+    for para in doc.paragraphs:
+        text = para.text.strip()
+        if not text:
+            continue
+
+        # Detect headings by style name or bold formatting
+        is_heading = False
+        style_name = (para.style.name or "").lower()
+        if "heading" in style_name:
+            is_heading = True
+        elif para.runs and all(run.bold for run in para.runs if run.text.strip()):
+            # All-bold short paragraph = likely a heading
+            if len(text) < 120:
+                is_heading = True
+
+        if is_heading:
+            # Save previous section
+            if current_title and current_content:
+                sections.append({
+                    "title": current_title,
+                    "content": "\n".join(current_content),
+                })
+            current_title = text
+            current_content = []
+        else:
+            current_content.append(text)
+
+    # Save last section
+    if current_title and current_content:
+        sections.append({
+            "title": current_title,
+            "content": "\n".join(current_content),
+        })
+
+    # If no headings found, split by paragraphs into chunks
+    if not sections:
+        all_text = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
+        chunk_size = max(1, len(all_text) // 6)  # aim for ~6 sections
+        for i in range(0, len(all_text), chunk_size):
+            chunk = all_text[i : i + chunk_size]
+            sections.append({
+                "title": f"Section {len(sections) + 1}",
+                "content": "\n".join(chunk),
+            })
+
+    return sections
+
+
+def parse_text_sections(text: str) -> list:
+    """Parse plain text into sections based on line patterns."""
+    lines = text.strip().split("\n")
+    sections = []
+    current_title = None
+    current_content = []
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        # Heuristic: short lines in ALL CAPS or ending with colon = heading
+        if (stripped.isupper() and len(stripped) < 100) or (stripped.endswith(":") and len(stripped) < 80):
+            if current_title and current_content:
+                sections.append({"title": current_title, "content": "\n".join(current_content)})
+            current_title = stripped.rstrip(":")
+            current_content = []
+        else:
+            current_content.append(stripped)
+
+    if current_title and current_content:
+        sections.append({"title": current_title, "content": "\n".join(current_content)})
+
+    if not sections and lines:
+        chunk_size = max(1, len(lines) // 6)
+        for i in range(0, len(lines), chunk_size):
+            chunk = [l.strip() for l in lines[i : i + chunk_size] if l.strip()]
+            if chunk:
+                sections.append({"title": f"Section {len(sections) + 1}", "content": "\n".join(chunk)})
+
+    return sections
+
+
+@app.post("/api/studio/upload")
+async def upload_sop(file: UploadFile = File(...), user=Depends(get_current_user)):
+    """Upload a .docx or .txt file and parse it into training sections."""
+    filename = file.filename or "upload"
+    ext = Path(filename).suffix.lower()
+
+    if ext not in (".docx", ".txt", ".md"):
+        raise HTTPException(status_code=400, detail="Supported formats: .docx, .txt, .md")
+
+    # Save uploaded file
+    content = await file.read()
+    save_path = UPLOADS_DIR / f"{secrets.token_hex(8)}_{filename}"
+    save_path.write_bytes(content)
+
+    # Parse sections
+    if ext == ".docx":
+        try:
+            sections = parse_docx_sections(str(save_path))
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to parse .docx: {str(e)}")
+    else:
+        text = content.decode("utf-8", errors="replace")
+        sections = parse_text_sections(text)
+
+    if not sections:
+        raise HTTPException(status_code=400, detail="Could not extract any sections from the file. Ensure the document has headings or structured content.")
+
+    # Generate a clean SOP name from filename
+    sop_name = Path(filename).stem.replace("_", " ").replace("-", " ").title()
+
+    return {
+        "ok": True,
+        "sop": {
+            "id": secrets.token_hex(6),
+            "name": sop_name,
+            "filename": filename,
+            "sections": sections,
+            "section_count": len(sections),
+        },
+    }
+
+
 # -- Static files --
 
 app.mount("/", StaticFiles(directory=str(PUBLIC_PATH), html=True), name="static")
@@ -434,4 +573,5 @@ def startup():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", "8080"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
