@@ -2898,7 +2898,8 @@
     })();
 
     /* Static demo mode - works without backend (GitHub Pages, etc.) */
-    const DEMO_MODE = !window.location.hostname.includes('workers.dev');
+    /* Backend mode: port 8080 = real FastAPI server; GitHub Pages = demo mode */
+    const DEMO_MODE = !(window.location.port === '8080' || window.location.hostname.includes('workers.dev'));
 
     /* In demo mode, intercept all API calls and return sensible defaults */
     if (DEMO_MODE) {
