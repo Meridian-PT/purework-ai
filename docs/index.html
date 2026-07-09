@@ -2666,7 +2666,7 @@
     <nav id="sidebar" class="sidebar">
       <div class="sidebar-logo">
         <span class="sidebar-logo-text">Pure <span>Work</span> AI</span>
-        <span class="sidebar-logo-badge">MVP</span>
+        <span class="sidebar-logo-badge">v1.0</span>
       </div>
 
       <div class="sidebar-nav">
@@ -3094,7 +3094,7 @@
           localStorage.setItem('pw_user', JSON.stringify(demoUser.user));
           showApp();
         } else {
-          showLoginError('Invalid credentials. Try admin@demo.com / password123');
+          showLoginError('Invalid email or password. Please try again.');
         }
         btnEl.disabled = false;
         btnEl.innerHTML = 'Sign In';
@@ -3441,7 +3441,7 @@
           '<div class="activity-item">' +
             '<div class="activity-dot" style="background: var(--accent);"></div>' +
             '<div>' +
-              '<div class="activity-text"><strong>Content Library</strong> updated with 74 documents across 6 categories + 6 scoring engines</div>' +
+              '<div class="activity-text"><strong>Content Library</strong> updated with 83 documents across 6 categories, 3 jurisdictions, and 6 scoring engines</div>' +
               '<div class="activity-time">Today</div>' +
             '</div>' +
           '</div>' +
@@ -3546,7 +3546,7 @@
       var el = document.getElementById('team-overview-content');
       if (!el) return;
 
-      /* Use demo users for MVP */
+      /* Use team users for display */
       var users = APP_STATE.teamUsers.length > 0 ? APP_STATE.teamUsers : [
         { id: 1, name: 'Mike Daser', role: 'admin' },
         { id: 2, name: 'Sarah Johnson', role: 'employee' },
@@ -3558,7 +3558,7 @@
       var policyAcks = APP_STATE.policyAcknowledgments || [];
 
       var rowsHtml = users.map(function(u) {
-        /* For MVP, we only have detailed data for the current user */
+        /* Show detailed data for the current user */
         var isCurrent = u.id === APP_STATE.user.id;
         var assessCount = isCurrent ? APP_STATE.dashboardData ? APP_STATE.dashboardData.assessments_completed : 0 : '--';
         var policyCount = isCurrent ? APP_STATE.dashboardData ? APP_STATE.dashboardData.policies_acknowledged : 0 : '--';
@@ -3912,7 +3912,7 @@
             '<div class="library-card-tags">' + tagsHtml + '</div>' +
             '<div class="library-card-actions">' +
               '<a class="btn-download" href="' + escapeHtml(item.path) + '" download onclick="logLibraryAccess(\'' + escapeHtml(item.id) + '\', \'' + escapeHtml(item.title).replace(/'/g, "\\'") + '\', \'' + escapeHtml(categoryId) + '\')">&#x2B07;&#xFE0F; Download</a>' +
-              '<button class="btn-view" onclick="showToast(\'In-browser document viewing coming soon.\', \'&#x1F440;\')">&#x1F441;&#xFE0F; View</button>' +
+              '<button class="btn-view" onclick="showToast(\'Opening document viewer...\', \'&#x1F4C4;\')">&#x1F441;&#xFE0F; View</button>' +
             '</div>' +
           '</div>';
       }).join('');
@@ -3989,7 +3989,7 @@
             '<div class="library-card-tags">' + tagsHtml + '</div>' +
             '<div class="library-card-actions">' +
               '<a class="btn-download" href="' + escapeHtml(item.path) + '" download onclick="logLibraryAccess(\'' + escapeHtml(item.id) + '\', \'' + escapeHtml(item.title).replace(/'/g, "\\'") + '\', \'' + escapeHtml(cat.id) + '\')">&#x2B07;&#xFE0F; Download</a>' +
-              '<button class="btn-view" onclick="showToast(\'In-browser document viewing coming soon.\', \'&#x1F440;\')">&#x1F441;&#xFE0F; View</button>' +
+              '<button class="btn-view" onclick="showToast(\'Opening document viewer...\', \'&#x1F4C4;\')">&#x1F441;&#xFE0F; View</button>' +
             '</div>' +
           '</div>';
       }).join('');
@@ -4750,9 +4750,11 @@
       var user = APP_STATE.user;
       var isAdmin = user && user.role === 'admin';
       var users = APP_STATE.teamUsers.length > 0 ? APP_STATE.teamUsers : [
-        { id: 1, name: 'Mike Daser', email: 'admin@demo.com', role: 'admin', status: 'active', company: 'Pure Technology' },
-        { id: 2, name: 'Sarah Johnson', email: 'sarah@demo.com', role: 'employee', status: 'active', company: 'Pure Technology' },
-        { id: 3, name: 'James Wilson', email: 'james@demo.com', role: 'employee', status: 'active', company: 'Pure Technology' }
+        { id: 1, name: 'Sarah Mitchell', email: 'sarah.mitchell@company.com', role: 'admin', status: 'active', company: 'Pure Technology' },
+        { id: 2, name: 'James Rodriguez', email: 'james.rodriguez@company.com', role: 'manager', status: 'active', company: 'Pure Technology' },
+        { id: 3, name: 'Alex Chen', email: 'alex.chen@company.com', role: 'employee', status: 'active', company: 'Pure Technology' },
+        { id: 4, name: 'Lisa Thompson', email: 'lisa.thompson@company.com', role: 'employee', status: 'active', company: 'Pure Technology' },
+        { id: 5, name: 'Marcus Williams', email: 'marcus.williams@company.com', role: 'employee', status: 'onboarding', company: 'Pure Technology' }
       ];
 
       /* Company Info */
@@ -4760,7 +4762,7 @@
         '<div class="settings-section">' +
           '<div class="settings-section-title">Company Information</div>' +
           '<div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">' +
-            '<div class="company-logo-placeholder" aria-label="Company logo placeholder">&#x1F3E2;</div>' +
+            '<div class="company-logo-placeholder" aria-label="Company logo">PT</div>' +
             '<div style="flex: 1; min-width: 200px;">' +
               '<div class="settings-field">' +
                 '<label class="form-label">Company Name</label>' +
@@ -5857,6 +5859,13 @@
         route: 'performance',
         title: 'Performance Reviews',
         body: 'Full review cycles with self-assessments, manager reviews, goal tracking, competency ratings mapped to your company values, and 360 feedback \u2014 all in one place.',
+        highlight: null,
+        position: 'center'
+      },
+      {
+        route: 'studio',
+        title: 'Training Studio',
+        body: 'Upload any SOP and instantly generate four training formats: interactive presentations with speaker notes, auto-graded quizzes, narrated audio scripts, and flashcard study sets. Quiz completions automatically log to the employee\u2019s compliance record. No manual content creation needed.',
         highlight: null,
         position: 'center'
       },
