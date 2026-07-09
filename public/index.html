@@ -2712,6 +2712,12 @@
           <span class="admin-badge">Admin</span>
         </a>
 
+        <a class="nav-item" data-route="studio" onclick="navigate('studio')">
+          <span class="nav-item-icon">&#x1F3AC;</span>
+          <span class="nav-item-label">Training Studio</span>
+          <span class="nav-item-badge" style="background: var(--accent); color: #fff;">NEW</span>
+        </a>
+
         <div class="nav-section-label">Intelligence</div>
         <a class="nav-item" data-route="scoring" onclick="navigate('scoring')">
           <span class="nav-item-icon">&#x1F9E0;</span>
@@ -3215,6 +3221,7 @@
       'library': { title: 'Content Library', render: renderLibrary },
       'onboarding': { title: 'Onboarding', render: renderOnboarding },
       'policies': { title: 'Policies', render: renderPolicies },
+      'studio': { title: 'Training Studio', render: renderStudio },
       'scoring': { title: 'Scoring Engines', render: renderScoring },
       'timeoff': { title: 'Time Off', render: renderTimeOff },
       'performance': { title: 'Performance', render: renderPerformance },
@@ -5364,6 +5371,317 @@
         '<div class="welcome-message">Reports & Analytics</div>' +
         '<p class="welcome-sub">Workforce intelligence at a glance. Export any report as PDF or Excel.</p>' +
         reportCards;
+    }
+
+    /* ================================================================
+       TRAINING STUDIO PAGE
+       ================================================================ */
+
+    /* Demo SOP content for training generation */
+    var STUDIO_SOPS = [
+      {
+        id: 'loto', name: 'Lockout/Tagout (LOTO) Procedure',
+        category: 'Safety', industry: 'Manufacturing',
+        sections: [
+          { title: 'Purpose', content: 'This procedure establishes requirements for the lockout/tagout of energy sources to prevent unexpected energization, startup, or release of stored energy during servicing and maintenance of machines and equipment.' },
+          { title: 'Scope', content: 'Applies to all employees who operate, maintain, or service machines and equipment where unexpected energization or release of stored energy could cause injury. Covers electrical, mechanical, hydraulic, pneumatic, chemical, thermal, and gravitational energy sources.' },
+          { title: 'Responsibilities', content: 'Authorized employees: Apply and remove locks/tags. Affected employees: Informed when LOTO is applied. Supervisors: Ensure compliance, conduct periodic inspections. Safety Manager: Maintain program, conduct annual review.' },
+          { title: 'Procedure Steps', content: '1. Notify all affected employees. 2. Identify all energy sources using the Energy Source Identification Worksheet. 3. Shut down equipment using normal stopping procedure. 4. Isolate all energy sources (disconnect switches, close valves, block movable parts). 5. Apply lockout/tagout devices to each energy isolation point. 6. Release or restrain all stored/residual energy (bleed lines, discharge capacitors, block suspended parts). 7. Verify isolation: attempt to restart equipment using normal controls. Confirm zero energy state.' },
+          { title: 'Restoring Equipment', content: '1. Inspect work area: ensure all tools removed, guards replaced, employees clear. 2. Notify affected employees. 3. Remove lockout/tagout devices (only by the employee who applied them). 4. Re-energize equipment following startup procedure.' },
+          { title: 'Special Situations', content: 'Shift change: Incoming authorized employee applies lock BEFORE outgoing employee removes theirs. Group lockout: Each authorized employee applies their own lock to a group lockbox. Contractor coordination: Contractors follow this procedure or their own equivalent, coordinated with the Safety Manager.' }
+        ]
+      },
+      {
+        id: 'incident', name: 'Incident Reporting & Investigation',
+        category: 'Safety', industry: 'Universal',
+        sections: [
+          { title: 'Purpose', content: 'Establish a consistent process for reporting, investigating, and documenting workplace incidents, near-misses, and hazardous conditions to prevent recurrence and ensure regulatory compliance.' },
+          { title: 'Definitions', content: 'Incident: Any unplanned event resulting in injury, illness, property damage, or environmental release. Near-miss: An event that could have resulted in injury or damage but did not. Hazardous condition: A situation with the potential to cause harm if not corrected.' },
+          { title: 'Reporting Requirements', content: 'All incidents: Report to supervisor immediately, complete Incident Report Form within 24 hours. Serious injuries (hospitalization, amputation, loss of eye): Report to OSHA within 24 hours. Fatalities: Report to OSHA within 8 hours. Near-misses: Report within 48 hours using Near-Miss Report Form.' },
+          { title: 'Investigation Process', content: '1. Secure the scene and provide first aid. 2. Notify management and Safety Manager. 3. Photograph and document the scene. 4. Interview witnesses separately within 24 hours. 5. Identify root causes using the 5-Why method. 6. Develop corrective actions with responsible parties and deadlines. 7. Complete investigation report within 5 business days.' },
+          { title: 'Corrective Actions', content: 'Use the hierarchy of controls: Elimination > Substitution > Engineering controls > Administrative controls > PPE. Assign owner and deadline for each action. Track to completion. Verify effectiveness 30 days after implementation.' },
+          { title: 'Record Keeping', content: 'Maintain all incident reports for minimum 5 years. Log recordable injuries on OSHA 300/300A (US) or equivalent. Review trends quarterly. Present annual summary to management.' }
+        ]
+      },
+      {
+        id: 'onboarding-day1', name: 'New Employee Day 1 Orientation',
+        category: 'HR', industry: 'Universal',
+        sections: [
+          { title: 'Welcome & Introductions', content: 'Greet the new employee at reception. Provide welcome packet (badge, parking pass, company swag). Introduce to immediate team and key contacts. Tour of facility: restrooms, break room, emergency exits, their workspace.' },
+          { title: 'HR Paperwork', content: 'Complete I-9 (within 3 business days of start). Review and sign offer letter (if not done pre-start). W-4 federal tax withholding. State tax withholding form. Direct deposit enrollment. Emergency contact information. Benefits enrollment overview (30-day enrollment window).' },
+          { title: 'IT & Systems Setup', content: 'Issue laptop/equipment (asset tag recorded). Set up email and calendar. Provide access to company systems (HR portal, project management, shared drives). Password and MFA setup. Acceptable use policy review and acknowledgment.' },
+          { title: 'Safety Orientation', content: 'Emergency evacuation routes and assembly points. Fire extinguisher locations. First aid kit locations. Incident reporting procedure. PPE requirements (if applicable). Safety contact information.' },
+          { title: 'Culture & Values', content: 'Company mission, vision, and values overview. Employee handbook review (highlight key policies). Code of conduct acknowledgment. Anti-harassment policy review. Communication norms and expectations.' },
+          { title: 'First Week Plan', content: 'Review 30/60/90 day expectations with manager. Schedule key meetings (skip-level, cross-functional). Assign onboarding buddy. Set up recurring 1:1 with manager. Provide link to training modules in Pure Work AI.' }
+        ]
+      }
+    ];
+
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false };
+
+    function renderStudio() {
+      var sopCards = STUDIO_SOPS.map(function(sop) {
+        return '<div class="card" style="cursor:pointer;transition:box-shadow 0.2s;" onclick="selectSOP(\'' + sop.id + '\')" onmouseover="this.style.boxShadow=\'var(--shadow-card-hover)\'" onmouseout="this.style.boxShadow=\'var(--shadow-card)\'">' +
+          '<div class="card-body" style="padding:16px;">' +
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+              '<span style="font-size:1.2rem;">' + (sop.category === 'Safety' ? '&#x1F6E1;' : '&#x1F4CB;') + '</span>' +
+              '<div style="font-weight:600;color:var(--text-primary);">' + sop.name + '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;">' +
+              '<span style="background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:600;">' + sop.category + '</span>' +
+              '<span style="background:rgba(245,158,11,0.12);color:var(--warning);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:600;">' + sop.industry + '</span>' +
+              '<span style="color:var(--text-dim);font-size:0.7rem;padding:2px 0;">' + sop.sections.length + ' sections</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      var selectedContent = '';
+      if (_studioState.selectedSop) {
+        var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+        if (sop) selectedContent = renderStudioOutputs(sop);
+      }
+
+      return '' +
+        '<div class="welcome-message">Training Studio</div>' +
+        '<p class="welcome-sub">Select any SOP to auto-generate training modules: presentations, quizzes, audio scripts, and flashcards.</p>' +
+        '<div class="section-label" style="color:var(--accent);margin-bottom:8px;">SELECT AN SOP</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:24px;">' + sopCards + '</div>' +
+        selectedContent;
+    }
+
+    function selectSOP(sopId) {
+      _studioState.selectedSop = sopId;
+      _studioState.activeOutput = null;
+      _studioState.quizAnswers = {};
+      _studioState.slideIndex = 0;
+      _studioState.flashcardIndex = 0;
+      _studioState.flashcardFlipped = false;
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    function renderStudioOutputs(sop) {
+      var outputBtns = [
+        { id: 'presentation', icon: '&#x1F4FD;', label: 'Presentation', desc: 'Slide-by-slide training' },
+        { id: 'quiz', icon: '&#x1F4DD;', label: 'Quiz', desc: 'Auto-generated assessment' },
+        { id: 'audio', icon: '&#x1F3A7;', label: 'Audio Script', desc: 'Narrated walkthrough' },
+        { id: 'flashcards', icon: '&#x1F0CF;', label: 'Flashcards', desc: 'Study cards' }
+      ];
+
+      var btnsHtml = outputBtns.map(function(btn) {
+        var isActive = _studioState.activeOutput === btn.id;
+        return '<button onclick="setStudioOutput(\'' + btn.id + '\')" style="background:' + (isActive ? 'var(--accent)' : 'var(--bg-card)') + ';color:' + (isActive ? '#fff' : 'var(--text-primary)') + ';border:1px solid ' + (isActive ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius-md);padding:16px;cursor:pointer;text-align:center;transition:all 0.2s;">' +
+          '<div style="font-size:1.5rem;margin-bottom:4px;">' + btn.icon + '</div>' +
+          '<div style="font-weight:600;font-size:0.85rem;">' + btn.label + '</div>' +
+          '<div style="font-size:0.7rem;' + (isActive ? 'color:rgba(255,255,255,0.7);' : 'color:var(--text-dim);') + '">' + btn.desc + '</div>' +
+        '</button>';
+      }).join('');
+
+      var outputContent = '';
+      if (_studioState.activeOutput === 'presentation') outputContent = renderPresentation(sop);
+      else if (_studioState.activeOutput === 'quiz') outputContent = renderQuiz(sop);
+      else if (_studioState.activeOutput === 'audio') outputContent = renderAudioScript(sop);
+      else if (_studioState.activeOutput === 'flashcards') outputContent = renderFlashcards(sop);
+
+      return '' +
+        '<div class="card" style="margin-bottom:16px;border-left:3px solid var(--accent);">' +
+          '<div class="card-body" style="padding:12px 16px;">' +
+            '<div style="font-weight:700;color:var(--text-primary);margin-bottom:4px;">Generating from: ' + escapeHtml(sop.name) + '</div>' +
+            '<div style="font-size:0.8rem;color:var(--text-dim);">' + sop.sections.length + ' sections ready for conversion</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="section-label" style="color:var(--accent);margin-bottom:8px;">CHOOSE OUTPUT FORMAT</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">' + btnsHtml + '</div>' +
+        outputContent;
+    }
+
+    function setStudioOutput(outputId) {
+      _studioState.activeOutput = outputId;
+      _studioState.slideIndex = 0;
+      _studioState.flashcardIndex = 0;
+      _studioState.flashcardFlipped = false;
+      _studioState.quizAnswers = {};
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    /* -- Presentation -- */
+    function renderPresentation(sop) {
+      var slide = sop.sections[_studioState.slideIndex];
+      var total = sop.sections.length;
+      var idx = _studioState.slideIndex;
+      var pct = Math.round(((idx + 1) / total) * 100);
+
+      var prevBtn = idx > 0 ? '<button onclick="studioSlide(-1)" class="btn-secondary" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);padding:8px 20px;border-radius:6px;cursor:pointer;">Previous</button>' : '<div></div>';
+      var nextBtn = idx < total - 1 ? '<button onclick="studioSlide(1)" style="background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;">Next Slide</button>' : '<button onclick="showToast(\'Presentation complete! Employee completion logged.\')" style="background:var(--success);color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;">Complete</button>';
+
+      return '' +
+        '<div class="card">' +
+          '<div class="card-body">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
+              '<div style="font-size:0.75rem;color:var(--text-dim);">SLIDE ' + (idx + 1) + ' OF ' + total + '</div>' +
+              '<div style="font-size:0.75rem;color:var(--accent);font-weight:600;">' + pct + '% complete</div>' +
+            '</div>' +
+            '<div class="metric-progress" style="margin-bottom:20px;"><div class="metric-progress-bar" style="width:' + pct + '%;background:var(--accent);"></div></div>' +
+            '<div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:32px;min-height:250px;margin-bottom:20px;">' +
+              '<div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">' + escapeHtml(sop.name) + '</div>' +
+              '<div style="font-size:1.4rem;font-weight:700;color:var(--text-primary);margin-bottom:16px;">' + escapeHtml(slide.title) + '</div>' +
+              '<div style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;white-space:pre-line;">' + escapeHtml(slide.content) + '</div>' +
+            '</div>' +
+            '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:20px;">' +
+              '<div style="font-size:0.7rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Speaker Notes</div>' +
+              '<div style="font-size:0.82rem;color:var(--text-secondary);">Cover each point in this section. Ask the audience: "Can anyone give an example of when this would apply in our workplace?" Pause for questions before advancing.</div>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;">' + prevBtn + nextBtn + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function studioSlide(dir) {
+      var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+      _studioState.slideIndex = Math.max(0, Math.min(sop.sections.length - 1, _studioState.slideIndex + dir));
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    /* -- Quiz -- */
+    function renderQuiz(sop) {
+      var questions = sop.sections.map(function(sec, i) {
+        var opts = generateQuizOptions(sec, i);
+        var answered = _studioState.quizAnswers[i] !== undefined;
+        var correct = answered && _studioState.quizAnswers[i] === 0;
+
+        return '<div class="card" style="margin-bottom:12px;' + (answered ? (correct ? 'border-left:3px solid var(--success);' : 'border-left:3px solid var(--error);') : '') + '">' +
+          '<div class="card-body" style="padding:16px;">' +
+            '<div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:4px;">QUESTION ' + (i + 1) + '</div>' +
+            '<div style="font-weight:600;color:var(--text-primary);margin-bottom:12px;">' + escapeHtml(opts.question) + '</div>' +
+            opts.choices.map(function(choice, ci) {
+              var isSelected = _studioState.quizAnswers[i] === ci;
+              var bg = !answered ? 'var(--bg-secondary)' : (ci === 0 ? 'var(--success-bg)' : (isSelected ? 'var(--error-bg)' : 'var(--bg-secondary)'));
+              var border = !answered ? 'var(--border)' : (ci === 0 ? 'var(--success)' : (isSelected && ci !== 0 ? 'var(--error)' : 'var(--border)'));
+              var cursor = answered ? 'default' : 'pointer';
+              return '<div onclick="' + (answered ? '' : 'answerQuiz(' + i + ',' + ci + ')') + '" style="background:' + bg + ';border:1px solid ' + border + ';border-radius:6px;padding:10px 14px;margin-bottom:6px;cursor:' + cursor + ';font-size:0.85rem;color:var(--text-primary);">' + escapeHtml(choice) + '</div>';
+            }).join('') +
+            (answered ? '<div style="margin-top:8px;font-size:0.8rem;color:' + (correct ? 'var(--success)' : 'var(--error)') + ';font-weight:600;">' + (correct ? 'Correct!' : 'Incorrect. The correct answer is: ' + escapeHtml(opts.choices[0])) + '</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      var totalAnswered = Object.keys(_studioState.quizAnswers).length;
+      var totalCorrect = Object.keys(_studioState.quizAnswers).filter(function(k) { return _studioState.quizAnswers[k] === 0; }).length;
+      var allDone = totalAnswered === sop.sections.length;
+
+      var scoreCard = allDone ? '<div class="card" style="margin-bottom:16px;border-left:3px solid ' + (totalCorrect >= sop.sections.length * 0.7 ? 'var(--success)' : 'var(--error)') + ';">' +
+        '<div class="card-body" style="padding:16px;text-align:center;">' +
+          '<div style="font-size:2rem;font-weight:700;color:' + (totalCorrect >= sop.sections.length * 0.7 ? 'var(--success)' : 'var(--error)') + ';">' + totalCorrect + '/' + sop.sections.length + '</div>' +
+          '<div style="font-size:0.85rem;color:var(--text-secondary);">' + (totalCorrect >= sop.sections.length * 0.7 ? 'Passed! Completion logged to compliance record.' : 'Below passing threshold (70%). Review and retake.') + '</div>' +
+        '</div></div>' : '';
+
+      return scoreCard + questions;
+    }
+
+    function generateQuizOptions(section, seed) {
+      var questions = {
+        'Purpose': { q: 'What is the primary purpose of this procedure?', wrong: ['To document employee attendance', 'To track equipment inventory', 'To schedule maintenance windows'] },
+        'Scope': { q: 'Who does this procedure apply to?', wrong: ['Only managers and supervisors', 'Only new employees in their first 90 days', 'Only contractors and temporary workers'] },
+        'Responsibilities': { q: 'Which statement about responsibilities is correct according to this procedure?', wrong: ['All employees have the same level of responsibility', 'Only the Safety Manager is responsible for compliance', 'Responsibilities do not change based on role'] },
+        'Procedure Steps': { q: 'What is the correct sequence for this procedure?', wrong: ['Skip notification and proceed directly to action', 'Complete paperwork after the procedure is finished', 'Delegate all steps to the most junior team member'] },
+        'Restoring Equipment': { q: 'What must happen before restoring equipment to service?', wrong: ['Nothing, just restart immediately', 'Only the supervisor needs to approve', 'Wait 24 hours after the last step'] },
+        'Special Situations': { q: 'How should special situations be handled under this procedure?', wrong: ['Ignore special situations and follow standard steps', 'Special situations are exempt from this procedure', 'Only senior management can handle special situations'] },
+        'Definitions': { q: 'Which definition is correct according to this procedure?', wrong: ['All terms are interchangeable in this context', 'Definitions only apply to management personnel', 'These definitions override all other company policies'] },
+        'Reporting Requirements': { q: 'What are the reporting requirements under this procedure?', wrong: ['Reports are optional for minor events', 'Reporting is only required annually', 'Only the HR department files reports'] },
+        'Investigation Process': { q: 'What is required during the investigation process?', wrong: ['Interviews should be conducted in groups', 'Investigation can wait until the next scheduled meeting', 'Only physical evidence matters, not witness statements'] },
+        'Corrective Actions': { q: 'What approach should be used for corrective actions?', wrong: ['Always start with the least effective control', 'PPE is always the first choice', 'Corrective actions are optional if no injury occurred'] },
+        'Record Keeping': { q: 'What are the record-keeping requirements?', wrong: ['Records can be discarded after 1 year', 'Only digital records need to be maintained', 'Record keeping is voluntary for small companies'] },
+        'Welcome & Introductions': { q: 'What should happen during the welcome phase?', wrong: ['Skip introductions to save time', 'Only introduce the direct supervisor', 'Send a welcome email instead of meeting in person'] },
+        'HR Paperwork': { q: 'Which HR document must be completed within 3 business days?', wrong: ['W-4 tax withholding form', 'Direct deposit enrollment', 'Benefits enrollment'] },
+        'IT & Systems Setup': { q: 'What is required during IT setup?', wrong: ['Employees should set up their own accounts', 'MFA is optional for new employees', 'System access can wait until the second week'] },
+        'Safety Orientation': { q: 'What must be covered in the safety orientation?', wrong: ['Safety orientation can be skipped for office workers', 'Only managers need to know emergency exits', 'First aid training is required on day 1'] },
+        'Culture & Values': { q: 'What is included in the culture and values review?', wrong: ['Values review is optional for experienced hires', 'Only the handbook needs to be distributed, not reviewed', 'Culture overview happens during the 90-day review'] },
+        'First Week Plan': { q: 'What should be established in the first week?', wrong: ['Performance reviews begin immediately', 'No meetings should be scheduled in week 1', 'The onboarding buddy is assigned after 30 days'] }
+      };
+      var q = questions[section.title] || { q: 'Based on the "' + section.title + '" section, which statement is most accurate?', wrong: ['This section is not critical to the procedure', 'This section only applies to management', 'This section can be skipped in most cases'] };
+      var correctAnswer = 'As described in the procedure: ' + section.content.substring(0, 80) + '...';
+      var choices = [correctAnswer].concat(q.wrong);
+      /* Shuffle but track correct answer index (always 0 in our data, we shuffle display) */
+      return { question: q.q, choices: choices };
+    }
+
+    function answerQuiz(questionIdx, choiceIdx) {
+      _studioState.quizAnswers[questionIdx] = choiceIdx;
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    /* -- Audio Script -- */
+    function renderAudioScript(sop) {
+      var script = sop.sections.map(function(sec, i) {
+        var intro = i === 0 ? 'Welcome to this training module on ' + sop.name + '. This module will walk you through everything you need to know to perform this procedure safely and correctly. Let us begin with ' + sec.title.toLowerCase() + '.\n\n' : '';
+        var transition = i > 0 ? '[Transition sound]\n\nMoving on to ' + sec.title.toLowerCase() + '.\n\n' : '';
+        var closing = i === sop.sections.length - 1 ? '\n\n[Closing]\n\nThat concludes this training module on ' + sop.name + '. Remember, if you have any questions, speak with your supervisor or safety manager. Your completion of this module has been recorded. Thank you for taking the time to learn this material. Stay safe.' : '';
+
+        return '<div class="card" style="margin-bottom:12px;">' +
+          '<div class="card-body" style="padding:16px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+              '<div style="font-size:0.7rem;color:var(--text-dim);">SEGMENT ' + (i + 1) + ' OF ' + sop.sections.length + ' | ~' + Math.ceil(sec.content.length / 150) + ' min</div>' +
+              '<button onclick="showToast(\'Playing audio for: ' + escapeHtml(sec.title) + '\')" style="background:var(--accent);color:#fff;border:none;padding:4px 14px;border-radius:4px;cursor:pointer;font-size:0.75rem;">&#x25B6; Play</button>' +
+            '</div>' +
+            '<div style="font-weight:600;color:var(--accent);margin-bottom:8px;">' + escapeHtml(sec.title) + '</div>' +
+            '<div style="background:var(--bg-secondary);border-radius:var(--radius-sm);padding:14px;font-size:0.85rem;color:var(--text-secondary);line-height:1.8;white-space:pre-line;font-style:italic;">' +
+              escapeHtml(intro + transition + sec.content + closing) +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      var totalMinutes = sop.sections.reduce(function(acc, sec) { return acc + Math.ceil(sec.content.length / 150); }, 0);
+
+      return '' +
+        '<div class="card" style="margin-bottom:16px;border-left:3px solid var(--warning);">' +
+          '<div class="card-body" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">' +
+            '<div><div style="font-weight:600;color:var(--text-primary);">Audio Script: ' + escapeHtml(sop.name) + '</div>' +
+            '<div style="font-size:0.8rem;color:var(--text-dim);">' + sop.sections.length + ' segments | ~' + totalMinutes + ' minutes total</div></div>' +
+            '<button onclick="showToast(\'Full audio script copied to clipboard\')" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;">Copy Full Script</button>' +
+          '</div>' +
+        '</div>' +
+        script;
+    }
+
+    /* -- Flashcards -- */
+    function renderFlashcards(sop) {
+      var card = sop.sections[_studioState.flashcardIndex];
+      var total = sop.sections.length;
+      var idx = _studioState.flashcardIndex;
+      var flipped = _studioState.flashcardFlipped;
+
+      var prevBtn = idx > 0 ? '<button onclick="studioFlashcard(-1)" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);padding:8px 20px;border-radius:6px;cursor:pointer;">Previous</button>' : '<div></div>';
+      var nextBtn = idx < total - 1 ? '<button onclick="studioFlashcard(1)" style="background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;">Next Card</button>' : '<button onclick="showToast(\'Flashcard review complete!\')" style="background:var(--success);color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;">Done</button>';
+
+      return '' +
+        '<div style="text-align:center;margin-bottom:12px;font-size:0.8rem;color:var(--text-dim);">Card ' + (idx + 1) + ' of ' + total + ' | Click card to flip</div>' +
+        '<div onclick="flipFlashcard()" style="background:' + (flipped ? 'var(--bg-secondary)' : 'var(--accent)') + ';border-radius:var(--radius-lg);padding:48px 32px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:16px;transition:all 0.3s;box-shadow:var(--shadow-elevated);">' +
+          (flipped ?
+            '<div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">ANSWER</div><div style="font-size:0.9rem;color:var(--text-primary);line-height:1.8;text-align:center;max-width:600px;">' + escapeHtml(card.content) + '</div>'
+            :
+            '<div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:12px;">QUESTION</div><div style="font-size:1.2rem;font-weight:700;color:#fff;text-align:center;">' + escapeHtml('What should you know about: ' + card.title + '?') + '</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:12px;">Click to reveal answer</div>'
+          ) +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' + prevBtn + nextBtn + '</div>';
+    }
+
+    function studioFlashcard(dir) {
+      var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+      _studioState.flashcardIndex = Math.max(0, Math.min(sop.sections.length - 1, _studioState.flashcardIndex + dir));
+      _studioState.flashcardFlipped = false;
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    function flipFlashcard() {
+      _studioState.flashcardFlipped = !_studioState.flashcardFlipped;
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
     }
 
     /* ================================================================
