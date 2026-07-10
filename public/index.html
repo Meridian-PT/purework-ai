@@ -5623,30 +5623,61 @@
     }
 
     function generateQuizOptions(section, seed) {
-      var questions = {
-        'Purpose': { q: 'What is the primary purpose of this procedure?', wrong: ['To document employee attendance', 'To track equipment inventory', 'To schedule maintenance windows'] },
-        'Scope': { q: 'Who does this procedure apply to?', wrong: ['Only managers and supervisors', 'Only new employees in their first 90 days', 'Only contractors and temporary workers'] },
-        'Responsibilities': { q: 'Which statement about responsibilities is correct according to this procedure?', wrong: ['All employees have the same level of responsibility', 'Only the Safety Manager is responsible for compliance', 'Responsibilities do not change based on role'] },
-        'Procedure Steps': { q: 'What is the correct sequence for this procedure?', wrong: ['Skip notification and proceed directly to action', 'Complete paperwork after the procedure is finished', 'Delegate all steps to the most junior team member'] },
-        'Restoring Equipment': { q: 'What must happen before restoring equipment to service?', wrong: ['Nothing, just restart immediately', 'Only the supervisor needs to approve', 'Wait 24 hours after the last step'] },
-        'Special Situations': { q: 'How should special situations be handled under this procedure?', wrong: ['Ignore special situations and follow standard steps', 'Special situations are exempt from this procedure', 'Only senior management can handle special situations'] },
-        'Definitions': { q: 'Which definition is correct according to this procedure?', wrong: ['All terms are interchangeable in this context', 'Definitions only apply to management personnel', 'These definitions override all other company policies'] },
-        'Reporting Requirements': { q: 'What are the reporting requirements under this procedure?', wrong: ['Reports are optional for minor events', 'Reporting is only required annually', 'Only the HR department files reports'] },
-        'Investigation Process': { q: 'What is required during the investigation process?', wrong: ['Interviews should be conducted in groups', 'Investigation can wait until the next scheduled meeting', 'Only physical evidence matters, not witness statements'] },
-        'Corrective Actions': { q: 'What approach should be used for corrective actions?', wrong: ['Always start with the least effective control', 'PPE is always the first choice', 'Corrective actions are optional if no injury occurred'] },
-        'Record Keeping': { q: 'What are the record-keeping requirements?', wrong: ['Records can be discarded after 1 year', 'Only digital records need to be maintained', 'Record keeping is voluntary for small companies'] },
-        'Welcome & Introductions': { q: 'What should happen during the welcome phase?', wrong: ['Skip introductions to save time', 'Only introduce the direct supervisor', 'Send a welcome email instead of meeting in person'] },
-        'HR Paperwork': { q: 'Which HR document must be completed within 3 business days?', wrong: ['W-4 tax withholding form', 'Direct deposit enrollment', 'Benefits enrollment'] },
-        'IT & Systems Setup': { q: 'What is required during IT setup?', wrong: ['Employees should set up their own accounts', 'MFA is optional for new employees', 'System access can wait until the second week'] },
-        'Safety Orientation': { q: 'What must be covered in the safety orientation?', wrong: ['Safety orientation can be skipped for office workers', 'Only managers need to know emergency exits', 'First aid training is required on day 1'] },
-        'Culture & Values': { q: 'What is included in the culture and values review?', wrong: ['Values review is optional for experienced hires', 'Only the handbook needs to be distributed, not reviewed', 'Culture overview happens during the 90-day review'] },
-        'First Week Plan': { q: 'What should be established in the first week?', wrong: ['Performance reviews begin immediately', 'No meetings should be scheduled in week 1', 'The onboarding buddy is assigned after 30 days'] }
+      /* Content-specific quiz bank keyed by SOP section title */
+      var quizBank = {
+        /* -- AI Usage Policy (Footage Tools) -- */
+        '1. Purpose': { q: 'What is the primary goal of the AI Usage Policy?', correct: 'To protect company data, IP, and competitive advantage while enabling AI-assisted productivity', wrong: ['To ban all AI usage in the workplace', 'To train employees on how to build AI models', 'To replace manual work with fully automated AI systems'] },
+        '2. Scope': { q: 'Who does the AI Usage Policy apply to?', correct: 'All employees, contractors, interns, temporary staff, and anyone performing work on behalf of the company', wrong: ['Only full-time employees in the IT department', 'Only managers who approve AI tool purchases', 'Only employees who have completed AI certification'] },
+        '3. Approved AI Tools': { q: 'What must happen before using a new AI tool not on the approved list?', correct: 'A request must be submitted to IT and HR for a data-security and vendor review', wrong: ['The employee can use it as long as they do not enter confidential data', 'The employee\u2019s manager can verbally approve it', 'Any tool with a free tier is automatically approved'] },
+        '4. Confidentiality & Data Protection': { q: 'Which of the following should NEVER be entered into an AI tool without specific approval?', correct: 'Client information, credentials, personal data, engineering IP, and financial/strategic information', wrong: ['Public marketing materials and press releases', 'The company\u2019s street address and phone number', 'Job postings that have already been published externally'] },
+        '5. Data Training Restrictions': { q: 'Can employees use company data to train or fine-tune a public AI model?', correct: 'No. Company data must never be used to train, fine-tune, or improve any public or third-party AI model.', wrong: ['Yes, as long as the data is anonymized first', 'Yes, if the employee\u2019s manager approves it in writing', 'Yes, but only for internal models hosted on company servers'] },
+        '6. Human Oversight & Accountability': { q: 'Can AI be the sole basis for decisions on customer commitments, pricing, or hiring?', correct: 'No. AI is an aid to human judgment, not a replacement. A human must review and be accountable.', wrong: ['Yes, if the AI has been validated by the IT team', 'Yes, for routine decisions under $10,000 in value', 'Yes, as long as the output is documented'] },
+        '7. Verification of AI-Generated Content': { q: 'What must be checked before sharing AI-generated content?', correct: 'Accuracy (facts and figures correct), bias (fair conclusions), and tone (professional standards)', wrong: ['Only spelling and grammar', 'Only that it is under 500 words', 'Nothing, as long as an approved AI tool was used'] },
+        '8. Disclosure & Credit': { q: 'When must AI usage be disclosed?', correct: 'When AI was used to draft or substantively edit a work product (reports, proposals, client communications)', wrong: ['Only when the entire document was written by AI with no human editing', 'Only when presenting to external clients, not internal teams', 'Never, AI assistance does not need to be disclosed'] },
+        '9. Prohibited Uses': { q: 'Which of the following is a prohibited use of AI under this policy?', correct: 'Using AI to send emails or contracts to clients without human review and approval', wrong: ['Using AI to draft an internal meeting agenda', 'Using AI to summarize a long report for personal reference', 'Using AI to check grammar in an email before sending'] },
+        '10. Reporting Concerns': { q: 'What should an employee do if they suspect AI tool misuse or a data exposure?', correct: 'Report it to HR or IT promptly. No retaliation for good-faith reports.', wrong: ['Handle it themselves by deleting the AI conversation', 'Wait until the next quarterly review to mention it', 'Only report it if actual financial damage occurred'] },
+        '11. Violations & Enforcement': { q: 'Who owns enforcement of the AI Usage Policy?', correct: 'HR owns enforcement, following the progressive discipline process for violations', wrong: ['The IT department handles all violations independently', 'Each department manager enforces it within their own team', 'There is no enforcement mechanism, the policy is voluntary'] },
+        '12. Governance & Policy Review': { q: 'How often is the AI Usage Policy reviewed?', correct: 'At least quarterly, or sooner if new tools, regulations, or business needs require changes', wrong: ['Once a year during the annual policy review cycle', 'Only when a violation occurs', 'Every two years, aligned with the technology refresh cycle'] },
+        /* -- LOTO -- */
+        'Purpose': { q: 'What is the purpose of Lockout/Tagout?', correct: 'To prevent unexpected energization or release of stored energy during servicing and maintenance', wrong: ['To track equipment maintenance schedules', 'To assign equipment to specific operators', 'To document workplace injuries after they occur'] },
+        'Scope': { q: 'What types of energy does LOTO cover?', correct: 'Electrical, mechanical, hydraulic, pneumatic, chemical, thermal, and gravitational energy', wrong: ['Only electrical energy from power outlets', 'Only energy from diesel and gas-powered equipment', 'Only energy stored in batteries and capacitors'] },
+        'Responsibilities': { q: 'Who is authorized to apply and remove lockout/tagout devices?', correct: 'Only authorized employees can apply and remove locks/tags', wrong: ['Any employee who is working near the equipment', 'Only the plant manager or shift supervisor', 'The maintenance vendor or contractor on site'] },
+        'Procedure Steps': { q: 'What is the final step before beginning work on locked-out equipment?', correct: 'Verify isolation by attempting to restart the equipment using normal controls and confirming zero energy state', wrong: ['Notify the safety manager by email', 'Wait 15 minutes after applying the lock', 'Take a photograph of the lockout device'] },
+        'Restoring Equipment': { q: 'Who can remove a lockout/tagout device?', correct: 'Only the employee who applied it', wrong: ['Any supervisor on duty', 'The next shift operator', 'Anyone with a master key'] },
+        'Violations': { q: 'What happens on a third LOTO violation?', correct: 'Termination. LOTO violations are the #1 cause of preventable fatalities in construction.', wrong: ['A final written warning with a 30-day improvement plan', 'Mandatory retraining and a 3-day suspension', 'Transfer to a non-equipment role'] },
+        /* -- Incident Reporting -- */
+        'Definitions': { q: 'What is the difference between an incident and a near-miss?', correct: 'An incident results in injury, damage, or release; a near-miss could have but did not', wrong: ['There is no difference, the terms are interchangeable', 'A near-miss involves property damage only, an incident involves injury', 'An incident is reported to OSHA, a near-miss is not reported at all'] },
+        'Reporting Requirements': { q: 'How quickly must a fatality be reported to OSHA?', correct: 'Within 8 hours', wrong: ['Within 24 hours', 'Within 48 hours', 'By the end of the business week'] },
+        'Investigation Process': { q: 'What root cause analysis method does this procedure require?', correct: 'The 5-Why method', wrong: ['Fishbone diagram only', 'Management review committee', 'External consultant assessment'] },
+        'Corrective Actions': { q: 'What is the preferred hierarchy for corrective actions?', correct: 'Elimination > Substitution > Engineering controls > Administrative controls > PPE', wrong: ['PPE first, then engineering controls if PPE is insufficient', 'Administrative controls first, then engineering controls', 'Whatever is cheapest to implement immediately'] },
+        'Record Keeping': { q: 'How long must incident reports be retained?', correct: 'Minimum 5 years', wrong: ['1 year', '3 years', 'Until the next annual audit'] },
+        /* -- Day 1 Orientation -- */
+        'Welcome & Introductions': { q: 'What should be included in the Day 1 welcome?', correct: 'Welcome packet, team introductions, facility tour including restrooms, break room, emergency exits, and workspace', wrong: ['Only a brief email with the employee handbook attached', 'A 2-hour presentation about company history', 'Just the IT setup and a desk assignment'] },
+        'HR Paperwork': { q: 'Within how many business days must the I-9 be completed?', correct: '3 business days of the start date', wrong: ['30 calendar days', 'Before the first paycheck is issued', 'Within the first week'] },
+        'IT & Systems Setup': { q: 'What security setup is required during IT onboarding?', correct: 'Password and MFA (multi-factor authentication) setup, plus acceptable use policy acknowledgment', wrong: ['Just a password, MFA is optional for the first month', 'IT handles everything remotely, the employee does nothing', 'Only email access, other systems are added after probation'] },
+        'Safety Orientation': { q: 'What must be covered in the Day 1 safety orientation?', correct: 'Emergency evacuation routes, fire extinguishers, first aid kits, incident reporting, PPE requirements, safety contacts', wrong: ['Only the location of the nearest exit', 'Safety orientation happens in week 2, not Day 1', 'Just a signature on the safety policy, no walkthrough needed'] },
+        'Culture & Values': { q: 'What policy must be specifically reviewed during the culture overview?', correct: 'Anti-harassment policy, along with mission/vision/values, handbook, and code of conduct', wrong: ['Only the dress code policy', 'Only the social media policy', 'Policies are emailed later, not reviewed on Day 1'] },
+        'First Week Plan': { q: 'What should be set up with the new employee\u2019s manager in week 1?', correct: '30/60/90 day expectations and a recurring 1:1 meeting', wrong: ['A formal performance review', 'A full project assignment with a deadline', 'Nothing until the 30-day mark'] },
+        /* -- Special Situations (LOTO) -- */
+        'Special Situations': { q: 'During a shift change under LOTO, what must happen?', correct: 'The incoming authorized employee applies their lock BEFORE the outgoing employee removes theirs', wrong: ['The outgoing employee removes their lock and the incoming employee applies theirs the next morning', 'The supervisor holds a master lock during the transition', 'Shift changes do not require any changes to lockout devices'] }
       };
-      var q = questions[section.title] || { q: 'Based on the "' + section.title + '" section, which statement is most accurate?', wrong: ['This section is not critical to the procedure', 'This section only applies to management', 'This section can be skipped in most cases'] };
-      var correctAnswer = 'As described in the procedure: ' + section.content.substring(0, 80) + '...';
-      var choices = [correctAnswer].concat(q.wrong);
-      /* Shuffle but track correct answer index (always 0 in our data, we shuffle display) */
-      return { question: q.q, choices: choices };
+
+      var entry = quizBank[section.title];
+      if (entry) {
+        /* Shuffle choices: correct is always index 0 internally, but display is randomized */
+        var allChoices = [entry.correct].concat(entry.wrong);
+        return { question: entry.q, choices: allChoices };
+      }
+
+      /* Fallback for sections not in the bank */
+      var fallbackQ = 'Based on the "' + section.title + '" section, which statement is correct?';
+      var correctAnswer = section.content.substring(0, 100).replace(/\n/g, ' ') + '...';
+      var fallbackWrong = [
+        'This section does not apply to most employees',
+        'This requirement is optional and at management\u2019s discretion',
+        'This section has been superseded by a newer policy'
+      ];
+      return { question: fallbackQ, choices: [correctAnswer].concat(fallbackWrong) };
     }
 
     function answerQuiz(questionIdx, choiceIdx) {
