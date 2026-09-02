@@ -7845,8 +7845,8 @@
         var totalSegs = pd ? pd.segments.length : 10;
         var durParts = pd ? (pd.duration || '10:00').split(':') : ['10','00'];
         var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
-        /* Each segment gets ~5 seconds of display time for demo pacing */
-        var segDuration = 5000;
+        /* Each segment gets ~12 seconds of display time for natural reading pace */
+        var segDuration = 12000;
         var tickInterval = 200;
         var ticksPerSeg = segDuration / tickInterval;
         var _tickCount = 0;
