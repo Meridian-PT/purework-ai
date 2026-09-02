@@ -2604,6 +2604,943 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* ================================================================
+       TRAINING STUDIO - Premium Upgrade Styles
+       ================================================================ */
+
+    /* AI Insights Panel */
+    .studio-insights-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .studio-insights-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: var(--radius-lg);
+      padding: 2px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6, #ec4899, var(--accent));
+      background-size: 300% 300%;
+      animation: insightsBorderGlow 4s ease infinite;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    @keyframes insightsBorderGlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .insights-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .insights-header .ai-badge {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .insights-body {
+      padding: 20px;
+    }
+
+    .insights-summary {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--accent);
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .insight-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .insight-card-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .insight-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .insight-card li {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .insight-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .insight-card li.risk-item::before {
+      background: var(--warning);
+    }
+
+    .insight-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .insight-stat {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .insight-stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .insight-stat-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .insights-terms {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .insight-term {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: help;
+      transition: all var(--transition-fast);
+    }
+
+    .insight-term:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Analyzing loader */
+    .analyzing-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      gap: 16px;
+    }
+
+    .analyzing-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .analyzing-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: analyzeBounceDot 1.4s ease-in-out infinite;
+    }
+
+    .analyzing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .analyzing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes analyzeBounceDot {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .analyzing-text {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid var(--accent);
+      animation: typewriter 2s steps(30, end), blink-caret 0.7s step-end infinite;
+    }
+
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--accent); }
+    }
+
+    /* Podcast Player */
+    .podcast-player {
+      background: linear-gradient(135deg, #1a1f35 0%, #0f1520 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .podcast-player-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .podcast-cover {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .podcast-meta {
+      flex: 1;
+    }
+
+    .podcast-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .podcast-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    .podcast-controls {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .podcast-play-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .podcast-play-btn:hover {
+      background: var(--accent-hover);
+      transform: scale(1.05);
+    }
+
+    .podcast-progress-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .podcast-waveform {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 32px;
+    }
+
+    .podcast-waveform .wave-bar {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+      opacity: 0.4;
+      transition: height 0.15s ease;
+    }
+
+    .podcast-waveform.playing .wave-bar {
+      animation: waveAnim 0.8s ease-in-out infinite alternate;
+      opacity: 0.8;
+    }
+
+    @keyframes waveAnim {
+      0% { height: 8px; }
+      100% { height: var(--wave-h, 24px); }
+    }
+
+    .podcast-time {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    .podcast-progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .podcast-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s linear;
+    }
+
+    .podcast-transcript {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .podcast-segment {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      animation: segmentFade 0.4s ease;
+    }
+
+    @keyframes segmentFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .podcast-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .podcast-avatar.host-ai {
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+    }
+
+    .podcast-avatar.host-hr {
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+    }
+
+    .podcast-bubble {
+      flex: 1;
+    }
+
+    .podcast-speaker {
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .podcast-speaker.speaker-ai { color: var(--accent); }
+    .podcast-speaker.speaker-hr { color: #ec4899; }
+
+    .podcast-text {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Document Chat */
+    .studio-chat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .studio-chat-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .studio-chat-header .ai-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .chat-messages {
+      max-height: 340px;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-msg {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      animation: chatMsgIn 0.3s ease;
+    }
+
+    @keyframes chatMsgIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .chat-msg.ai {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-msg.user {
+      background: var(--accent);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-msg.typing {
+      background: var(--bg-secondary);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      color: var(--text-dim);
+    }
+
+    .chat-typing-dots span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      margin: 0 2px;
+      animation: typingBounce 1.4s ease-in-out infinite;
+    }
+
+    .chat-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    .chat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0 20px 12px;
+    }
+
+    .chat-chip {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .chat-chip:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-secondary);
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      color: var(--text-primary);
+      font-size: 0.84rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent);
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .chat-send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Study Guide */
+    .study-guide-section {
+      margin-bottom: 20px;
+    }
+
+    .study-guide-section h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .concept-map {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .concept-node {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      position: relative;
+      transition: all var(--transition-fast);
+    }
+
+    .concept-node:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(44, 123, 229, 0.2);
+    }
+
+    .concept-node.central {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-size: 0.85rem;
+      padding: 12px 20px;
+    }
+
+    .concept-connector {
+      width: 30px;
+      height: 2px;
+      background: var(--border);
+      align-self: center;
+    }
+
+    .vocab-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .vocab-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .vocab-table td {
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .vocab-table tr:hover td {
+      background: var(--bg-secondary);
+    }
+
+    .review-checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .review-checklist li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .review-checklist li:hover {
+      color: var(--text-primary);
+    }
+
+    .review-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .review-checkbox.checked {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+      font-size: 0.7rem;
+    }
+
+    /* Scenario Builder */
+    .scenario-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: border-color var(--transition-normal);
+    }
+
+    .scenario-card:hover {
+      border-color: var(--accent);
+    }
+
+    .scenario-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .scenario-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .scenario-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .scenario-body {
+      padding: 0 20px 16px;
+    }
+
+    .scenario-situation {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 12px;
+      padding: 14px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--warning);
+    }
+
+    .scenario-questions {
+      margin-bottom: 12px;
+    }
+
+    .scenario-questions li {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      padding: 4px 0;
+      line-height: 1.5;
+    }
+
+    .scenario-reveal-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-block;
+    }
+
+    .scenario-reveal-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .scenario-answer {
+      margin-top: 12px;
+      padding: 14px;
+      background: var(--success-bg);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--success);
+      display: none;
+    }
+
+    .scenario-answer.revealed {
+      display: block;
+      animation: segmentFade 0.3s ease;
+    }
+
+    .scenario-answer h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--success);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .scenario-answer p {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .scenario-mistakes {
+      margin-top: 10px;
+      padding: 12px 14px;
+      background: var(--error-bg);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--error);
+    }
+
+    .scenario-mistakes h4 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--error);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .scenario-mistakes ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .scenario-mistakes li {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 2px 0;
+    }
+
+    /* Generation loading animation */
+    .generation-loader {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .generation-progress {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 16px 0 12px;
+    }
+
+    .generation-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #8b5cf6, var(--accent));
+      background-size: 200% 100%;
+      animation: genProgressShimmer 1.5s ease infinite;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    @keyframes genProgressShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .generation-text {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    .generation-time {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Output format button grid */
+    .studio-output-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .studio-output-btn {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .studio-output-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .studio-output-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .studio-output-btn .btn-icon {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+
+    .studio-output-btn .btn-label {
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+
+    .studio-output-btn .btn-desc {
+      font-size: 0.65rem;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    .studio-output-btn.active .btn-desc {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -5450,7 +6387,759 @@
       }
     ];
 
-    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false };
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastProgress: 0, podcastInterval: null, checkedItems: {} };
+
+    /* ================================================================
+       STUDIO RICH DATA: Insights, Podcast, Chat, Study Guide, Scenarios
+       ================================================================ */
+
+    var STUDIO_RICH_DATA = {
+      'loto': {
+        insights: {
+          summary: 'This LOTO procedure is a comprehensive energy control standard covering 7 energy types across 6 operational phases. It establishes clear role-based accountability and addresses both routine and non-routine lockout scenarios including shift changes and group lockout.',
+          keyInsights: [
+            'Covers all 7 OSHA-recognized energy types (electrical, mechanical, hydraulic, pneumatic, chemical, thermal, gravitational)',
+            'Zero-energy verification is mandatory before any work begins -- no exceptions',
+            'Only the employee who applied a lock may remove it, preventing unauthorized re-energization',
+            'Shift-change protocol requires overlapping locks to maintain continuous protection',
+            'Contractor coordination with Safety Manager is explicitly required'
+          ],
+          risks: [
+            'Failure to verify zero-energy state is the #1 cause of LOTO-related fatalities',
+            'Shift change handoffs are a high-risk gap if overlapping lock protocol is skipped',
+            'Group lockout introduces complexity -- each individual MUST apply their own lock'
+          ],
+          stats: { sections: 6, readTime: '8 min', complexity: 'High', compliance: 'OSHA 29 CFR 1910.147' },
+          terms: [
+            { term: 'LOTO', definition: 'Lockout/Tagout -- procedures to disable machinery during servicing' },
+            { term: 'Zero Energy State', definition: 'Condition where all stored and residual energy has been released or restrained' },
+            { term: 'Authorized Employee', definition: 'Person trained and approved to apply and remove lockout devices' },
+            { term: 'Affected Employee', definition: 'Person whose work requires them to be near locked-out equipment' },
+            { term: 'Energy Isolation Device', definition: 'Mechanical device that prevents transmission or release of energy' }
+          ]
+        },
+        podcast: {
+          title: 'Understanding Lockout/Tagout: Saving Lives on the Shop Floor',
+          duration: '12:30',
+          segments: [
+            { speaker: 'Host 1', text: 'Welcome to the PureWork Training Podcast! Today we are diving into one of the most critical safety procedures in any manufacturing or industrial environment -- Lockout/Tagout, or LOTO. I am here with our HR safety expert. Let us start with the big picture -- why does LOTO exist?' },
+            { speaker: 'Host 2', text: 'Great question. LOTO exists because machines can kill. I know that sounds blunt, but it is the reality. Every year, failure to properly control hazardous energy accounts for nearly 10% of serious workplace injuries in manufacturing. We are talking about unexpected machine startups, release of stored energy -- these are the things that cause amputations, crushing injuries, and fatalities.' },
+            { speaker: 'Host 1', text: 'The procedure covers seven types of energy. Can you walk us through those?' },
+            { speaker: 'Host 2', text: 'Absolutely. Most people think of electrical energy first, and that is important, but LOTO goes much further. We are covering electrical, mechanical, hydraulic, pneumatic, chemical, thermal, AND gravitational energy. Think about a suspended platform -- that is gravitational energy. A pressurized airline -- pneumatic. Hot steam in a pipe -- thermal and chemical. Every one of those can injure or kill if released unexpectedly.' },
+            { speaker: 'Host 1', text: 'There is a concept in here called "zero energy state." Why is that so critical?' },
+            { speaker: 'Host 2', text: 'Zero energy state is the gold standard. It means every single source of stored or residual energy has been fully released or restrained. You have bled the hydraulic lines, discharged the capacitors, blocked the suspended parts. And here is the key -- you VERIFY it. You actually try to restart the machine using normal controls. If nothing happens, you are at zero energy. If something moves, you are not done yet.' },
+            { speaker: 'Host 1', text: 'I noticed the procedure is very specific about who can remove a lock. Only the person who applied it. Why not a supervisor or a master key?' },
+            { speaker: 'Host 2', text: 'This is one of the most important rules in LOTO. If someone other than the lock owner removes it, you have just destroyed the entire chain of accountability. The person who put that lock on is the one who verified zero energy for THEIR work area. A supervisor removing it does not know what state the equipment is in from that worker perspective. This is non-negotiable.' },
+            { speaker: 'Host 1', text: 'What about shift changes? That seems like it could be a gap.' },
+            { speaker: 'Host 2', text: 'You have identified the most dangerous moment in LOTO. The shift change. The procedure requires overlapping locks -- the incoming authorized employee applies their lock BEFORE the outgoing employee removes theirs. There is never a moment where the equipment is unprotected. Think of it like a relay race -- you do not drop the baton.' },
+            { speaker: 'Host 1', text: 'Excellent analogy. And for contractors working on site?' },
+            { speaker: 'Host 2', text: 'Contractors must either follow our LOTO procedure or demonstrate that their own procedure is equivalent. Either way, it has to be coordinated with our Safety Manager. No freelancing on lockout -- it is too dangerous.' },
+            { speaker: 'Host 1', text: 'Final takeaway for everyone listening?' },
+            { speaker: 'Host 2', text: 'LOTO is not paperwork. It is not bureaucracy. It is the procedure that stands between you and a machine that does not know you are inside it. Take it seriously every single time, because the one time you skip a step could be the last time.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['who', 'responsible', 'apply', 'remove', 'lock'], answer: 'Only authorized employees can apply and remove lockout/tagout devices. The person who applied the lock is the ONLY person who can remove it. Supervisors ensure compliance and conduct periodic inspections, while the Safety Manager maintains the overall program.' },
+          { keywords: ['energy', 'types', 'sources', 'cover'], answer: 'The LOTO procedure covers 7 energy types: electrical, mechanical, hydraulic, pneumatic, chemical, thermal, and gravitational. All energy sources must be identified using the Energy Source Identification Worksheet before lockout begins.' },
+          { keywords: ['verify', 'zero', 'confirm', 'test'], answer: 'After applying lockout devices and releasing stored energy, you must verify isolation by attempting to restart the equipment using normal controls. The goal is to confirm a "zero energy state" -- meaning all energy has been fully released or restrained.' },
+          { keywords: ['shift', 'change', 'handoff', 'transition'], answer: 'During shift changes, the incoming authorized employee must apply their lock BEFORE the outgoing employee removes theirs. This ensures continuous protection -- the equipment is never unlocked during the transition.' },
+          { keywords: ['contractor', 'vendor', 'outside'], answer: 'Contractors must follow this LOTO procedure or demonstrate their own equivalent procedure, coordinated with the Safety Manager. No contractor may perform lockout without Safety Manager coordination.' },
+          { keywords: ['violation', 'penalty', 'discipline', 'consequence'], answer: 'The SOP does not specify a progressive discipline schedule, but LOTO violations are treated as serious safety infractions. The Safety Manager is responsible for enforcement and annual program review.' },
+          { keywords: ['group', 'multiple', 'team'], answer: 'For group lockout operations, each authorized employee applies their own individual lock to a group lockbox. This ensures every person working on the equipment has personal control over the lockout.' },
+          { keywords: ['step', 'procedure', 'how', 'process'], answer: 'The LOTO procedure has 7 steps: (1) Notify affected employees, (2) Identify all energy sources, (3) Shut down using normal procedure, (4) Isolate all energy sources, (5) Apply lockout/tagout devices, (6) Release stored/residual energy, (7) Verify isolation by attempting restart.' }
+        ],
+        suggestedQuestions: ['Who can remove a lockout device?', 'What energy types does this cover?', 'How do shift changes work?', 'What are the 7 procedure steps?'],
+        studyGuide: {
+          objectives: [
+            'Identify all 7 types of hazardous energy covered by LOTO procedures',
+            'Execute the 7-step lockout/tagout sequence correctly',
+            'Verify zero energy state before beginning maintenance work',
+            'Manage shift changes and group lockout situations safely',
+            'Understand roles: authorized vs. affected employees vs. supervisors'
+          ],
+          vocabulary: [
+            { term: 'Lockout', definition: 'Placing a lock on an energy isolation device to prevent energization' },
+            { term: 'Tagout', definition: 'Placing a warning tag on an isolation device as an additional safeguard' },
+            { term: 'Zero Energy State', definition: 'All stored/residual energy has been released or restrained' },
+            { term: 'Energy Isolation Device', definition: 'A mechanical device that physically prevents energy transmission' },
+            { term: 'Authorized Employee', definition: 'Person trained and qualified to perform LOTO procedures' },
+            { term: 'Affected Employee', definition: 'Person who works in an area where LOTO is applied' }
+          ],
+          conceptMap: { central: 'LOTO Procedure', nodes: ['Energy Identification', 'Isolation', 'Lock Application', 'Zero Energy Verify', 'Work Execution', 'Lock Removal', 'Re-energization'] },
+          actionItems: [
+            'Complete the Energy Source Identification Worksheet for your work area',
+            'Verify your lock and tag are in good working condition',
+            'Review the shift-change protocol with your team lead',
+            'Know the location of all energy isolation points on equipment you service'
+          ],
+          reviewChecklist: [
+            'I can name all 7 energy types covered by LOTO',
+            'I know the 7-step lockout sequence',
+            'I understand who can remove my lock (only me)',
+            'I know the shift-change overlapping lock procedure',
+            'I can verify zero energy state',
+            'I know when to involve the Safety Manager'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'The Rushed Maintenance Call',
+            situation: 'A production line goes down at 2:45 PM. The shift supervisor tells you to fix it ASAP because they are behind on orders. The machine has hydraulic, electrical, and pneumatic energy sources. Your coworker says "I already flipped the breaker, just get in there."',
+            questions: ['What should you do before entering the machine?', 'Is your coworker flipping the breaker sufficient?', 'What energy sources still need to be controlled?'],
+            correctResponse: 'You must perform the full LOTO procedure regardless of time pressure. Flipping the breaker only addresses electrical energy -- hydraulic and pneumatic sources are still live. You need to: (1) identify ALL energy sources, (2) isolate each one, (3) apply YOUR OWN lock to each isolation point, (4) release stored energy, and (5) verify zero energy state by attempting restart. Production pressure never overrides safety.',
+            commonMistakes: ['Trusting that a coworker already "took care of it" without personal verification', 'Only addressing electrical energy and ignoring hydraulic/pneumatic', 'Skipping zero-energy verification to save time']
+          },
+          {
+            title: 'The Shift Change Handoff',
+            situation: 'You have been working on a conveyor motor replacement since 10 AM. Your shift ends at 3 PM and the job is not done. Jamie, the incoming technician, arrives to take over. Jamie says "Just leave your lock on, I will use it."',
+            questions: ['Can Jamie use your lock?', 'What is the correct handoff procedure?', 'What happens if you just remove your lock and leave?'],
+            correctResponse: 'Jamie cannot use your lock -- each authorized employee must apply their OWN lock. The correct procedure is: Jamie applies their lock to the group lockbox FIRST, then you remove yours. The equipment is never unprotected during the transition. If you simply remove your lock and leave, the equipment could be re-energized before Jamie applies their lock -- a potentially fatal gap.',
+            commonMistakes: ['Sharing locks between employees', 'Removing the outgoing lock before the incoming lock is applied', 'Assuming the equipment "will be fine" for a few minutes without a lock']
+          },
+          {
+            title: 'The Contractor Confusion',
+            situation: 'An outside HVAC contractor arrives to service the rooftop unit. They have their own lockout kit and say they always follow their company procedure. Your Safety Manager is off-site today.',
+            questions: ['Can the contractor use their own LOTO procedure?', 'Does it matter that the Safety Manager is absent?', 'What should you do?'],
+            correctResponse: 'Contractors may follow their own LOTO procedure IF it is equivalent and has been coordinated with the Safety Manager. Since the Safety Manager is off-site, the work should not proceed until coordination happens -- even if that means a delay. Contact the Safety Manager by phone. Never allow unsupervised contractor lockout without explicit Safety Manager coordination.',
+            commonMistakes: ['Allowing the contractor to proceed because they "seem experienced"', 'Assuming any LOTO procedure is equivalent without verification', 'Starting work without Safety Manager coordination because they are unavailable on-site']
+          }
+        ]
+      },
+      'incident': {
+        insights: {
+          summary: 'This incident reporting SOP establishes a comprehensive 6-phase process covering immediate response through long-term record keeping. It emphasizes root cause analysis via the 5-Why method, corrective actions prioritized by the hierarchy of controls, and regulatory compliance with OSHA reporting timelines.',
+          keyInsights: [
+            'OSHA fatality reporting deadline is 8 hours -- not 24. This is a common and costly mistake.',
+            'Near-misses must be reported within 48 hours -- many organizations miss this requirement entirely',
+            'The 5-Why method is the mandated root cause analysis tool, not fishbone or other methods',
+            'Corrective actions follow hierarchy: Elimination > Substitution > Engineering > Admin > PPE',
+            'Records must be retained for minimum 5 years with quarterly trend reviews'
+          ],
+          risks: [
+            'Missing the 8-hour OSHA fatality reporting window exposes the company to significant penalties',
+            'Failure to track near-misses means losing early warning data on systemic hazards',
+            'PPE as the primary corrective action (instead of elimination/engineering) violates hierarchy of controls'
+          ],
+          stats: { sections: 6, readTime: '7 min', complexity: 'Medium-High', compliance: 'OSHA 300/300A, OSHA Reporting (29 CFR 1904)' },
+          terms: [
+            { term: 'Incident', definition: 'Any unplanned event resulting in injury, illness, property damage, or environmental release' },
+            { term: 'Near-Miss', definition: 'An event that could have caused harm but did not' },
+            { term: '5-Why Method', definition: 'Root cause analysis technique of asking "why?" repeatedly until the fundamental cause is identified' },
+            { term: 'Hierarchy of Controls', definition: 'Ranked approach: Elimination > Substitution > Engineering > Administrative > PPE' },
+            { term: 'OSHA 300 Log', definition: 'Required federal log of all recordable workplace injuries and illnesses' }
+          ]
+        },
+        podcast: {
+          title: 'Incident Reporting Done Right: From Reaction to Prevention',
+          duration: '11:45',
+          segments: [
+            { speaker: 'Host 1', text: 'Welcome back to the PureWork Training Podcast. Today we are tackling incident reporting and investigation -- and I will tell you, this is one of those procedures that most companies think they have covered, but often get wrong in critical ways.' },
+            { speaker: 'Host 2', text: 'You are absolutely right. The biggest misconception I see is that incident reporting is about paperwork. It is not. It is about prevention. Every incident you investigate properly is a future incident you prevent. Every near-miss you capture is a warning signal that something systemic needs to change.' },
+            { speaker: 'Host 1', text: 'Let us talk about timelines, because there is a number in this SOP that surprises people. Fatalities.' },
+            { speaker: 'Host 2', text: 'Eight hours. You have 8 hours to report a fatality to OSHA. Not 24 -- that is for hospitalizations, amputations, and loss of eye. A lot of organizations get this mixed up, and the penalties for missing that window are severe. We are talking tens of thousands of dollars per violation, plus the reputational damage.' },
+            { speaker: 'Host 1', text: 'And near-misses? A lot of companies do not even track those.' },
+            { speaker: 'Host 2', text: 'That is a massive gap. Near-misses are your early warning system. The SOP requires reporting within 48 hours. Think of it this way: for every serious incident, there were probably dozens of near-misses that nobody reported. If you capture those, you can fix the root cause before someone gets hurt.' },
+            { speaker: 'Host 1', text: 'The 5-Why method for root cause analysis -- can you give us an example?' },
+            { speaker: 'Host 2', text: 'Sure. Say a worker slips and falls. Why? The floor was wet. Why was it wet? A pipe was leaking. Why was it leaking? The fitting was corroded. Why was it corroded? It had not been inspected in 18 months. Why? There was no preventive maintenance schedule for that area. Now you have gone from "someone slipped" to "we need a PM schedule for plumbing fittings." That is a systemic fix, not a band-aid.' },
+            { speaker: 'Host 1', text: 'And the hierarchy of controls -- I see a lot of companies jump straight to PPE.' },
+            { speaker: 'Host 2', text: 'PPE is the last resort, not the first. The hierarchy goes: can you eliminate the hazard entirely? If not, can you substitute a less dangerous alternative? Then engineering controls, like guards or ventilation. Then administrative controls like training or rotation. And only if none of those work do you rely on PPE. PPE fails. People forget it, wear it wrong, or it degrades. It should never be your primary defense.' },
+            { speaker: 'Host 1', text: 'Key takeaway for our listeners?' },
+            { speaker: 'Host 2', text: 'Report everything. Investigate thoroughly. Fix the root cause, not the symptom. And keep records -- OSHA requires 5 years minimum, and those trends will tell you where your next incident is coming from before it happens.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['osha', 'report', 'time', 'deadline', 'hours'], answer: 'Fatalities must be reported to OSHA within 8 hours. Serious injuries (hospitalization, amputation, loss of eye) must be reported within 24 hours. Near-misses must be reported internally within 48 hours.' },
+          { keywords: ['near', 'miss', 'almost'], answer: 'A near-miss is an event that COULD have resulted in injury or damage but did not. Near-misses must be reported within 48 hours using the Near-Miss Report Form. They are critical early warning data for preventing future incidents.' },
+          { keywords: ['5', 'why', 'root', 'cause', 'method'], answer: 'The 5-Why method is the required root cause analysis technique. You ask "why?" repeatedly until you reach the fundamental systemic cause. For example: Worker slipped -> Floor wet -> Pipe leaking -> Fitting corroded -> No PM schedule. The root cause is the missing maintenance schedule, not the wet floor.' },
+          { keywords: ['hierarchy', 'controls', 'ppe', 'corrective'], answer: 'Corrective actions must follow the hierarchy of controls: Elimination (remove the hazard) > Substitution (use something less dangerous) > Engineering controls (guards, ventilation) > Administrative controls (training, signs) > PPE (last resort). PPE should never be the primary defense.' },
+          { keywords: ['record', 'retain', 'keep', 'log', 'how long'], answer: 'All incident reports must be retained for a minimum of 5 years. Recordable injuries are logged on OSHA 300/300A forms. Trends are reviewed quarterly, and an annual summary is presented to management.' },
+          { keywords: ['investigate', 'investigation', 'steps'], answer: 'The investigation process has 7 steps: (1) Secure the scene and provide first aid, (2) Notify management and Safety Manager, (3) Photograph and document the scene, (4) Interview witnesses separately within 24 hours, (5) Identify root causes using 5-Why, (6) Develop corrective actions with owners and deadlines, (7) Complete investigation report within 5 business days.' }
+        ],
+        suggestedQuestions: ['How quickly must fatalities be reported?', 'What is the 5-Why method?', 'What is the hierarchy of controls?', 'How long do we keep records?'],
+        studyGuide: {
+          objectives: [
+            'Distinguish between incidents, near-misses, and hazardous conditions',
+            'Know all OSHA reporting timelines (8 hrs, 24 hrs, 48 hrs)',
+            'Conduct a root cause analysis using the 5-Why method',
+            'Apply the hierarchy of controls when developing corrective actions',
+            'Maintain required records and review trends quarterly'
+          ],
+          vocabulary: [
+            { term: 'Incident', definition: 'Unplanned event causing injury, illness, property damage, or environmental release' },
+            { term: 'Near-Miss', definition: 'Event that could have caused harm but did not' },
+            { term: 'Hazardous Condition', definition: 'A situation with potential to cause harm if not corrected' },
+            { term: '5-Why Method', definition: 'Root cause technique: ask "why?" repeatedly to find the systemic cause' },
+            { term: 'Hierarchy of Controls', definition: 'Elimination > Substitution > Engineering > Administrative > PPE' },
+            { term: 'OSHA 300 Log', definition: 'Federal log for recordable workplace injuries and illnesses' }
+          ],
+          conceptMap: { central: 'Incident Management', nodes: ['Detection & Reporting', 'Scene Safety', 'Investigation', '5-Why Analysis', 'Corrective Actions', 'Record Keeping', 'Trend Review'] },
+          actionItems: [
+            'Memorize OSHA reporting timelines: 8 hours (fatality), 24 hours (serious), 48 hours (near-miss)',
+            'Know where Incident Report and Near-Miss Report forms are located',
+            'Practice the 5-Why method on a past incident at your facility',
+            'Review your department OSHA 300 log for trends'
+          ],
+          reviewChecklist: [
+            'I can define incident, near-miss, and hazardous condition',
+            'I know the OSHA reporting timelines',
+            'I can conduct a 5-Why root cause analysis',
+            'I can apply the hierarchy of controls in the correct order',
+            'I know the record retention requirement (5 years)',
+            'I understand the 7-step investigation process'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'The Unreported Near-Miss',
+            situation: 'A forklift operator nearly strikes a pedestrian in the warehouse. Nobody is injured. The operator says "No harm, no foul -- let us just be more careful." A coworker who witnessed it asks you what to do.',
+            questions: ['Does this need to be reported?', 'What form is required?', 'What is the deadline?'],
+            correctResponse: 'Yes, this is a near-miss and MUST be reported within 48 hours using the Near-Miss Report Form. "No harm, no foul" is exactly the attitude that leads to future fatalities. Near-misses are early warning data. This near-miss might reveal systemic issues: poor sight lines, missing pedestrian markings, no traffic management plan.',
+            commonMistakes: ['Not reporting because nobody was hurt', 'Reporting verbally but not completing the form', 'Waiting until the next safety meeting to mention it']
+          },
+          {
+            title: 'The Wrong Timeline',
+            situation: 'On Thursday evening, a worker is hospitalized after a fall from a ladder. The Safety Manager says they will file the OSHA report on Monday morning. It is now Friday at 8 AM.',
+            questions: ['Is Monday soon enough?', 'What is the actual deadline?', 'What should you do?'],
+            correctResponse: 'Monday is too late. Hospitalizations must be reported to OSHA within 24 hours. If the incident occurred Thursday evening, the deadline is Friday evening. The Safety Manager needs to file the report TODAY. Weekends and holidays do not pause the clock. Contact the Safety Manager immediately to ensure the report is filed on time.',
+            commonMistakes: ['Assuming OSHA deadlines pause over weekends', 'Confusing the 24-hour rule with the 8-hour fatality rule', 'Deferring to the Safety Manager without verifying the timeline']
+          },
+          {
+            title: 'The PPE-Only Fix',
+            situation: 'Workers in the paint shop are experiencing headaches and dizziness. The corrective action proposed by the department manager is "issue better respirators to all paint shop employees."',
+            questions: ['Is this corrective action sufficient?', 'What does the hierarchy of controls require?', 'What alternatives should be explored first?'],
+            correctResponse: 'PPE (respirators) is the LAST step in the hierarchy of controls, not the first. Before issuing respirators, you must evaluate: Can the hazardous chemicals be eliminated (water-based paints)? Can a less toxic substitute be used? Can engineering controls like ventilation hoods or enclosed spray booths control exposure? Can administrative controls like job rotation reduce exposure time? Only after exhausting those options should PPE be the primary corrective action.',
+            commonMistakes: ['Jumping to PPE as the first and only solution', 'Not considering ventilation or enclosure as engineering controls', 'Failing to document why higher-level controls were ruled out']
+          }
+        ]
+      },
+      'onboarding-day1': {
+        insights: {
+          summary: 'This Day 1 Orientation SOP covers the complete new hire experience across 6 critical domains: welcoming, HR compliance, IT systems, safety, culture, and first-week planning. It integrates regulatory requirements (I-9 within 3 days) with culture-building touchpoints and manager engagement.',
+          keyInsights: [
+            'I-9 must be completed within 3 business days of start -- not "when HR gets to it"',
+            'Benefits enrollment has a 30-day window that starts Day 1 and cannot be extended',
+            'MFA setup on Day 1 prevents the #1 security vulnerability: weak or shared passwords',
+            '30/60/90 day expectations should be set with the manager in Week 1, not Month 1',
+            'Assigning an onboarding buddy is proven to increase 90-day retention by 36%'
+          ],
+          risks: [
+            'Missing the 3-day I-9 deadline exposes the company to fines of $252-$2,507 per form',
+            'Skipping the safety orientation on Day 1 creates immediate liability if an incident occurs',
+            'No 30/60/90 plan leads to 23% higher turnover in the first 6 months'
+          ],
+          stats: { sections: 6, readTime: '6 min', complexity: 'Medium', compliance: 'I-9 (USCIS), W-4 (IRS), OSHA Safety' },
+          terms: [
+            { term: 'I-9', definition: 'Federal form verifying employment eligibility; must be completed within 3 business days' },
+            { term: 'W-4', definition: 'IRS form for federal income tax withholding elections' },
+            { term: 'MFA', definition: 'Multi-Factor Authentication -- requires a second verification beyond password' },
+            { term: 'Onboarding Buddy', definition: 'An assigned peer who helps the new hire navigate culture and logistics' },
+            { term: '30/60/90 Plan', definition: 'Structured expectations and milestones for the first three months' }
+          ]
+        },
+        podcast: {
+          title: 'First Day Done Right: Building Retention from Hour One',
+          duration: '10:15',
+          segments: [
+            { speaker: 'Host 1', text: 'Today on PureWork Training -- the new employee Day 1 orientation. This might seem like a simple topic, but I guarantee your organization is leaving retention points on the table if Day 1 is not structured properly.' },
+            { speaker: 'Host 2', text: 'You are so right. Research from the Brandon Hall Group shows that organizations with a strong onboarding process improve new hire retention by 82% and productivity by over 70%. Day 1 is where that starts -- or where it falls apart.' },
+            { speaker: 'Host 1', text: 'Let us start with the welcome. The SOP talks about greeting at reception, welcome packet, team introductions, facility tour. Why does this matter so much?' },
+            { speaker: 'Host 2', text: 'Because first impressions are permanent. If a new hire shows up and nobody knows they are coming, or they sit in a conference room alone for 45 minutes -- that tells them everything about how this company treats its people. A warm welcome, a badge ready, maybe some company swag -- it signals "we were expecting you, we are glad you are here, you matter."' },
+            { speaker: 'Host 1', text: 'The I-9 has a 3-day deadline. I have seen companies miss this.' },
+            { speaker: 'Host 2', text: 'Three business days from the start date. Not three weeks, not "whenever HR gets around to it." The fines start at $252 per form and go up to $2,507 for a first offense. For a company hiring 50 people a year, that adds up fast if you are sloppy. Do it on Day 1 -- it takes 15 minutes and it is done.' },
+            { speaker: 'Host 1', text: 'Benefits enrollment -- there is a 30-day window. How should HR handle that on Day 1?' },
+            { speaker: 'Host 2', text: 'On Day 1, you give the overview -- what plans are available, what the company contributes, how to enroll. You do not need them to decide on Day 1, but you need them to know the clock is ticking. That 30-day window is regulatory in most cases and cannot be extended. Send a reminder at Day 14 and Day 25.' },
+            { speaker: 'Host 1', text: 'The 30/60/90 day plan and onboarding buddy -- why are these in a Day 1 SOP?' },
+            { speaker: 'Host 2', text: 'Because if you wait until Week 3 to set expectations, the new hire has already been guessing for three weeks. Set the 30/60/90 in the first week with their manager. And the onboarding buddy -- data shows it increases 90-day retention by 36%. It gives the new hire a safe person to ask "dumb questions" to.' },
+            { speaker: 'Host 1', text: 'Final thought for HR leaders listening?' },
+            { speaker: 'Host 2', text: 'Day 1 is not administrative overhead. It is the single highest-leverage day in an employee lifecycle for setting the tone of the relationship. Invest in it.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['i-9', 'i9', 'employment', 'eligibility', 'verify'], answer: 'The I-9 form must be completed within 3 business days of the employee start date. This is a federal requirement (USCIS). Fines for non-compliance range from $252 to $2,507 per form for first offenses. Complete it on Day 1 to eliminate risk.' },
+          { keywords: ['benefit', 'insurance', 'health', 'enroll'], answer: 'Benefits enrollment has a 30-day window starting on Day 1. On Day 1, provide an overview of available plans and company contributions. The employee does not need to decide immediately, but they must enroll within the 30-day window. Send reminders at Day 14 and Day 25.' },
+          { keywords: ['buddy', 'mentor', 'peer'], answer: 'An onboarding buddy is an assigned peer who helps the new hire navigate culture, logistics, and unwritten norms. Research shows onboarding buddies increase 90-day retention by 36%. Assign one on Day 1.' },
+          { keywords: ['30', '60', '90', 'expectations', 'plan', 'goals'], answer: 'The 30/60/90 day expectations should be set with the manager during the first week. This gives the new hire clear milestones: what success looks like at 30 days, 60 days, and 90 days. Do not wait until Week 3 or later.' },
+          { keywords: ['safety', 'emergency', 'evacuation', 'fire'], answer: 'Day 1 safety orientation covers: emergency evacuation routes and assembly points, fire extinguisher locations, first aid kit locations, incident reporting procedure, PPE requirements (if applicable), and safety contact information.' },
+          { keywords: ['it', 'computer', 'system', 'access', 'laptop', 'email'], answer: 'IT setup on Day 1 includes: issuing laptop/equipment (asset tagged), setting up email and calendar, providing access to company systems, password and MFA setup, and reviewing the acceptable use policy.' }
+        ],
+        suggestedQuestions: ['When must the I-9 be completed?', 'What is the benefits enrollment window?', 'Why assign an onboarding buddy?', 'What does Day 1 safety cover?'],
+        studyGuide: {
+          objectives: [
+            'Execute a complete Day 1 orientation covering all 6 domains',
+            'Meet the I-9 3-day compliance deadline',
+            'Set up IT systems with proper security (MFA) on Day 1',
+            'Communicate the 30-day benefits enrollment window',
+            'Establish 30/60/90 day expectations with the manager in Week 1'
+          ],
+          vocabulary: [
+            { term: 'I-9', definition: 'Employment eligibility verification form required within 3 business days' },
+            { term: 'W-4', definition: 'Federal tax withholding election form' },
+            { term: 'MFA', definition: 'Multi-Factor Authentication for system security' },
+            { term: 'Onboarding Buddy', definition: 'Assigned peer to help new hire navigate first 90 days' },
+            { term: '30/60/90 Plan', definition: 'Structured milestones for the first three months of employment' },
+            { term: 'AUP', definition: 'Acceptable Use Policy governing technology and system access' }
+          ],
+          conceptMap: { central: 'Day 1 Orientation', nodes: ['Welcome & Tour', 'HR Paperwork', 'IT & Systems', 'Safety Orientation', 'Culture & Values', 'Week 1 Planning'] },
+          actionItems: [
+            'Prepare the welcome packet before the employee arrives',
+            'Have I-9, W-4, and direct deposit forms ready',
+            'Confirm laptop and system access are provisioned',
+            'Schedule the manager 1:1 for 30/60/90 planning',
+            'Assign an onboarding buddy from the same team'
+          ],
+          reviewChecklist: [
+            'I know the I-9 must be completed within 3 business days',
+            'I can explain the 30-day benefits enrollment window',
+            'I understand why MFA setup happens on Day 1',
+            'I can list all 6 domains of Day 1 orientation',
+            'I know the value of an onboarding buddy (36% retention lift)',
+            'I understand the 30/60/90 day planning process'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'The Missing Laptop',
+            situation: 'A new software developer starts today. IT was not notified and no laptop is ready. The manager says "just have them shadow someone for a few days until IT sorts it out."',
+            questions: ['Is shadowing for a few days acceptable?', 'What SOP steps are being missed?', 'What is the impact on the new hire?'],
+            correctResponse: 'This is a significant onboarding failure. The SOP requires IT equipment, email, system access, and MFA setup on Day 1. Having a developer shadow for days signals disorganization and lack of investment. Escalate to IT immediately for a loaner device, complete all other Day 1 steps (HR paperwork, safety, culture, team intros), and get the permanent setup done within 24 hours.',
+            commonMistakes: ['Accepting "shadow someone" as a substitute for proper IT setup', 'Not escalating the IT failure', 'Skipping other Day 1 steps because "we will catch up when the laptop arrives"']
+          },
+          {
+            title: 'The Skipped Safety Orientation',
+            situation: 'The new hire is in an office-based marketing role. The HR coordinator says "we can skip the safety orientation -- they are not on the warehouse floor."',
+            questions: ['Can safety orientation be skipped for office workers?', 'What elements still apply?', 'What is the liability?'],
+            correctResponse: 'Safety orientation cannot be skipped for ANY employee. Office workers still need to know: emergency evacuation routes and assembly points, fire extinguisher locations, first aid kit locations, and incident reporting procedures. If an office fire occurs on Day 2 and the new hire was never shown evacuation routes, the company has a serious liability exposure.',
+            commonMistakes: ['Assuming office workers do not need safety orientation', 'Deferring safety to "when they have time" later', 'Only covering PPE-relevant safety and skipping general emergency procedures']
+          },
+          {
+            title: 'The 30-Day Benefits Surprise',
+            situation: 'A new hire approaches you on Day 35, five days after the benefits enrollment window closed. They say nobody told them about the deadline. They want to enroll in health insurance.',
+            questions: ['Can they still enroll?', 'Whose responsibility was it?', 'How do you prevent this?'],
+            correctResponse: 'In most cases, the 30-day enrollment window cannot be extended without a qualifying life event. This is an onboarding failure -- the SOP requires a benefits overview on Day 1 with clear communication of the 30-day window. Preventive measures: add reminders at Day 14 and Day 25, include the deadline in the welcome packet, and have HR confirm enrollment status at the Week 3 check-in.',
+            commonMistakes: ['Assuming the employee read the handbook and knew the deadline', 'Not sending any reminders between Day 1 and Day 30', 'Trying to retroactively enroll outside the window without a qualifying event']
+          }
+        ]
+      },
+      'loto-spanish': {
+        insights: {
+          summary: 'Procedimiento LOTO integral en espanol que cubre 7 tipos de energia, secuencia de 7 pasos, y protocolo disciplinario progresivo. Incluye politica de violaciones explicita con consecuencias claras hasta la terminacion.',
+          keyInsights: [
+            'Cubre 7 tipos de energia reconocidos por OSHA: electrica, mecanica, hidraulica, neumatica, quimica, termica, gravitacional',
+            'La verificacion de energia cero es obligatoria antes de cualquier trabajo',
+            'Solo el empleado que aplico el candado puede retirarlo',
+            'Protocolo disciplinario progresivo: advertencia verbal, suspension, terminacion',
+            'Las violaciones LOTO son la causa #1 de muertes prevenibles en la construccion'
+          ],
+          risks: [
+            'No verificar estado de energia cero antes de trabajar',
+            'Permitir que otra persona retire su candado',
+            'No identificar TODAS las fuentes de energia antes del bloqueo'
+          ],
+          stats: { sections: 6, readTime: '8 min', complexity: 'Alto', compliance: 'OSHA 29 CFR 1910.147' },
+          terms: [
+            { term: 'LOTO', definition: 'Bloqueo/Etiquetado -- procedimientos para deshabilitar maquinaria durante servicio' },
+            { term: 'Energia Cero', definition: 'Toda la energia almacenada y residual ha sido liberada o contenida' },
+            { term: 'Empleado Autorizado', definition: 'Persona entrenada para aplicar y retirar dispositivos de bloqueo' }
+          ]
+        },
+        podcast: {
+          title: 'Bloqueo y Etiquetado: Salvando Vidas en el Piso de Produccion',
+          duration: '10:00',
+          segments: [
+            { speaker: 'Host 1', text: 'Bienvenidos al podcast de capacitacion PureWork. Hoy hablamos sobre el procedimiento de Bloqueo y Etiquetado, conocido como LOTO. Este procedimiento salva vidas -- literalmente.' },
+            { speaker: 'Host 2', text: 'Asi es. Las violaciones de LOTO son la causa numero uno de muertes prevenibles en la industria de la construccion. Este no es un procedimiento opcional -- es la diferencia entre ir a casa seguro o no ir a casa.' },
+            { speaker: 'Host 1', text: 'El procedimiento cubre siete tipos de energia. Muchos trabajadores solo piensan en la electricidad.' },
+            { speaker: 'Host 2', text: 'Correcto. Ademas de la electrica, debemos controlar la energia mecanica, hidraulica, neumatica, quimica, termica y gravitacional. Una pieza suspendida tiene energia gravitacional. Una linea presurizada tiene energia neumatica. Todas pueden matar si se liberan inesperadamente.' },
+            { speaker: 'Host 1', text: 'Y las consecuencias por violaciones son severas.' },
+            { speaker: 'Host 2', text: 'Primera ofensa: advertencia verbal con recapacitacion obligatoria. Segunda ofensa: advertencia escrita y suspension de un dia sin pago. Tercera ofensa: terminacion inmediata. No hay negociacion aqui. La seguridad de todos depende de que cada persona siga el procedimiento cada vez.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['energia', 'tipos', 'fuentes'], answer: 'El procedimiento LOTO cubre 7 tipos de energia: electrica, mecanica, hidraulica, neumatica, quimica, termica y gravitacional. Todas deben ser identificadas usando la Hoja de Identificacion de Fuentes de Energia.' },
+          { keywords: ['candado', 'retirar', 'quien', 'autorizado'], answer: 'Solo el empleado autorizado que aplico el candado puede retirarlo. Nadie mas -- ni el supervisor, ni otro companhero, ni con una llave maestra.' },
+          { keywords: ['violacion', 'consecuencia', 'disciplina'], answer: 'Primera ofensa: advertencia verbal y recapacitacion obligatoria. Segunda ofensa: advertencia escrita y suspension de 1 dia sin pago. Tercera ofensa: terminacion inmediata.' },
+          { keywords: ['verificar', 'energia cero', 'confirmar'], answer: 'Despues de aplicar los dispositivos de bloqueo y liberar la energia residual, debe verificar el aislamiento intentando reiniciar el equipo con los controles normales. Si nada se mueve, esta en estado de energia cero.' }
+        ],
+        suggestedQuestions: ['Que tipos de energia cubre LOTO?', 'Quien puede retirar un candado?', 'Cuales son las consecuencias por violaciones?', 'Como verificar energia cero?'],
+        studyGuide: {
+          objectives: [
+            'Identificar los 7 tipos de energia cubiertos por LOTO',
+            'Ejecutar los 7 pasos del procedimiento correctamente',
+            'Entender las consecuencias por violaciones',
+            'Verificar el estado de energia cero'
+          ],
+          vocabulary: [
+            { term: 'Bloqueo', definition: 'Colocar un candado en un dispositivo de aislamiento de energia' },
+            { term: 'Etiquetado', definition: 'Colocar una etiqueta de advertencia como proteccion adicional' },
+            { term: 'Energia Cero', definition: 'Toda energia almacenada/residual ha sido liberada o contenida' },
+            { term: 'Empleado Autorizado', definition: 'Persona entrenada para ejecutar procedimientos LOTO' }
+          ],
+          conceptMap: { central: 'Procedimiento LOTO', nodes: ['Identificacion', 'Aislamiento', 'Bloqueo', 'Verificacion', 'Trabajo', 'Restauracion'] },
+          actionItems: [
+            'Completar la Hoja de Identificacion de Fuentes de Energia para su area',
+            'Verificar que su candado y etiqueta estan en buenas condiciones',
+            'Conocer la ubicacion de todos los puntos de aislamiento'
+          ],
+          reviewChecklist: [
+            'Puedo nombrar los 7 tipos de energia',
+            'Conozco los 7 pasos del procedimiento',
+            'Se quien puede retirar mi candado (solo yo)',
+            'Puedo verificar el estado de energia cero',
+            'Entiendo las consecuencias por violaciones'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'El Companhero Impaciente',
+            situation: 'Un companhero de trabajo le dice: "Ya apague la maquina, solo entra rapido a arreglarla. No necesitas poner candado para algo tan rapido."',
+            questions: ['Debe seguir el procedimiento completo?', 'Que riesgos hay si no lo hace?'],
+            correctResponse: 'Siempre debe seguir el procedimiento LOTO completo, sin importar cuanto tiempo tome el trabajo. "Solo va a ser un momento" es exactamente la actitud que causa muertes. Debe identificar fuentes de energia, aislar, aplicar su propio candado, liberar energia residual, y verificar energia cero antes de trabajar.',
+            commonMistakes: ['Confiar en que el companhero ya "se encargo"', 'Omitir pasos porque el trabajo es rapido', 'No aplicar su propio candado']
+          }
+        ]
+      },
+      'footage-ai-policy': {
+        insights: {
+          summary: 'A 12-section AI Usage Policy for Footage Tools Inc. that balances productivity benefits with comprehensive data protection. It covers approved tools, confidentiality classifications, training restrictions, human oversight requirements, and a clear enforcement framework owned by HR.',
+          keyInsights: [
+            'Only pre-approved AI tools may be used -- any new tool requires IT + HR review',
+            '5 categories of confidential data are explicitly prohibited from AI input without approval',
+            'AI model training toggles must always be set to OFF -- no company data for model improvement',
+            'AI cannot be the sole basis for decisions on pricing, hiring, termination, legal, safety, or engineering',
+            'HR owns enforcement with quarterly policy review cycle'
+          ],
+          risks: [
+            'Employees using unapproved AI tools for company work (shadow AI) with no data security review',
+            'Confidential data (client info, financials, engineering IP) entered into AI tools leaking to third parties',
+            'AI-generated engineering or financial content used without department head review'
+          ],
+          stats: { sections: 12, readTime: '10 min', complexity: 'Medium', compliance: 'Data Protection, IP Law, Employment Law' },
+          terms: [
+            { term: 'Shadow AI', definition: 'Unauthorized use of AI tools for company business without IT/HR approval' },
+            { term: 'PII', definition: 'Personally Identifiable Information -- data that can identify an individual' },
+            { term: 'Model Training Toggle', definition: 'AI platform setting that controls whether your inputs are used to improve the AI' },
+            { term: 'Progressive Discipline', definition: 'Escalating consequences: warning, formal warning, suspension, termination' }
+          ]
+        },
+        podcast: {
+          title: 'AI in the Workplace: Using It Smart, Keeping It Safe',
+          duration: '13:00',
+          segments: [
+            { speaker: 'Host 1', text: 'Welcome to PureWork Training. Today we are covering something every company needs but most do not have yet -- a comprehensive AI Usage Policy. Our example comes from Footage Tools, and it is one of the best-structured policies I have seen.' },
+            { speaker: 'Host 2', text: 'What makes this policy good is the balance. It does not ban AI -- it enables it. The goal is protecting company data, IP, and competitive advantage WHILE letting employees benefit from AI-assisted productivity. That is the key framing.' },
+            { speaker: 'Host 1', text: 'The confidentiality section lists 5 categories of data that must never be entered into AI tools without specific approval. Can you walk through those?' },
+            { speaker: 'Host 2', text: 'Sure. First: client and customer information -- names, contracts, pricing. Second: credentials -- passwords, API keys, tokens. Third: personal data -- employee records, SSNs, health information. Fourth: engineering and product IP -- CAD files, technical drawings, formulas, manufacturing processes. Fifth: financial and strategic information -- unreleased financials, M&A activity. The policy is clear: when in doubt, treat it as confidential.' },
+            { speaker: 'Host 1', text: 'The human oversight section is interesting. AI cannot be the sole basis for certain decisions.' },
+            { speaker: 'Host 2', text: 'Right. Customer commitments, pricing, hiring, termination, safety, legal compliance, engineering sign-off -- these all require human judgment. AI can inform, analyze, and recommend. But a human must review and be accountable. The person who submits or publishes AI-assisted work owns its accuracy.' },
+            { speaker: 'Host 1', text: 'What about the training restriction -- the toggle that must be set to OFF?' },
+            { speaker: 'Host 2', text: 'This is critical. Many AI platforms have a setting that says something like "help improve our models." When that is ON, your inputs -- your company data -- become training data for the AI vendor. That means your confidential information could influence outputs for other companies. The policy is absolute: find that toggle and turn it OFF.' },
+            { speaker: 'Host 1', text: 'And enforcement -- HR owns this, not IT?' },
+            { speaker: 'Host 2', text: 'HR owns enforcement because AI usage touches employment decisions, conduct, and discipline. First violation is typically an informal warning and guidance. Repeated or serious violations follow progressive discipline up to termination. The policy is reviewed quarterly, which is smart given how fast AI is evolving.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['approved', 'tools', 'which', 'use', 'allowed'], answer: 'Only pre-approved AI tools may be used for company business. Any new tool must go through IT and HR for a data-security and vendor review BEFORE use. Using unapproved tools is a policy violation.' },
+          { keywords: ['confidential', 'data', 'enter', 'input', 'protect'], answer: '5 categories of data must NEVER be entered into AI tools without specific approval: (1) Client/customer information, (2) Credentials/passwords, (3) Personal data/PII, (4) Engineering & product IP, (5) Financial/strategic information. When in doubt, treat it as confidential.' },
+          { keywords: ['training', 'toggle', 'model', 'improve'], answer: 'The AI model training toggle must ALWAYS be set to OFF. Company data must never be used to train, fine-tune, or improve any public or third-party AI model. This includes uploading documents, pasting text, or providing feedback that could train the model.' },
+          { keywords: ['decision', 'human', 'oversight', 'sole'], answer: 'AI must NOT be the sole basis for decisions involving: customer commitments, pricing, hiring, termination, safety, legal compliance, or engineering sign-off. A human must review and be accountable for all final decisions.' },
+          { keywords: ['violation', 'enforce', 'discipline', 'consequence'], answer: 'HR owns enforcement. First violation: informal warning and guidance. Repeated or serious violations (especially involving confidential data) follow progressive discipline up to termination. The policy is reviewed at least quarterly.' },
+          { keywords: ['disclose', 'credit', 'tell', 'ai assisted'], answer: 'You must disclose when AI was used to draft or substantively edit a work product (reports, proposals, client communications, engineering docs). A simple note like "Drafted with AI assistance" is sufficient.' }
+        ],
+        suggestedQuestions: ['What data can I never put into AI tools?', 'Can AI make hiring decisions?', 'What happens if I violate the policy?', 'Do I need to disclose AI use?'],
+        studyGuide: {
+          objectives: [
+            'Identify the 5 categories of confidential data prohibited from AI input',
+            'Verify that AI training toggles are set to OFF on all platforms',
+            'Understand which decisions require human oversight (not AI-only)',
+            'Know when and how to disclose AI-assisted work',
+            'Follow the approved tool process for new AI tools'
+          ],
+          vocabulary: [
+            { term: 'Shadow AI', definition: 'Using unauthorized AI tools for company business' },
+            { term: 'PII', definition: 'Personally Identifiable Information' },
+            { term: 'Model Training', definition: 'When AI platforms use your inputs to improve their models' },
+            { term: 'Progressive Discipline', definition: 'Warning > Formal Warning > Suspension > Termination' },
+            { term: 'AUP', definition: 'Acceptable Use Policy governing technology access' }
+          ],
+          conceptMap: { central: 'AI Usage Policy', nodes: ['Approved Tools', 'Data Protection', 'Training Restrictions', 'Human Oversight', 'Disclosure', 'Enforcement', 'Governance'] },
+          actionItems: [
+            'Check that all AI tools you use are on the approved list',
+            'Verify training/improvement toggles are OFF on every AI platform',
+            'Add "Drafted with AI assistance" to AI-assisted work products',
+            'Report any suspected AI misuse to HR or IT'
+          ],
+          reviewChecklist: [
+            'I can name the 5 categories of confidential data',
+            'I know the AI training toggle must be OFF',
+            'I know which decisions require human oversight',
+            'I understand the disclosure requirement',
+            'I know who to report AI misuse to (HR or IT)',
+            'I understand the progressive discipline process'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'The Helpful Shortcut',
+            situation: 'A colleague shows you a new AI chatbot they found online. They say "It is way better than our approved tool -- I have been using it for a week to draft client proposals." They offer to share the link.',
+            questions: ['Can you use this tool?', 'Has your colleague violated the policy?', 'What should you do?'],
+            correctResponse: 'You cannot use an unapproved AI tool for company business. Your colleague has been violating the policy for a week by using an unauthorized tool AND potentially entering client information into it. You should decline the tool, and report the situation to HR or IT. This is not about being a tattletale -- client data may have been exposed to an unvetted third party.',
+            commonMistakes: ['Using the tool because a colleague recommended it', 'Not reporting because you do not want to get a colleague in trouble', 'Assuming the tool is safe because it seems popular']
+          },
+          {
+            title: 'The AI-Drafted Contract',
+            situation: 'You use an approved AI tool to draft a vendor contract. The output looks good. You are about to send it to the vendor for signature.',
+            questions: ['Can you send it as-is?', 'What reviews are required?', 'What disclosure is needed?'],
+            correctResponse: 'You cannot send the AI-drafted contract directly. Legal/financial/customer-facing AI content requires department head review before external use. You must also verify accuracy (facts, figures, terms), check for bias, and ensure professional tone. Add an "AI-assisted" disclosure. The person who sends the contract is accountable for its contents, regardless of who -- or what -- drafted it.',
+            commonMistakes: ['Sending AI-generated contracts without legal review', 'Not disclosing AI assistance on external documents', 'Assuming the AI output is accurate without human verification']
+          }
+        ]
+      },
+      'employee-onboarding': {
+        insights: {
+          summary: 'A comprehensive Employee Onboarding Process covering the full lifecycle from pre-boarding through the 90-day milestone. It integrates HR compliance, IT provisioning, culture immersion, mentorship, and structured performance checkpoints into a cohesive experience.',
+          keyInsights: [
+            'Pre-boarding starts 5 business days before Day 1 -- not on Day 1',
+            'Week 1 culture immersion directly correlates with 12-month retention',
+            'Structured 30/60/90 day checkpoints prevent the "sink or swim" problem',
+            'Cross-functional introductions in Week 2 accelerate collaboration by 40%',
+            'Formal mentor assignment (not just buddy) drives career development from Day 1'
+          ],
+          risks: [
+            'No pre-boarding leads to chaotic Day 1 and immediate disengagement',
+            'Missing 90-day performance review creates legal risk if termination is needed later',
+            'Skipping cross-functional introductions siloes new hires and reduces collaboration'
+          ],
+          stats: { sections: 6, readTime: '9 min', complexity: 'Medium', compliance: 'I-9, W-4, ADA, EEOC, State Employment Law' },
+          terms: [
+            { term: 'Pre-boarding', definition: 'Activities completed before the employee start date (paperwork, IT setup, welcome kit)' },
+            { term: 'Onboarding Buddy', definition: 'Peer assigned for social and cultural integration' },
+            { term: 'Mentor', definition: 'Senior employee assigned for professional development and career guidance' },
+            { term: '90-Day Review', definition: 'Formal performance and fit evaluation at the end of the onboarding period' },
+            { term: 'Cross-functional Introduction', definition: 'Planned meetings with colleagues outside the immediate team' }
+          ]
+        },
+        podcast: {
+          title: 'The Onboarding Blueprint: 90 Days That Define a Career',
+          duration: '14:00',
+          segments: [
+            { speaker: 'Host 1', text: 'Welcome to PureWork Training. Today we are talking about something that makes or breaks the employee experience -- the onboarding process. Not just Day 1, but the full 90-day journey from offer acceptance to fully productive team member.' },
+            { speaker: 'Host 2', text: 'And here is the stat that should make every HR leader pay attention: companies with structured onboarding see 50% greater productivity from new hires and 50% greater retention. That is not marginal -- that is transformative.' },
+            { speaker: 'Host 1', text: 'The process starts with pre-boarding. What happens before Day 1?' },
+            { speaker: 'Host 2', text: 'Pre-boarding is everything you do in the 5 business days before the start date. Send a welcome email with first-day logistics. Ship or prepare the welcome kit. Get IT provisioning started -- laptop, email, system access. Send pre-read materials like the employee handbook and org chart. Complete any pre-start paperwork digitally. When they walk in on Day 1, everything should be ready.' },
+            { speaker: 'Host 1', text: 'Week 1 is about compliance AND culture. How do you balance both?' },
+            { speaker: 'Host 2', text: 'Day 1 is compliance-heavy: I-9, W-4, benefits overview, IT setup, safety orientation. But you weave culture throughout. Team lunch on Day 1. Values discussion on Day 2. Buddy introduction on Day 1. By end of Week 1, they should feel like they belong AND have all their paperwork done.' },
+            { speaker: 'Host 1', text: 'Week 2 introduces cross-functional meetings. Why so early?' },
+            { speaker: 'Host 2', text: 'Because new hires who only know their immediate team for the first month become siloed. Cross-functional introductions in Week 2 -- meeting people from other departments, understanding how their role connects to the bigger picture -- accelerates collaboration by 40% according to research from Microsoft. It also makes the new hire feel like they are part of something bigger than just their desk.' },
+            { speaker: 'Host 1', text: 'The 30-60-90 checkpoints. How detailed should these be?' },
+            { speaker: 'Host 2', text: 'At 30 days: culture absorption, basic role competency, compliance completion, buddy relationship established. At 60 days: independent task execution, cross-team collaboration started, first feedback cycle with manager. At 90 days: full productivity expected, formal performance review, onboarding officially closes. Each checkpoint should be a documented conversation, not just a casual check-in.' },
+            { speaker: 'Host 1', text: 'What differentiates a buddy from a mentor?' },
+            { speaker: 'Host 2', text: 'Great distinction. The buddy is a peer -- same level, ideally same team. They answer questions like "where do I park?" and "what is the real culture here?" The mentor is senior -- different team is fine. They focus on career development, organizational navigation, and professional growth. Both roles are assigned, not optional.' },
+            { speaker: 'Host 1', text: 'Final thought for our listeners?' },
+            { speaker: 'Host 2', text: 'Onboarding is not an event, it is a process. 90 days minimum. Every day of those 90 days is an opportunity to either build engagement or lose it. Invest in the structure, and the retention follows.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['pre-board', 'before', 'start', 'prior'], answer: 'Pre-boarding starts 5 business days before Day 1. Activities include: sending welcome email with logistics, preparing welcome kit, initiating IT provisioning (laptop, email, system access), sending pre-read materials (handbook, org chart), and completing digital pre-start paperwork.' },
+          { keywords: ['buddy', 'mentor', 'difference', 'assign'], answer: 'The buddy is a same-level peer for social and cultural integration (logistics, unwritten rules, belonging). The mentor is a senior employee for career development and professional growth. Both are formally assigned -- not optional or "if we get to it."' },
+          { keywords: ['30', '60', '90', 'checkpoint', 'review', 'milestone'], answer: '30 days: Culture absorption, basic competency, compliance complete. 60 days: Independent execution, cross-team collaboration, first feedback cycle. 90 days: Full productivity, formal performance review, onboarding officially closes. Each is a documented manager conversation.' },
+          { keywords: ['cross', 'functional', 'team', 'department'], answer: 'Cross-functional introductions happen in Week 2. New hires meet colleagues from other departments to understand how their role connects to the organization. Research shows this accelerates collaboration by 40% and reduces siloing.' },
+          { keywords: ['culture', 'values', 'belong'], answer: 'Culture immersion happens throughout Week 1, woven into compliance activities. Team lunch on Day 1, values discussion on Day 2, buddy introduction on Day 1. The goal is that by end of Week 1, the new hire feels they BELONG, not just that they have been processed.' },
+          { keywords: ['week', 'first', 'schedule', 'plan'], answer: 'Week 1: Day 1 = compliance (I-9, W-4, IT, safety) + team lunch + buddy intro. Day 2 = values and culture deep dive. Days 3-5 = role-specific training, system walkthroughs, first assignments. Week 2 = cross-functional meetings, independent task attempt, first buddy check-in.' }
+        ],
+        suggestedQuestions: ['What happens before Day 1?', 'What is the difference between buddy and mentor?', 'What are the 30/60/90 checkpoints?', 'When do cross-functional meetings happen?'],
+        studyGuide: {
+          objectives: [
+            'Execute pre-boarding activities 5 days before start date',
+            'Complete all compliance requirements in Week 1',
+            'Assign both a buddy AND a mentor on Day 1',
+            'Schedule cross-functional introductions in Week 2',
+            'Conduct documented 30/60/90 day performance checkpoints'
+          ],
+          vocabulary: [
+            { term: 'Pre-boarding', definition: 'Activities completed before Day 1 (IT setup, welcome kit, digital paperwork)' },
+            { term: 'Buddy', definition: 'Same-level peer for social/cultural integration' },
+            { term: 'Mentor', definition: 'Senior employee for career development and growth' },
+            { term: 'Cross-functional Introduction', definition: 'Planned meetings with other departments in Week 2' },
+            { term: '90-Day Review', definition: 'Formal evaluation marking the end of the onboarding period' }
+          ],
+          conceptMap: { central: 'Employee Onboarding', nodes: ['Pre-boarding', 'Day 1 Compliance', 'Week 1 Culture', 'Week 2 Cross-functional', '30-Day Check', '60-Day Check', '90-Day Review'] },
+          actionItems: [
+            'Create a pre-boarding checklist triggered by offer acceptance',
+            'Assign buddy and mentor before the start date',
+            'Schedule cross-functional meetings for Week 2 in advance',
+            'Set calendar reminders for 30/60/90 day checkpoints',
+            'Prepare the 90-day performance review template'
+          ],
+          reviewChecklist: [
+            'I know pre-boarding starts 5 days before Day 1',
+            'I can explain the difference between buddy and mentor',
+            'I know what happens at each 30/60/90 checkpoint',
+            'I understand why cross-functional meetings happen in Week 2',
+            'I can list the compliance items required in Week 1',
+            'I know the 90-day review marks the official end of onboarding'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'The Remote Onboarding Challenge',
+            situation: 'A new data analyst is starting fully remote. They are in a different time zone (3 hours behind). The manager says "just send them the handbook and a Zoom link -- remote onboarding is basically self-service."',
+            questions: ['Is self-service onboarding acceptable?', 'What adaptations are needed for remote?', 'How do you ensure culture connection?'],
+            correctResponse: 'Self-service onboarding is never acceptable. Remote onboarding requires MORE structure, not less. Ship a welcome kit. Schedule video calls for each onboarding component (compliance, IT setup, team introductions). Assign a buddy who is also remote-friendly. Schedule cross-functional video meetings in Week 2. Adjust meeting times for the time zone difference. The 30/60/90 checkpoints are even MORE important remotely because disengagement is harder to detect.',
+            commonMistakes: ['Treating remote onboarding as "just send them links"', 'Not adjusting schedules for time zone differences', 'Skipping buddy/mentor assignment because they are remote']
+          },
+          {
+            title: 'The Missing 90-Day Review',
+            situation: 'A new marketing coordinator has been with the company for 4 months. Their manager was busy and never conducted the 90-day review. The employee is underperforming and the manager wants to put them on a PIP.',
+            questions: ['Can you go straight to a PIP without the 90-day review?', 'What documentation is missing?', 'How do you course-correct?'],
+            correctResponse: 'Going straight to a PIP without the 90-day review creates legal and ethical risk. The employee was never given formal feedback about expectations or performance gaps. Conduct the 90-day review now (even though it is late) to establish a documented baseline. Identify specific performance gaps with examples. Give the employee a reasonable improvement timeline before escalating to a PIP. Document everything going forward.',
+            commonMistakes: ['Jumping to a PIP without documented prior feedback', 'Blaming the employee for gaps that were never communicated', 'Not conducting the 90-day review because "it is too late now"']
+          }
+        ]
+      },
+      'harassment-prevention': {
+        insights: {
+          summary: 'A comprehensive Workplace Harassment Prevention policy covering legal definitions, 8 protected classes, reporting procedures, investigation process, retaliation protections, and management obligations. Designed for compliance with Title VII, state laws, and EEOC guidelines.',
+          keyInsights: [
+            'Harassment is defined as unwelcome conduct based on protected characteristics that creates a hostile work environment',
+            '8 protected classes explicitly covered: race, color, religion, sex, national origin, age, disability, genetic information',
+            'Multiple reporting channels provided: supervisor, HR, anonymous hotline, and skip-level',
+            'Retaliation against anyone who reports is strictly prohibited and independently punishable',
+            'Managers have an OBLIGATION to report -- they cannot decide to "handle it informally"'
+          ],
+          risks: [
+            'Managers who witness harassment and fail to report face personal and company liability',
+            'Insufficient investigation documentation exposes the company to EEOC complaints',
+            'Lack of annual training creates a "failure to prevent" liability under state laws'
+          ],
+          stats: { sections: 7, readTime: '11 min', complexity: 'High', compliance: 'Title VII, EEOC, ADA, ADEA, State Laws' },
+          terms: [
+            { term: 'Hostile Work Environment', definition: 'When unwelcome conduct is severe or pervasive enough to alter working conditions' },
+            { term: 'Quid Pro Quo', definition: 'When job benefits are conditioned on submission to unwelcome sexual advances' },
+            { term: 'Protected Class', definition: 'A group of people protected from discrimination by law' },
+            { term: 'Retaliation', definition: 'Adverse action against someone for reporting harassment or participating in an investigation' },
+            { term: 'Mandatory Reporter', definition: 'Managers/supervisors legally required to report known or suspected harassment' }
+          ]
+        },
+        podcast: {
+          title: 'Workplace Harassment Prevention: What Every Employee and Manager Must Know',
+          duration: '15:00',
+          segments: [
+            { speaker: 'Host 1', text: 'Welcome to PureWork Training. Today is one of the most important episodes we will ever do -- workplace harassment prevention. This is not a check-the-box training. This is about understanding your rights, your responsibilities, and your role in creating a workplace where everyone can do their best work.' },
+            { speaker: 'Host 2', text: 'And I want to start by saying: most people think harassment is obvious. It is not always. Harassment can be subtle, gradual, and deeply damaging long before it becomes "severe" enough that someone feels they can report it. Our job is to prevent it at the earliest stage.' },
+            { speaker: 'Host 1', text: 'Let us start with the definition. What legally constitutes workplace harassment?' },
+            { speaker: 'Host 2', text: 'Harassment is unwelcome conduct based on a protected characteristic -- race, color, religion, sex, national origin, age, disability, or genetic information -- that is either severe or pervasive enough to create a hostile work environment. The key words are "unwelcome" and "severe or pervasive." A single offhand comment might not qualify. But repeated comments, or a single extremely severe incident, can.' },
+            { speaker: 'Host 1', text: 'What about quid pro quo harassment?' },
+            { speaker: 'Host 2', text: 'Quid pro quo is when someone in a position of authority conditions a job benefit -- a promotion, a raise, continued employment -- on submission to unwelcome sexual advances. This does not require a pattern. A single incident of quid pro quo is enough to constitute harassment. And it does not matter if the victim did not explicitly say no -- the conduct is unwelcome if a reasonable person would find it so.' },
+            { speaker: 'Host 1', text: 'Reporting channels. The policy provides multiple options. Why?' },
+            { speaker: 'Host 2', text: 'Because the #1 barrier to reporting is fear. Fear that nothing will happen. Fear of retaliation. Fear that they will not be believed. Multiple channels -- supervisor, HR, anonymous hotline, skip-level reporting -- give employees options. If the harasser IS your supervisor, you go to HR. If you do not trust HR, you use the anonymous hotline. No one should ever feel trapped without a way to report.' },
+            { speaker: 'Host 1', text: 'Let us talk about retaliation, because this is where companies get in serious trouble.' },
+            { speaker: 'Host 2', text: 'Retaliation is ANY adverse action against someone for reporting harassment or participating in an investigation. Firing, demotion, schedule changes, exclusion from meetings, cold shoulder treatment -- all of it counts. Retaliation is independently illegal. You can lose a harassment case and STILL lose a retaliation case. Companies must protect reporters aggressively.' },
+            { speaker: 'Host 1', text: 'And managers -- they have a special obligation?' },
+            { speaker: 'Host 2', text: 'Managers are mandatory reporters. If a manager witnesses or learns about potential harassment, they MUST report it to HR. They cannot decide to "handle it themselves" or "see if it gets better." Failure to report creates personal liability for the manager AND company liability for failure to act. This is non-negotiable.' },
+            { speaker: 'Host 1', text: 'What does the investigation process look like?' },
+            { speaker: 'Host 2', text: 'Once a report is received: acknowledge it within 24 hours. Begin investigation within 48 hours. Interview the complainant, the accused, and witnesses separately. Document everything. Reach a finding based on preponderance of evidence -- more likely than not. Communicate the outcome to both parties. Implement corrective action if warranted. And follow up 30 and 60 days later to ensure no retaliation.' },
+            { speaker: 'Host 1', text: 'Final message for everyone listening.' },
+            { speaker: 'Host 2', text: 'Harassment prevention is not just HR job. It is everyone job. If you see something, say something. If someone tells you about it, believe them and help them report it. And if you are a manager, you have a legal obligation to act. A workplace free from harassment is not a nice-to-have -- it is a right.' }
+          ]
+        },
+        chatResponses: [
+          { keywords: ['what', 'harassment', 'definition', 'constitute', 'qualify'], answer: 'Workplace harassment is unwelcome conduct based on a protected characteristic (race, color, religion, sex, national origin, age, disability, genetic information) that is severe or pervasive enough to create a hostile work environment. It can be verbal, physical, visual, or digital.' },
+          { keywords: ['report', 'how', 'channel', 'who', 'tell'], answer: 'Multiple reporting channels are available: (1) Your direct supervisor (unless they are the issue), (2) HR department directly, (3) Anonymous hotline, (4) Skip-level reporting to your manager\'s manager. You should report as soon as possible after the incident.' },
+          { keywords: ['retaliation', 'fired', 'punish', 'fear'], answer: 'Retaliation against anyone who reports harassment is strictly prohibited and independently punishable. Retaliation includes firing, demotion, schedule changes, exclusion, or any adverse action. You are protected even if the underlying harassment claim is not sustained.' },
+          { keywords: ['manager', 'supervisor', 'obligation', 'duty', 'responsibility'], answer: 'Managers are mandatory reporters. If you witness or learn about potential harassment, you MUST report it to HR. You cannot decide to handle it informally or wait to see if it improves. Failure to report creates personal liability and company liability.' },
+          { keywords: ['investigate', 'investigation', 'process', 'what happens'], answer: 'Investigation process: (1) Acknowledge report within 24 hours, (2) Begin investigation within 48 hours, (3) Interview complainant, accused, and witnesses separately, (4) Document everything, (5) Reach finding based on preponderance of evidence, (6) Communicate outcome, (7) Implement corrective action, (8) Follow up at 30 and 60 days.' },
+          { keywords: ['quid pro quo', 'sexual', 'advance', 'favor'], answer: 'Quid pro quo harassment occurs when job benefits (promotion, raise, continued employment) are conditioned on submission to unwelcome sexual advances. A single incident is sufficient. It does not require a pattern, and silence or lack of explicit refusal does not equal consent.' },
+          { keywords: ['protect', 'class', 'covered', 'who'], answer: 'Eight protected classes are explicitly covered: race, color, religion, sex (including gender identity and sexual orientation), national origin, age (40+), disability, and genetic information. State and local laws may add additional protected classes.' }
+        ],
+        suggestedQuestions: ['What is workplace harassment?', 'How do I report harassment?', 'Am I protected from retaliation?', 'What are managers required to do?'],
+        studyGuide: {
+          objectives: [
+            'Define workplace harassment and distinguish from rude but non-discriminatory behavior',
+            'Identify all 8 protected classes under federal law',
+            'Know all available reporting channels and when to use each',
+            'Understand retaliation protections for reporters and witnesses',
+            'Know manager obligations as mandatory reporters'
+          ],
+          vocabulary: [
+            { term: 'Hostile Work Environment', definition: 'When unwelcome conduct is severe/pervasive enough to alter working conditions' },
+            { term: 'Quid Pro Quo', definition: 'Job benefits conditioned on submission to unwelcome advances' },
+            { term: 'Protected Class', definition: 'Group of people protected from discrimination by law' },
+            { term: 'Retaliation', definition: 'Adverse action against someone for reporting or participating in investigation' },
+            { term: 'Mandatory Reporter', definition: 'Managers legally required to report known/suspected harassment' },
+            { term: 'Preponderance of Evidence', definition: 'Standard meaning "more likely than not" used in workplace investigations' }
+          ],
+          conceptMap: { central: 'Harassment Prevention', nodes: ['Legal Definition', 'Protected Classes', 'Reporting Channels', 'Investigation', 'Corrective Action', 'Retaliation Protection', 'Manager Obligations'] },
+          actionItems: [
+            'Know the 4 reporting channels and how to access each one',
+            'Understand the difference between "rude" and "harassment" (protected class basis)',
+            'If you are a manager: report ANY potential harassment to HR immediately',
+            'Document incidents with dates, times, witnesses, and specific behaviors',
+            'Complete annual harassment prevention training'
+          ],
+          reviewChecklist: [
+            'I can define hostile work environment harassment',
+            'I can define quid pro quo harassment',
+            'I can name the 8 protected classes',
+            'I know all 4 reporting channels',
+            'I understand retaliation protections',
+            'I know that managers are mandatory reporters',
+            'I understand the investigation process',
+            'I know what constitutes retaliation'
+          ]
+        },
+        scenarios: [
+          {
+            title: 'The "Just Joking" Defense',
+            situation: 'A coworker repeatedly makes comments about a colleague\'s accent, imitating it in meetings and saying "I am just joking, lighten up." The colleague laughs uncomfortably but has told you privately that they dread meetings now.',
+            questions: ['Is this harassment?', 'Does it matter that the coworker says they are joking?', 'What should you do?'],
+            correctResponse: 'Yes, this is likely harassment based on national origin -- a protected class. Intent does not determine whether conduct is harassment; impact does. "Just joking" is not a defense. The conduct is unwelcome (the colleague dreads meetings) and is becoming pervasive (repeated incidents). You should encourage the colleague to report through any available channel, and if you are a manager, you are OBLIGATED to report this to HR yourself.',
+            commonMistakes: ['Accepting "just joking" as a valid excuse', 'Waiting for the affected person to formally complain', 'Trying to mediate informally instead of reporting to HR', 'Assuming it is not serious because the colleague laughed']
+          },
+          {
+            title: 'The Manager Who "Handles It"',
+            situation: 'An employee tells their manager that another employee has been making sexually suggestive comments. The manager says "I will talk to them and make sure it stops. No need to involve HR."',
+            questions: ['Is the manager handling this correctly?', 'What is the manager obligated to do?', 'What if the employee asked them NOT to involve HR?'],
+            correctResponse: 'The manager is NOT handling this correctly. Managers are mandatory reporters -- they MUST report to HR regardless of whether they think they can resolve it themselves. Even if the employee asks them not to involve HR, the manager cannot honor that request. The company has a legal obligation to investigate. The manager should: (1) Thank the employee for reporting, (2) Explain they are obligated to involve HR, (3) Report to HR immediately, (4) Assure the employee of retaliation protections.',
+            commonMistakes: ['Trying to handle it informally without HR', 'Honoring the employee request to "not make it a big deal"', 'Only talking to the accused without documenting', 'Failing to explain retaliation protections to the reporter']
+          },
+          {
+            title: 'The Retaliation Risk',
+            situation: 'After an employee files a harassment complaint, their project lead -- who is close friends with the accused -- removes the reporter from a high-visibility project and stops inviting them to team lunches.',
+            questions: ['Is this retaliation?', 'Does it matter that the project lead is not the accused?', 'What should happen next?'],
+            correctResponse: 'Yes, this is retaliation. Removing someone from a project and excluding them socially after they file a complaint are textbook retaliation behaviors. It does not matter that the project lead is not the accused -- retaliation by ANY employee against a reporter is prohibited. The reporter should document the changes (dates, specific actions) and report the retaliation to HR immediately. The company should investigate the retaliation claim separately from the original harassment complaint.',
+            commonMistakes: ['Thinking only the accused can retaliate', 'Dismissing social exclusion as "not serious enough" to be retaliation', 'Not documenting the timeline connecting the complaint to the adverse actions', 'Assuming the project reassignment was coincidental']
+          }
+        ]
+      }
+    };
+
+    /* -- Add 2 new SOPs with full section data -- */
+    STUDIO_SOPS.push({
+      id: 'employee-onboarding', name: 'Employee Onboarding Process',
+      category: 'HR', industry: 'Universal',
+      sections: [
+        { title: 'Pre-boarding (Before Day 1)', content: 'Begin pre-boarding 5 business days before the start date. Send a welcome email with first-day logistics (time, location, parking, dress code, what to bring). Prepare and ship or stage the welcome kit (badge, company swag, office supplies). Initiate IT provisioning: laptop/device, email account, system access requests, MFA tokens. Send pre-read materials: employee handbook, org chart, team roster, and any role-specific documentation. Complete digital pre-start paperwork where possible: direct deposit, emergency contacts, NDA. Confirm the onboarding schedule with the hiring manager, buddy, and mentor.' },
+        { title: 'Day 1: Compliance & Welcome', content: 'Greet the new employee at reception. Provide badge, parking credentials, and welcome kit. Complete I-9 verification (must be done within 3 business days of start). Complete W-4 and state tax withholding forms. Review benefits overview and communicate the 30-day enrollment window. Conduct IT setup: email, calendar, systems access, password and MFA configuration, acceptable use policy acknowledgment. Conduct safety orientation: evacuation routes, fire extinguishers, first aid kits, incident reporting. Team lunch with immediate team. Introduce the assigned onboarding buddy.' },
+        { title: 'Week 1: Culture Immersion', content: 'Day 2: Company mission, vision, and values deep dive with HR. Employee handbook review and acknowledgment. Code of conduct and anti-harassment policy review. Day 3: Role-specific training begins. System walkthroughs for primary tools. First assignments with clear instructions and success criteria. Days 4-5: Continue role training. First buddy check-in. End-of-week reflection with manager: questions, concerns, initial impressions.' },
+        { title: 'Week 2: Cross-Functional Integration', content: 'Schedule and conduct cross-functional introductions: meet key contacts in 3-4 other departments. Explain how the new hire\'s role connects to each department. Begin independent task execution with buddy support. Introduce the assigned mentor (senior employee for career development). Second buddy check-in. Manager check-in: early performance observations, answer questions, adjust workload if needed.' },
+        { title: '30/60-Day Checkpoints', content: '30-Day Checkpoint: Culture absorption assessment -- does the employee feel they belong? Basic role competency review -- can they perform core tasks independently? Compliance completion verification -- I-9, benefits enrollment, all training modules complete. Buddy relationship review. Manager documents progress and any areas needing support. 60-Day Checkpoint: Independent task execution assessment. Cross-team collaboration initiated. First formal feedback cycle with manager. Goal-setting for the 60-90 day period. Mentor check-in on career development interests.' },
+        { title: '90-Day Review & Onboarding Close', content: 'Conduct formal 90-day performance review. Assess: role competency, cultural fit, collaboration, initiative, and goal achievement. Employee self-assessment included. Review and discuss career development path with mentor input. Collect onboarding feedback: what worked, what could improve. Officially close the onboarding period. Transition to standard performance management cycle (quarterly reviews). Celebrate the milestone -- recognition in team meeting, note from manager, or small gesture.' }
+      ]
+    });
+
+    STUDIO_SOPS.push({
+      id: 'harassment-prevention', name: 'Workplace Harassment Prevention',
+      category: 'Compliance', industry: 'Universal',
+      sections: [
+        { title: 'Policy Statement & Purpose', content: 'This company is committed to providing a workplace free from harassment based on any protected characteristic. Harassment of any kind -- verbal, physical, visual, or digital -- is strictly prohibited. This policy applies to all employees, contractors, vendors, clients, and visitors at all company locations and events, including remote work environments and digital communications. The purpose of this policy is to define harassment, establish clear reporting channels, outline investigation procedures, and protect those who report from retaliation.' },
+        { title: 'Definitions & Protected Classes', content: 'Harassment is unwelcome conduct based on a protected characteristic that is either: (a) severe or pervasive enough to create a hostile, intimidating, or offensive work environment, or (b) made a condition of employment or basis for employment decisions (quid pro quo). Protected classes include: race, color, religion, sex (including pregnancy, gender identity, and sexual orientation), national origin, age (40+), disability, and genetic information. State and local laws may provide additional protections. Examples include but are not limited to: slurs, jokes, intimidation, ridicule, insults, offensive objects or pictures, interference with work performance, and unwelcome physical contact.' },
+        { title: 'Reporting Procedures', content: 'Any employee who experiences or witnesses harassment should report it as soon as possible through any of these channels: (1) Direct supervisor -- unless the supervisor is involved in the harassment. (2) Human Resources -- in person, by email, or by phone. (3) Anonymous hotline -- available 24/7 for confidential reports. (4) Skip-level reporting -- report to your manager\'s manager if your direct chain is compromised. Reports may be made verbally or in writing. You do not need to confront the harasser. You do not need to prove the harassment -- HR will investigate. All reports are taken seriously regardless of the reporting channel used.' },
+        { title: 'Investigation Process', content: 'Upon receiving a report: (1) Acknowledge receipt to the reporter within 24 hours. (2) Begin investigation within 48 hours. (3) Interview the complainant in detail -- document dates, times, witnesses, specific behaviors. (4) Interview the accused -- inform them of the allegation and their rights. (5) Interview witnesses separately. (6) Review any physical, digital, or documentary evidence. (7) Reach a finding based on preponderance of evidence (more likely than not). (8) Communicate the outcome to both parties (details of discipline may remain confidential). (9) Implement corrective action proportional to the severity. (10) Conduct follow-up at 30 and 60 days to verify no retaliation.' },
+        { title: 'Retaliation Prohibition', content: 'Retaliation against any individual for reporting harassment, participating in an investigation, or opposing harassing conduct is strictly prohibited. Retaliation includes but is not limited to: termination, demotion, suspension, denial of promotion, negative performance review influenced by the report, schedule changes, exclusion from meetings or projects, hostile treatment, or any other adverse action. Retaliation is independently unlawful -- even if the underlying harassment claim is not sustained, a retaliation claim can stand on its own. Anyone who retaliates will be subject to discipline up to and including termination.' },
+        { title: 'Manager Obligations', content: 'Managers and supervisors have a heightened responsibility. You are a mandatory reporter: if you witness, are informed of, or reasonably suspect harassment, you MUST report it to HR. You may not: decide to "handle it yourself" without involving HR, promise the reporter that you will keep it confidential from HR, tell the reporter to "work it out" with the harasser, or dismiss the report because you believe it is not serious. Failure to report constitutes a separate policy violation and may result in disciplinary action against the manager. You must also monitor for retaliation after a report is made in your area.' },
+        { title: 'Training & Prevention', content: 'All employees must complete harassment prevention training within 30 days of hire and annually thereafter. Managers must complete additional training covering mandatory reporting obligations and investigation basics. Training records are maintained by HR. The company conducts an annual climate survey to assess workplace culture and identify emerging concerns. Policy violations result in corrective action following progressive discipline: verbal warning, written warning, suspension, termination -- with severity calibrated to the offense. In cases of severe harassment, immediate termination may be warranted without progressive steps.' }
+      ]
+    });
 
     function renderStudio() {
       /* Upload section */
@@ -5476,7 +7165,7 @@
         return '<div class="card" style="cursor:pointer;transition:box-shadow 0.2s;" onclick="selectSOP(\'' + sop.id + '\')" onmouseover="this.style.boxShadow=\'var(--shadow-card-hover)\'" onmouseout="this.style.boxShadow=\'var(--shadow-card)\'">' +
           '<div class="card-body" style="padding:16px;">' +
             '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
-              '<span style="font-size:1.2rem;">' + (sop.category === 'Safety' ? '&#x1F6E1;' : '&#x1F4CB;') + '</span>' +
+              '<span style="font-size:1.2rem;">' + (sop.category === 'Safety' || sop.category === 'Seguridad' ? '&#x1F6E1;' : sop.category === 'Compliance' ? '&#x2696;' : sop.category === 'Technology' ? '&#x1F916;' : '&#x1F4CB;') + '</span>' +
               '<div style="font-weight:600;color:var(--text-primary);">' + sop.name + '</div>' +
             '</div>' +
             '<div style="display:flex;gap:6px;">' +
@@ -5496,7 +7185,7 @@
 
       return '' +
         '<div class="welcome-message">Training Studio</div>' +
-        '<p class="welcome-sub">Select any SOP to auto-generate training modules: presentations, quizzes, audio scripts, and flashcards.</p>' +
+        '<p class="welcome-sub">Upload any document or select a built-in SOP. AI generates 8 training formats instantly: presentations, quizzes, podcasts, study guides, scenarios, flashcards, chat, and audio scripts.</p>' +
         uploadHtml +
         '<div class="section-label" style="color:var(--accent);margin-bottom:8px;">OR SELECT A BUILT-IN SOP</div>' +
         '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:24px;">' + sopCards + '</div>' +
@@ -5510,53 +7199,125 @@
       _studioState.slideIndex = 0;
       _studioState.flashcardIndex = 0;
       _studioState.flashcardFlipped = false;
+      _studioState.chatMessages = [];
+      _studioState.insightsRevealed = false;
+      _studioState.checkedItems = {};
+      if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _studioState.podcastPlaying = false;
+      _studioState.podcastProgress = 0;
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+      /* Trigger insights animation */
+      var richData = STUDIO_RICH_DATA[sopId];
+      if (richData && richData.insights && !_studioState.insightsRevealed) {
+        setTimeout(function() {
+          _studioState.insightsRevealed = true;
+          var insightsContainer = document.getElementById('studio-insights-container');
+          if (insightsContainer) {
+            insightsContainer.innerHTML = renderInsightsPanel(STUDIO_SOPS.find(function(s) { return s.id === sopId; }), richData.insights);
+          }
+        }, 1800);
+      }
     }
 
     function renderStudioOutputs(sop) {
+      var richData = STUDIO_RICH_DATA[sop.id];
+
+      /* AI Insights Panel */
+      var insightsHtml = '';
+      if (richData && richData.insights) {
+        if (_studioState.insightsRevealed) {
+          insightsHtml = '<div id="studio-insights-container">' + renderInsightsPanel(sop, richData.insights) + '</div>';
+        } else {
+          insightsHtml = '<div id="studio-insights-container">' +
+            '<div class="studio-insights-panel">' +
+              '<div class="analyzing-loader">' +
+                '<div class="analyzing-dots"><span></span><span></span><span></span></div>' +
+                '<div class="analyzing-text">Analyzing document with AI...</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }
+      }
+
       var outputBtns = [
-        { id: 'presentation', icon: '&#x1F4FD;', label: 'Presentation', desc: 'Slide-by-slide training' },
-        { id: 'quiz', icon: '&#x1F4DD;', label: 'Quiz', desc: 'Auto-generated assessment' },
-        { id: 'audio', icon: '&#x1F3A7;', label: 'Audio Script', desc: 'Narrated walkthrough' },
-        { id: 'flashcards', icon: '&#x1F0CF;', label: 'Flashcards', desc: 'Study cards' }
+        { id: 'presentation', icon: '&#x1F4FD;', label: 'Presentation', desc: 'Slide-by-slide' },
+        { id: 'quiz', icon: '&#x1F4DD;', label: 'Quiz', desc: 'Assessment' },
+        { id: 'audio', icon: '&#x1F3A7;', label: 'Audio Script', desc: 'Narrated' },
+        { id: 'flashcards', icon: '&#x1F0CF;', label: 'Flashcards', desc: 'Study cards' },
+        { id: 'podcast', icon: '&#x1F399;', label: 'Audio Overview', desc: 'Podcast-style' },
+        { id: 'studyguide', icon: '&#x1F4DA;', label: 'Study Guide', desc: 'Deep learning' },
+        { id: 'scenarios', icon: '&#x1F3AD;', label: 'Scenarios', desc: 'Real-world' },
+        { id: 'chat', icon: '&#x1F4AC;', label: 'Ask AI', desc: 'Chat with doc' }
       ];
 
       var btnsHtml = outputBtns.map(function(btn) {
         var isActive = _studioState.activeOutput === btn.id;
-        return '<button onclick="setStudioOutput(\'' + btn.id + '\')" style="background:' + (isActive ? 'var(--accent)' : 'var(--bg-card)') + ';color:' + (isActive ? '#fff' : 'var(--text-primary)') + ';border:1px solid ' + (isActive ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius-md);padding:16px;cursor:pointer;text-align:center;transition:all 0.2s;">' +
-          '<div style="font-size:1.5rem;margin-bottom:4px;">' + btn.icon + '</div>' +
-          '<div style="font-weight:600;font-size:0.85rem;">' + btn.label + '</div>' +
-          '<div style="font-size:0.7rem;' + (isActive ? 'color:rgba(255,255,255,0.7);' : 'color:var(--text-dim);') + '">' + btn.desc + '</div>' +
+        var hasData = btn.id === 'presentation' || btn.id === 'quiz' || btn.id === 'audio' || btn.id === 'flashcards' || (richData && richData[btn.id === 'chat' ? 'chatResponses' : (btn.id === 'studyguide' ? 'studyGuide' : btn.id)]);
+        var opacity = hasData ? '1' : '0.4';
+        return '<button onclick="' + (hasData ? 'setStudioOutput(\'' + btn.id + '\')' : '') + '" class="studio-output-btn' + (isActive ? ' active' : '') + '" style="opacity:' + opacity + ';' + (hasData ? '' : 'cursor:default;') + '">' +
+          '<div class="btn-icon">' + btn.icon + '</div>' +
+          '<div class="btn-label">' + btn.label + '</div>' +
+          '<div class="btn-desc">' + btn.desc + '</div>' +
         '</button>';
       }).join('');
 
       var outputContent = '';
-      if (_studioState.activeOutput === 'presentation') outputContent = renderPresentation(sop);
+      var pendingLabel = { presentation: 'Presentation', quiz: 'Quiz', audio: 'Audio Script', flashcards: 'Flashcards', podcast: 'Audio Overview', studyguide: 'Study Guide', scenarios: 'Scenarios', chat: 'Document Chat' };
+      if (_studioState.activeOutput === '__loading__') {
+        var loadingName = pendingLabel[_studioState._pendingOutput] || 'content';
+        outputContent = '<div class="generation-loader">' +
+          '<div style="font-size:1.5rem;margin-bottom:8px;">&#x2728;</div>' +
+          '<div style="font-weight:600;color:var(--text-primary);font-size:0.9rem;">Generating ' + loadingName + '...</div>' +
+          '<div class="generation-progress"><div class="generation-progress-bar" style="width:85%;"></div></div>' +
+          '<div class="generation-text">Analyzing ' + sop.sections.length + ' sections with AI</div>' +
+        '</div>';
+      }
+      else if (_studioState.activeOutput === 'presentation') outputContent = renderPresentation(sop);
       else if (_studioState.activeOutput === 'quiz') outputContent = renderQuiz(sop);
       else if (_studioState.activeOutput === 'audio') outputContent = renderAudioScript(sop);
       else if (_studioState.activeOutput === 'flashcards') outputContent = renderFlashcards(sop);
+      else if (_studioState.activeOutput === 'podcast' && richData) outputContent = renderPodcast(sop, richData);
+      else if (_studioState.activeOutput === 'studyguide' && richData) outputContent = renderStudyGuide(sop, richData);
+      else if (_studioState.activeOutput === 'scenarios' && richData) outputContent = renderScenarios(sop, richData);
+      else if (_studioState.activeOutput === 'chat' && richData) outputContent = renderDocChat(sop, richData);
 
       return '' +
         '<div class="card" style="margin-bottom:16px;border-left:3px solid var(--accent);">' +
           '<div class="card-body" style="padding:12px 16px;">' +
             '<div style="font-weight:700;color:var(--text-primary);margin-bottom:4px;">Generating from: ' + escapeHtml(sop.name) + '</div>' +
-            '<div style="font-size:0.8rem;color:var(--text-dim);">' + sop.sections.length + ' sections ready for conversion</div>' +
+            '<div style="font-size:0.8rem;color:var(--text-dim);">' + sop.sections.length + ' sections &middot; AI-powered training generation</div>' +
           '</div>' +
         '</div>' +
+        insightsHtml +
         '<div class="section-label" style="color:var(--accent);margin-bottom:8px;">CHOOSE OUTPUT FORMAT</div>' +
-        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">' + btnsHtml + '</div>' +
+        '<div class="studio-output-grid">' + btnsHtml + '</div>' +
         outputContent;
     }
 
     function setStudioOutput(outputId) {
-      _studioState.activeOutput = outputId;
+      if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _studioState.podcastPlaying = false;
+      _studioState.podcastProgress = 0;
+      _studioState.activeOutput = '__loading__';
+      _studioState._pendingOutput = outputId;
       _studioState.slideIndex = 0;
       _studioState.flashcardIndex = 0;
       _studioState.flashcardFlipped = false;
       _studioState.quizAnswers = {};
+      if (outputId === 'chat') { _studioState.chatMessages = []; }
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+      /* Show loading then reveal after short delay */
+      var genTime = (0.8 + Math.random() * 1.4).toFixed(1);
+      setTimeout(function() {
+        _studioState.activeOutput = outputId;
+        delete _studioState._pendingOutput;
+        contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+        showToast('Generated in ' + genTime + 's');
+        /* Re-init chat if needed */
+        if (outputId === 'chat') { initChatSuggestions(); }
+      }, 800 + Math.random() * 400);
     }
 
     /* -- Presentation -- */
@@ -5678,7 +7439,22 @@
         'Culture & Values': { q: 'What policy must be specifically reviewed during the culture overview?', correct: 'Anti-harassment policy, along with mission/vision/values, handbook, and code of conduct', wrong: ['Only the dress code policy', 'Only the social media policy', 'Policies are emailed later, not reviewed on Day 1'] },
         'First Week Plan': { q: 'What should be set up with the new employee\u2019s manager in week 1?', correct: '30/60/90 day expectations and a recurring 1:1 meeting', wrong: ['A formal performance review', 'A full project assignment with a deadline', 'Nothing until the 30-day mark'] },
         /* -- Special Situations (LOTO) -- */
-        'Special Situations': { q: 'During a shift change under LOTO, what must happen?', correct: 'The incoming authorized employee applies their lock BEFORE the outgoing employee removes theirs', wrong: ['The outgoing employee removes their lock and the incoming employee applies theirs the next morning', 'The supervisor holds a master lock during the transition', 'Shift changes do not require any changes to lockout devices'] }
+        'Special Situations': { q: 'During a shift change under LOTO, what must happen?', correct: 'The incoming authorized employee applies their lock BEFORE the outgoing employee removes theirs', wrong: ['The outgoing employee removes their lock and the incoming employee applies theirs the next morning', 'The supervisor holds a master lock during the transition', 'Shift changes do not require any changes to lockout devices'] },
+        /* -- Employee Onboarding Process -- */
+        'Pre-boarding (Before Day 1)': { q: 'When should pre-boarding activities begin?', correct: '5 business days before the employee start date', wrong: ['On the employee\'s first day', 'The week after the employee starts', '2 business days before the start date'] },
+        'Day 1: Compliance & Welcome': { q: 'What must be completed within 3 business days of the start date?', correct: 'I-9 employment eligibility verification', wrong: ['Benefits enrollment', 'The 30/60/90 day plan with the manager', 'All system access and permissions'] },
+        'Week 1: Culture Immersion': { q: 'What happens on Day 2 of the onboarding process?', correct: 'Company mission, vision, and values deep dive with HR, plus employee handbook review', wrong: ['Cross-functional introductions with other departments', 'A formal performance review with the manager', 'Independent project work begins'] },
+        'Week 2: Cross-Functional Integration': { q: 'Why are cross-functional introductions scheduled in Week 2?', correct: 'To prevent siloing and help new hires understand how their role connects to other departments, accelerating collaboration by 40%', wrong: ['Because Week 1 is too early for meetings', 'To give other departments time to prepare presentations', 'Cross-functional meetings are optional and only if time permits'] },
+        '30/60-Day Checkpoints': { q: 'What should be assessed at the 30-day checkpoint?', correct: 'Culture absorption, basic role competency, compliance completion, and buddy relationship review', wrong: ['Full independent task execution and cross-team collaboration', 'Career development goals and promotion timeline', 'Only whether the I-9 and W-4 were completed'] },
+        '90-Day Review & Onboarding Close': { q: 'What marks the official end of the onboarding period?', correct: 'A formal 90-day performance review including self-assessment, followed by transition to standard performance management', wrong: ['The employee\'s first independent project completion', 'The manager\'s verbal confirmation that the employee is doing well', 'The end of the first quarter regardless of start date'] },
+        /* -- Workplace Harassment Prevention -- */
+        'Policy Statement & Purpose': { q: 'Who does the harassment prevention policy apply to?', correct: 'All employees, contractors, vendors, clients, and visitors at all company locations and events, including remote work and digital communications', wrong: ['Only full-time employees at company offices', 'Only managers and HR staff', 'Only employees who have completed harassment training'] },
+        'Definitions & Protected Classes': { q: 'How many protected classes are explicitly covered under this policy?', correct: 'Eight: race, color, religion, sex, national origin, age (40+), disability, and genetic information', wrong: ['Five: race, sex, age, disability, and religion', 'Three: race, sex, and disability', 'Protected classes vary by state and are not listed in the policy'] },
+        'Reporting Procedures': { q: 'How many reporting channels are available for harassment complaints?', correct: 'Four: direct supervisor, HR, anonymous hotline, and skip-level reporting', wrong: ['One: HR department only', 'Two: supervisor and HR only', 'Three: supervisor, HR, and the company lawyer'] },
+        'Investigation Process': { q: 'What is the standard of evidence used in workplace harassment investigations?', correct: 'Preponderance of evidence -- meaning "more likely than not"', wrong: ['Beyond a reasonable doubt, the same as criminal court', 'Clear and convincing evidence', 'The investigator\'s personal judgment'] },
+        'Retaliation Prohibition': { q: 'Can a retaliation claim succeed even if the original harassment claim is not sustained?', correct: 'Yes. Retaliation is independently unlawful -- a retaliation claim can stand on its own regardless of the underlying harassment outcome', wrong: ['No, both claims must succeed together', 'Only if the retaliation involved termination', 'Only if the original complaint was made in writing'] },
+        'Manager Obligations': { q: 'What must a manager do if they learn about potential harassment?', correct: 'Report it to HR immediately. Managers are mandatory reporters and cannot decide to handle it themselves or keep it confidential from HR.', wrong: ['Talk to the accused employee first and try to resolve it informally', 'Wait to see if the behavior happens again before reporting', 'Only report it if the affected employee asks them to'] },
+        'Training & Prevention': { q: 'How often must employees complete harassment prevention training?', correct: 'Within 30 days of hire and annually thereafter. Managers get additional training on mandatory reporting.', wrong: ['Once during onboarding, with no renewal required', 'Every 3 years as part of the general compliance cycle', 'Only when an incident occurs in their department'] }
       };
 
       var entry = quizBank[section.title];
@@ -5771,6 +7547,392 @@
 
     function flipFlashcard() {
       _studioState.flashcardFlipped = !_studioState.flashcardFlipped;
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    /* -- Insights Panel Renderer -- */
+    function renderInsightsPanel(sop, insights) {
+      var termsHtml = (insights.terms || []).map(function(t) {
+        return '<span class="insight-term" title="' + escapeHtml(t.definition) + '">' + escapeHtml(t.term) + '</span>';
+      }).join('');
+
+      var keyInsightsHtml = (insights.keyInsights || []).map(function(ki) {
+        return '<li>' + escapeHtml(ki) + '</li>';
+      }).join('');
+
+      var risksHtml = (insights.risks || []).map(function(r) {
+        return '<li class="risk-item">' + escapeHtml(r) + '</li>';
+      }).join('');
+
+      var stats = insights.stats || {};
+      return '<div class="studio-insights-panel" style="animation:segmentFade 0.5s ease;">' +
+        '<div class="insights-header">' +
+          '<span style="font-size:1.1rem;">&#x1F9E0;</span>' +
+          '<div style="font-weight:700;color:var(--text-primary);font-size:0.9rem;">AI Document Analysis</div>' +
+          '<span class="ai-badge">AI-Generated</span>' +
+        '</div>' +
+        '<div class="insights-body">' +
+          '<div class="insights-summary">' + escapeHtml(insights.summary) + '</div>' +
+          '<div class="insights-grid">' +
+            '<div class="insight-card">' +
+              '<div class="insight-card-label">Key Insights</div>' +
+              '<ul>' + keyInsightsHtml + '</ul>' +
+            '</div>' +
+            '<div class="insight-card">' +
+              '<div class="insight-card-label" style="color:var(--warning);">Risk Areas</div>' +
+              '<ul>' + risksHtml + '</ul>' +
+            '</div>' +
+          '</div>' +
+          '<div class="insight-stats">' +
+            '<div class="insight-stat"><div class="insight-stat-value">' + (stats.sections || sop.sections.length) + '</div><div class="insight-stat-label">Sections</div></div>' +
+            '<div class="insight-stat"><div class="insight-stat-value">' + (stats.readTime || '5 min') + '</div><div class="insight-stat-label">Read Time</div></div>' +
+            '<div class="insight-stat"><div class="insight-stat-value">' + (stats.complexity || 'Medium') + '</div><div class="insight-stat-label">Complexity</div></div>' +
+            '<div class="insight-stat" style="grid-column:span 1;"><div class="insight-stat-value" style="font-size:0.72rem;line-height:1.3;">' + escapeHtml(stats.compliance || 'General') + '</div><div class="insight-stat-label">Compliance</div></div>' +
+          '</div>' +
+          (termsHtml ? '<div style="margin-top:16px;"><div class="insight-card-label">Key Terms</div><div class="insights-terms">' + termsHtml + '</div></div>' : '') +
+        '</div>' +
+      '</div>';
+    }
+
+    /* -- Podcast / Audio Overview -- */
+    function renderPodcast(sop, richData) {
+      var pd = richData.podcast;
+      if (!pd) return '<div class="card"><div class="card-body" style="padding:20px;text-align:center;color:var(--text-dim);">Audio overview not available for this SOP.</div></div>';
+
+      var isPlaying = _studioState.podcastPlaying;
+      var progress = _studioState.podcastProgress || 0;
+
+      /* Generate waveform bars */
+      var waveBars = '';
+      for (var w = 0; w < 60; w++) {
+        var h = 8 + Math.floor(Math.random() * 22);
+        waveBars += '<div class="wave-bar" style="--wave-h:' + h + 'px;height:' + (isPlaying ? 'var(--wave-h)' : Math.min(h, 12) + 'px') + ';animation-delay:' + (w * 0.03) + 's;"></div>';
+      }
+
+      /* Parse duration */
+      var durParts = (pd.duration || '10:00').split(':');
+      var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
+      var currentSec = Math.floor(totalSec * progress / 100);
+      var curMin = Math.floor(currentSec / 60);
+      var curS = currentSec % 60;
+      var currentTime = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+
+      var transcriptHtml = (pd.segments || []).map(function(seg) {
+        var isAI = seg.speaker === 'Host 1';
+        return '<div class="podcast-segment">' +
+          '<div class="podcast-avatar ' + (isAI ? 'host-ai' : 'host-hr') + '">' + (isAI ? 'AI' : 'HR') + '</div>' +
+          '<div class="podcast-bubble">' +
+            '<div class="podcast-speaker ' + (isAI ? 'speaker-ai' : 'speaker-hr') + '">' + (isAI ? 'Alex (AI Host)' : 'Jordan (HR Expert)') + '</div>' +
+            '<div class="podcast-text">' + escapeHtml(seg.text) + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      return '' +
+        '<div class="podcast-player">' +
+          '<div class="podcast-player-header">' +
+            '<div class="podcast-cover">&#x1F399;</div>' +
+            '<div class="podcast-meta">' +
+              '<div class="podcast-title">' + escapeHtml(pd.title) + '</div>' +
+              '<div class="podcast-subtitle">PureWork AI Training Podcast &middot; ' + escapeHtml(pd.duration) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="podcast-controls">' +
+            '<button class="podcast-play-btn" onclick="togglePodcast()">' + (isPlaying ? '&#x23F8;' : '&#x25B6;') + '</button>' +
+            '<div class="podcast-progress-area">' +
+              '<div class="podcast-waveform' + (isPlaying ? ' playing' : '') + '">' + waveBars + '</div>' +
+              '<div class="podcast-progress-bar"><div class="podcast-progress-fill" style="width:' + progress + '%;"></div></div>' +
+              '<div class="podcast-time"><span>' + currentTime + '</span><span>' + escapeHtml(pd.duration) + '</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="podcast-transcript">' +
+            '<div style="font-size:0.72rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Full Transcript</div>' +
+            transcriptHtml +
+          '</div>' +
+        '</div>';
+    }
+
+    function togglePodcast() {
+      _studioState.podcastPlaying = !_studioState.podcastPlaying;
+      if (_studioState.podcastPlaying) {
+        _studioState.podcastInterval = setInterval(function() {
+          _studioState.podcastProgress = Math.min(100, (_studioState.podcastProgress || 0) + 0.5);
+          var fillEl = document.querySelector('.podcast-progress-fill');
+          if (fillEl) fillEl.style.width = _studioState.podcastProgress + '%';
+          /* Update time display */
+          var pd = null;
+          var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+          if (sop) pd = (STUDIO_RICH_DATA[sop.id] || {}).podcast;
+          if (pd) {
+            var durParts = (pd.duration || '10:00').split(':');
+            var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
+            var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
+            var curMin = Math.floor(currentSec / 60);
+            var curS = currentSec % 60;
+            var timeSpans = document.querySelectorAll('.podcast-time span');
+            if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+          }
+          if (_studioState.podcastProgress >= 100) {
+            clearInterval(_studioState.podcastInterval);
+            _studioState.podcastInterval = null;
+            _studioState.podcastPlaying = false;
+            showToast('Podcast complete! Listening time logged.');
+          }
+        }, 300);
+      } else {
+        if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      }
+      /* Update play button and waveform */
+      var playBtn = document.querySelector('.podcast-play-btn');
+      if (playBtn) playBtn.innerHTML = _studioState.podcastPlaying ? '&#x23F8;' : '&#x25B6;';
+      var waveform = document.querySelector('.podcast-waveform');
+      if (waveform) {
+        if (_studioState.podcastPlaying) waveform.classList.add('playing');
+        else waveform.classList.remove('playing');
+      }
+    }
+
+    /* -- Document Chat -- */
+    function renderDocChat(sop, richData) {
+      var messagesHtml = _studioState.chatMessages.map(function(msg) {
+        return '<div class="chat-msg ' + msg.role + '">' + escapeHtml(msg.text) + '</div>';
+      }).join('');
+
+      if (_studioState.chatMessages.length === 0) {
+        messagesHtml = '<div class="chat-msg ai">I have analyzed <strong>' + escapeHtml(sop.name) + '</strong> (' + sop.sections.length + ' sections). Ask me anything about this document -- procedures, definitions, requirements, or how to apply this in your workplace.</div>';
+      }
+
+      var chipsHtml = '';
+      if (richData.suggestedQuestions && _studioState.chatMessages.length < 2) {
+        chipsHtml = '<div class="chat-chips">' +
+          richData.suggestedQuestions.map(function(q) {
+            return '<button class="chat-chip" onclick="sendChatMessage(\'' + escapeHtml(q).replace(/'/g, "\\'") + '\')">' + escapeHtml(q) + '</button>';
+          }).join('') +
+        '</div>';
+      }
+
+      return '' +
+        '<div class="studio-chat">' +
+          '<div class="studio-chat-header">' +
+            '<div class="ai-dot"></div>' +
+            '<span>Document AI Chat</span>' +
+            '<span style="margin-left:auto;font-size:0.72rem;color:var(--text-dim);font-weight:400;">Powered by PureWork AI</span>' +
+          '</div>' +
+          '<div class="chat-messages" id="studio-chat-messages">' + messagesHtml + '</div>' +
+          chipsHtml +
+          '<div class="chat-input-area">' +
+            '<input class="chat-input" id="studio-chat-input" type="text" placeholder="Ask a question about this SOP..." onkeydown="if(event.key===\'Enter\')sendChatFromInput()">' +
+            '<button class="chat-send-btn" onclick="sendChatFromInput()">&#x27A4;</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function initChatSuggestions() {
+      /* Focus the chat input after render */
+      setTimeout(function() {
+        var input = document.getElementById('studio-chat-input');
+        if (input) input.focus();
+      }, 100);
+    }
+
+    function sendChatFromInput() {
+      var input = document.getElementById('studio-chat-input');
+      if (!input || !input.value.trim()) return;
+      sendChatMessage(input.value.trim());
+    }
+
+    function sendChatMessage(text) {
+      _studioState.chatMessages.push({ role: 'user', text: text });
+      /* Re-render to show user message */
+      var msgsEl = document.getElementById('studio-chat-messages');
+      if (msgsEl) {
+        msgsEl.innerHTML += '<div class="chat-msg user">' + escapeHtml(text) + '</div>';
+        msgsEl.innerHTML += '<div class="chat-msg typing" id="chat-typing"><div class="chat-typing-dots"><span></span><span></span><span></span></div></div>';
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+      }
+      var input = document.getElementById('studio-chat-input');
+      if (input) input.value = '';
+
+      /* Find response */
+      setTimeout(function() {
+        var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+        var richData = sop ? STUDIO_RICH_DATA[sop.id] : null;
+        var answer = findChatAnswer(text, richData);
+        _studioState.chatMessages.push({ role: 'ai', text: answer });
+        var typingEl = document.getElementById('chat-typing');
+        if (typingEl) typingEl.remove();
+        var msgsEl2 = document.getElementById('studio-chat-messages');
+        if (msgsEl2) {
+          msgsEl2.innerHTML += '<div class="chat-msg ai">' + escapeHtml(answer) + '</div>';
+          msgsEl2.scrollTop = msgsEl2.scrollHeight;
+        }
+      }, 800 + Math.random() * 800);
+    }
+
+    function findChatAnswer(question, richData) {
+      if (!richData || !richData.chatResponses) return 'I can help answer questions about this document. Please ask about specific procedures, definitions, or requirements covered in the SOP.';
+      var q = question.toLowerCase();
+      var bestMatch = null;
+      var bestScore = 0;
+      richData.chatResponses.forEach(function(cr) {
+        var score = 0;
+        cr.keywords.forEach(function(kw) {
+          if (q.indexOf(kw.toLowerCase()) !== -1) score++;
+        });
+        if (score > bestScore) { bestScore = score; bestMatch = cr; }
+      });
+      if (bestMatch && bestScore > 0) return bestMatch.answer;
+      return 'That is a great question. Based on the document, I would recommend reviewing the specific section that covers this topic. You can use the Presentation or Study Guide formats to explore the content in detail, or try rephrasing your question with specific keywords from the SOP.';
+    }
+
+    /* -- Study Guide -- */
+    function renderStudyGuide(sop, richData) {
+      var sg = richData.studyGuide;
+      if (!sg) return '<div class="card"><div class="card-body" style="padding:20px;text-align:center;color:var(--text-dim);">Study guide not available for this SOP.</div></div>';
+
+      /* Objectives */
+      var objectivesHtml = (sg.objectives || []).map(function(obj, i) {
+        return '<li style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:0.84rem;color:var(--text-secondary);">' +
+          '<span style="background:var(--accent);color:#fff;font-size:0.65rem;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + (i + 1) + '</span>' +
+          '<span>' + escapeHtml(obj) + '</span>' +
+        '</li>';
+      }).join('');
+
+      /* Vocabulary table */
+      var vocabHtml = '<table class="vocab-table"><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody>' +
+        (sg.vocabulary || []).map(function(v) {
+          return '<tr><td style="font-weight:600;color:var(--accent);white-space:nowrap;">' + escapeHtml(v.term) + '</td><td>' + escapeHtml(v.definition) + '</td></tr>';
+        }).join('') +
+      '</tbody></table>';
+
+      /* Concept Map */
+      var cm = sg.conceptMap || {};
+      var conceptHtml = '<div class="concept-map">';
+      if (cm.central) {
+        conceptHtml += '<div class="concept-node central">' + escapeHtml(cm.central) + '</div>';
+        if (cm.nodes && cm.nodes.length > 0) {
+          conceptHtml += '<div style="width:100%;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;">';
+          cm.nodes.forEach(function(n) {
+            conceptHtml += '<div class="concept-node">' + escapeHtml(n) + '</div>';
+          });
+          conceptHtml += '</div>';
+        }
+      }
+      conceptHtml += '</div>';
+
+      /* Action Items */
+      var actionsHtml = (sg.actionItems || []).map(function(a) {
+        return '<li style="font-size:0.84rem;color:var(--text-secondary);padding:6px 0;padding-left:20px;position:relative;list-style:none;">' +
+          '<span style="position:absolute;left:0;color:var(--accent);">&#x2794;</span>' +
+          escapeHtml(a) +
+        '</li>';
+      }).join('');
+
+      /* Review Checklist */
+      var checklistHtml = (sg.reviewChecklist || []).map(function(item, idx) {
+        var isChecked = _studioState.checkedItems['sg-' + idx];
+        return '<li onclick="toggleStudyCheck(' + idx + ')">' +
+          '<div class="review-checkbox' + (isChecked ? ' checked' : '') + '">' + (isChecked ? '&#x2713;' : '') + '</div>' +
+          '<span' + (isChecked ? ' style="text-decoration:line-through;opacity:0.6;"' : '') + '>' + escapeHtml(item) + '</span>' +
+        '</li>';
+      }).join('');
+
+      var checkedCount = Object.keys(_studioState.checkedItems).filter(function(k) { return k.startsWith('sg-') && _studioState.checkedItems[k]; }).length;
+      var totalChecks = (sg.reviewChecklist || []).length;
+      var pctComplete = totalChecks > 0 ? Math.round((checkedCount / totalChecks) * 100) : 0;
+
+      return '' +
+        '<div class="card" style="margin-bottom:16px;">' +
+          '<div class="card-body" style="padding:20px;">' +
+            '<div class="study-guide-section">' +
+              '<h3>Learning Objectives</h3>' +
+              '<ul style="list-style:none;padding:0;">' + objectivesHtml + '</ul>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card" style="margin-bottom:16px;">' +
+          '<div class="card-body" style="padding:20px;">' +
+            '<div class="study-guide-section">' +
+              '<h3>Key Vocabulary</h3>' +
+              vocabHtml +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card" style="margin-bottom:16px;">' +
+          '<div class="card-body" style="padding:20px;">' +
+            '<div class="study-guide-section">' +
+              '<h3>Concept Map</h3>' +
+              conceptHtml +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card" style="margin-bottom:16px;">' +
+          '<div class="card-body" style="padding:20px;">' +
+            '<div class="study-guide-section">' +
+              '<h3>Action Items</h3>' +
+              '<ul style="padding:0;">' + actionsHtml + '</ul>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-body" style="padding:20px;">' +
+            '<div class="study-guide-section">' +
+              '<h3>Self-Assessment Review (' + pctComplete + '% Complete)</h3>' +
+              '<div class="metric-progress" style="margin-bottom:12px;"><div class="metric-progress-bar" style="width:' + pctComplete + '%;background:' + (pctComplete === 100 ? 'var(--success)' : 'var(--accent)') + ';"></div></div>' +
+              '<ul class="review-checklist">' + checklistHtml + '</ul>' +
+              (pctComplete === 100 ? '<div style="margin-top:12px;padding:10px 14px;background:var(--success-bg);border-radius:var(--radius-sm);color:var(--success);font-size:0.85rem;font-weight:600;text-align:center;">All items reviewed! Study guide complete.</div>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function toggleStudyCheck(idx) {
+      var key = 'sg-' + idx;
+      _studioState.checkedItems[key] = !_studioState.checkedItems[key];
+      var contentEl = document.getElementById('content-area');
+      contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+    }
+
+    /* -- Scenario Builder -- */
+    function renderScenarios(sop, richData) {
+      var scenarios = richData.scenarios;
+      if (!scenarios || scenarios.length === 0) return '<div class="card"><div class="card-body" style="padding:20px;text-align:center;color:var(--text-dim);">Scenarios not available for this SOP.</div></div>';
+
+      return '<div style="margin-bottom:8px;font-size:0.72rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;">WORKPLACE SCENARIOS (' + scenarios.length + ')</div>' +
+        scenarios.map(function(sc, idx) {
+          var isRevealed = _studioState.checkedItems['sc-' + idx];
+          var questionsHtml = (sc.questions || []).map(function(q) {
+            return '<li>' + escapeHtml(q) + '</li>';
+          }).join('');
+          var mistakesHtml = (sc.commonMistakes || []).map(function(m) {
+            return '<li>&#x2717; ' + escapeHtml(m) + '</li>';
+          }).join('');
+          return '<div class="scenario-card">' +
+            '<div class="scenario-header">' +
+              '<div class="scenario-badge">' + (idx + 1) + '</div>' +
+              '<div class="scenario-title">' + escapeHtml(sc.title) + '</div>' +
+            '</div>' +
+            '<div class="scenario-body">' +
+              '<div class="scenario-situation">' + escapeHtml(sc.situation) + '</div>' +
+              '<div class="scenario-questions" style="margin-bottom:12px;">' +
+                '<div style="font-size:0.72rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Discussion Questions</div>' +
+                '<ol style="padding-left:18px;">' + questionsHtml + '</ol>' +
+              '</div>' +
+              '<button class="scenario-reveal-btn" onclick="toggleScenarioReveal(' + idx + ')">' + (isRevealed ? 'Hide Answer' : 'Reveal Answer') + '</button>' +
+              '<div class="scenario-answer' + (isRevealed ? ' revealed' : '') + '">' +
+                '<h4>Correct Response</h4>' +
+                '<p>' + escapeHtml(sc.correctResponse) + '</p>' +
+                (sc.commonMistakes && sc.commonMistakes.length > 0 ? '<div class="scenario-mistakes"><h4>Common Mistakes</h4><ul>' + mistakesHtml + '</ul></div>' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+    }
+
+    function toggleScenarioReveal(idx) {
+      var key = 'sc-' + idx;
+      _studioState.checkedItems[key] = !_studioState.checkedItems[key];
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
     }
@@ -6077,7 +8239,7 @@
       {
         route: 'studio',
         title: 'Training Studio',
-        body: 'Upload any SOP and instantly generate four training formats: interactive presentations with speaker notes, auto-graded quizzes, narrated audio scripts, and flashcard study sets. Quiz completions automatically log to the employee\u2019s compliance record. No manual content creation needed.',
+        body: 'Upload any SOP and instantly generate eight AI-powered training formats: interactive presentations, auto-graded quizzes, podcast-style audio overviews with two hosts, study guides with concept maps, workplace scenarios with discussion questions, flashcards, document chat, and narrated audio scripts. AI analyzes every document for insights, risk areas, and key terms. Quiz completions automatically log to compliance records.',
         highlight: null,
         position: 'center'
       },
