@@ -2966,6 +2966,25 @@
       gap: 12px;
       margin-bottom: 16px;
       animation: segmentFade 0.4s ease;
+      padding: 8px;
+      border-radius: 8px;
+      border-left: 3px solid transparent;
+      transition: all 0.4s ease;
+      opacity: 0.6;
+    }
+
+    .podcast-segment.segment-active {
+      opacity: 1;
+      background: rgba(44, 123, 229, 0.08);
+      border-left-color: var(--accent);
+    }
+
+    .podcast-segment.segment-past {
+      opacity: 0.45;
+    }
+
+    .podcast-segment:first-child {
+      opacity: 1;
     }
 
     @keyframes segmentFade {
@@ -6387,7 +6406,7 @@
       }
     ];
 
-    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastProgress: 0, podcastInterval: null, checkedItems: {} };
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {} };
 
     /* ================================================================
        STUDIO RICH DATA: Insights, Podcast, Chat, Study Guide, Scenarios
@@ -7356,6 +7375,7 @@
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       _studioState.podcastPlaying = false;
       _studioState.podcastProgress = 0;
+      _studioState.podcastSegment = 0;
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
       /* Trigger insights animation */
@@ -7450,6 +7470,7 @@
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       _studioState.podcastPlaying = false;
       _studioState.podcastProgress = 0;
+      _studioState.podcastSegment = 0;
       _studioState.activeOutput = '__loading__';
       _studioState._pendingOutput = outputId;
       _studioState.slideIndex = 0;
@@ -7778,9 +7799,12 @@
       var curS = currentSec % 60;
       var currentTime = curMin + ':' + (curS < 10 ? '0' : '') + curS;
 
-      var transcriptHtml = (pd.segments || []).map(function(seg) {
+      var activeSegIdx = _studioState.podcastSegment || 0;
+      var transcriptHtml = (pd.segments || []).map(function(seg, idx) {
         var isAI = seg.speaker === 'Host 1';
-        return '<div class="podcast-segment">' +
+        var isActive = isPlaying && idx === activeSegIdx;
+        var isPast = idx < activeSegIdx;
+        return '<div class="podcast-segment' + (isActive ? ' segment-active' : '') + (isPast ? ' segment-past' : '') + '" id="seg-' + idx + '">' +
           '<div class="podcast-avatar ' + (isAI ? 'host-ai' : 'host-hr') + '">' + (isAI ? 'AI' : 'HR') + '</div>' +
           '<div class="podcast-bubble">' +
             '<div class="podcast-speaker ' + (isAI ? 'speaker-ai' : 'speaker-hr') + '">' + (isAI ? 'Alex (AI Host)' : 'Jordan (HR Expert)') + '</div>' +
@@ -7816,30 +7840,59 @@
     function togglePodcast() {
       _studioState.podcastPlaying = !_studioState.podcastPlaying;
       if (_studioState.podcastPlaying) {
+        var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+        var pd = sop ? (STUDIO_RICH_DATA[sop.id] || {}).podcast : null;
+        var totalSegs = pd ? pd.segments.length : 10;
+        var durParts = pd ? (pd.duration || '10:00').split(':') : ['10','00'];
+        var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
+        /* Each segment gets ~5 seconds of display time for demo pacing */
+        var segDuration = 5000;
+        var tickInterval = 200;
+        var ticksPerSeg = segDuration / tickInterval;
+        var _tickCount = 0;
+        if (!_studioState.podcastSegment) _studioState.podcastSegment = 0;
         _studioState.podcastInterval = setInterval(function() {
-          _studioState.podcastProgress = Math.min(100, (_studioState.podcastProgress || 0) + 0.5);
+          _tickCount++;
+          /* Advance segment every segDuration ms */
+          var newSegIdx = Math.min(totalSegs - 1, Math.floor(_tickCount / ticksPerSeg));
+          var segChanged = newSegIdx !== _studioState.podcastSegment;
+          _studioState.podcastSegment = newSegIdx;
+          /* Progress based on segment position */
+          _studioState.podcastProgress = Math.min(100, ((newSegIdx + (_tickCount % ticksPerSeg) / ticksPerSeg) / totalSegs) * 100);
+          /* Update progress bar */
           var fillEl = document.querySelector('.podcast-progress-fill');
           if (fillEl) fillEl.style.width = _studioState.podcastProgress + '%';
-          /* Update time display */
-          var pd = null;
-          var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
-          if (sop) pd = (STUDIO_RICH_DATA[sop.id] || {}).podcast;
-          if (pd) {
-            var durParts = (pd.duration || '10:00').split(':');
-            var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
-            var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
-            var curMin = Math.floor(currentSec / 60);
-            var curS = currentSec % 60;
-            var timeSpans = document.querySelectorAll('.podcast-time span');
-            if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+          /* Update time display proportionally */
+          var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
+          var curMin = Math.floor(currentSec / 60);
+          var curS = currentSec % 60;
+          var timeSpans = document.querySelectorAll('.podcast-time span');
+          if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+          /* Highlight current segment and scroll into view */
+          if (segChanged) {
+            var allSegs = document.querySelectorAll('.podcast-segment');
+            allSegs.forEach(function(el, i) {
+              el.classList.remove('segment-active');
+              if (i < newSegIdx) el.classList.add('segment-past');
+            });
+            if (allSegs[newSegIdx]) {
+              allSegs[newSegIdx].classList.add('segment-active');
+              allSegs[newSegIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           }
-          if (_studioState.podcastProgress >= 100) {
+          /* Complete */
+          if (newSegIdx >= totalSegs - 1 && (_tickCount % ticksPerSeg) >= ticksPerSeg - 1) {
             clearInterval(_studioState.podcastInterval);
             _studioState.podcastInterval = null;
             _studioState.podcastPlaying = false;
+            _studioState.podcastProgress = 100;
+            var playBtn2 = document.querySelector('.podcast-play-btn');
+            if (playBtn2) playBtn2.innerHTML = '&#x25B6;';
+            var wf2 = document.querySelector('.podcast-waveform');
+            if (wf2) wf2.classList.remove('playing');
             showToast('Podcast complete! Listening time logged.');
           }
-        }, 300);
+        }, tickInterval);
       } else {
         if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       }

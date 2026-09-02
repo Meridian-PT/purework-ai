@@ -2966,6 +2966,25 @@
       gap: 12px;
       margin-bottom: 16px;
       animation: segmentFade 0.4s ease;
+      padding: 8px;
+      border-radius: 8px;
+      border-left: 3px solid transparent;
+      transition: all 0.4s ease;
+      opacity: 0.6;
+    }
+
+    .podcast-segment.segment-active {
+      opacity: 1;
+      background: rgba(44, 123, 229, 0.08);
+      border-left-color: var(--accent);
+    }
+
+    .podcast-segment.segment-past {
+      opacity: 0.45;
+    }
+
+    .podcast-segment:first-child {
+      opacity: 1;
     }
 
     @keyframes segmentFade {
@@ -6387,7 +6406,7 @@
       }
     ];
 
-    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastProgress: 0, podcastInterval: null, checkedItems: {} };
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {} };
 
     /* ================================================================
        STUDIO RICH DATA: Insights, Podcast, Chat, Study Guide, Scenarios
@@ -7166,8 +7185,7 @@
           { speaker: 'Host 1', text: 'Last topic -- the money question. How do you prove training ROI to executives who see L&D as a cost center?' },
           { speaker: 'Host 2', text: 'Phillips\' ROI Model. Take Kirkpatrick\'s Level 4 results, convert them to monetary value, subtract your training costs, divide by your costs, multiply by 100. Concrete example: a safety training costs $50,000. It reduces incidents by 40%, saving $200,000 in incident costs. That is a 300% ROI -- $3 saved for every $1 spent. When you speak in those terms, executives listen. But you need the data pipeline: completion rates, assessment scores, behavioral observations at 30/60/90 days, and business KPIs tied to the training objective. Build the dashboard before you need it, and use the PDCA cycle -- Plan, Do, Check, Act -- to continuously improve. The organizations that treat training as a measurable investment instead of a checkbox are the ones that build genuine learning cultures.' },
           { speaker: 'Host 1', text: 'Jordan, this has been an incredible deep dive. For our listeners, the takeaway is clear: the science of adult learning is well-established, the tools are more powerful than ever, and the gap between good training and bad training is widening. If you\'re still relying on lectures and smile sheets, it\'s time to level up. Thanks for listening to Training Intelligence -- we will see you next time.' }
-        ]},
-chatResponses: [
+        ]},chatResponses: [
           { keywords: ['knowles', 'andragogy', 'adult', 'principles', 'adult learning'], answer: 'Malcolm Knowles identified 6 core principles of adult learning (andragogy): (1) Need to Know -- adults must understand WHY before investing in WHAT; (2) Self-Concept -- adults are self-directing and resist being treated as passive learners; (3) Prior Experience -- life experience is the richest learning resource; (4) Readiness -- adults learn best when the content addresses real, immediate challenges; (5) Orientation -- adults are problem-centered, not subject-centered; (6) Motivation -- internal motivators (satisfaction, growth) outweigh external ones (mandates, rewards). These principles explain why traditional lectures fail: they violate nearly every one of them.' },
           { keywords: ['vark', 'learning style', 'visual', 'auditory', 'kinesthetic', 'modality'], answer: 'The VARK model identifies four learning preferences: Visual (diagrams, charts, spatial), Auditory (discussion, podcasts, verbal), Read/Write (handouts, notes, text), and Kinesthetic (hands-on, simulations, practice). The key insight is NOT to label individuals -- it\'s to use ALL modalities. Multi-modal delivery increases retention dramatically: from 5% (lecture) to 75% (practice by doing). Kolb\'s cycle adds another layer: Concrete Experience, Reflective Observation, Abstract Conceptualization, Active Experimentation. Effective training moves through all four stages.' },
           { keywords: ['bloom', 'taxonomy', 'objectives', 'learning objective', 'smart'], answer: 'Bloom\'s Taxonomy has 6 cognitive levels: Remember, Understand, Apply, Analyze, Evaluate, Create. The most common design mistake: teaching at Remember/Understand but assessing at Apply/Analyze. Write SMART objectives with Bloom\'s action verbs -- e.g., "Participants will DEMONSTRATE (Apply level) the SBI feedback model in a role-play." Use Backward Design (Wiggins & McTighe): (1) define desired results, (2) determine evidence of learning, (3) plan instruction. This ensures alignment between what you teach, how you assess, and what learners actually do.' },
@@ -7357,6 +7375,7 @@ chatResponses: [
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       _studioState.podcastPlaying = false;
       _studioState.podcastProgress = 0;
+      _studioState.podcastSegment = 0;
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
       /* Trigger insights animation */
@@ -7451,6 +7470,7 @@ chatResponses: [
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       _studioState.podcastPlaying = false;
       _studioState.podcastProgress = 0;
+      _studioState.podcastSegment = 0;
       _studioState.activeOutput = '__loading__';
       _studioState._pendingOutput = outputId;
       _studioState.slideIndex = 0;
@@ -7779,9 +7799,12 @@ chatResponses: [
       var curS = currentSec % 60;
       var currentTime = curMin + ':' + (curS < 10 ? '0' : '') + curS;
 
-      var transcriptHtml = (pd.segments || []).map(function(seg) {
+      var activeSegIdx = _studioState.podcastSegment || 0;
+      var transcriptHtml = (pd.segments || []).map(function(seg, idx) {
         var isAI = seg.speaker === 'Host 1';
-        return '<div class="podcast-segment">' +
+        var isActive = isPlaying && idx === activeSegIdx;
+        var isPast = idx < activeSegIdx;
+        return '<div class="podcast-segment' + (isActive ? ' segment-active' : '') + (isPast ? ' segment-past' : '') + '" id="seg-' + idx + '">' +
           '<div class="podcast-avatar ' + (isAI ? 'host-ai' : 'host-hr') + '">' + (isAI ? 'AI' : 'HR') + '</div>' +
           '<div class="podcast-bubble">' +
             '<div class="podcast-speaker ' + (isAI ? 'speaker-ai' : 'speaker-hr') + '">' + (isAI ? 'Alex (AI Host)' : 'Jordan (HR Expert)') + '</div>' +
@@ -7817,30 +7840,59 @@ chatResponses: [
     function togglePodcast() {
       _studioState.podcastPlaying = !_studioState.podcastPlaying;
       if (_studioState.podcastPlaying) {
+        var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+        var pd = sop ? (STUDIO_RICH_DATA[sop.id] || {}).podcast : null;
+        var totalSegs = pd ? pd.segments.length : 10;
+        var durParts = pd ? (pd.duration || '10:00').split(':') : ['10','00'];
+        var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
+        /* Each segment gets ~5 seconds of display time for demo pacing */
+        var segDuration = 5000;
+        var tickInterval = 200;
+        var ticksPerSeg = segDuration / tickInterval;
+        var _tickCount = 0;
+        if (!_studioState.podcastSegment) _studioState.podcastSegment = 0;
         _studioState.podcastInterval = setInterval(function() {
-          _studioState.podcastProgress = Math.min(100, (_studioState.podcastProgress || 0) + 0.5);
+          _tickCount++;
+          /* Advance segment every segDuration ms */
+          var newSegIdx = Math.min(totalSegs - 1, Math.floor(_tickCount / ticksPerSeg));
+          var segChanged = newSegIdx !== _studioState.podcastSegment;
+          _studioState.podcastSegment = newSegIdx;
+          /* Progress based on segment position */
+          _studioState.podcastProgress = Math.min(100, ((newSegIdx + (_tickCount % ticksPerSeg) / ticksPerSeg) / totalSegs) * 100);
+          /* Update progress bar */
           var fillEl = document.querySelector('.podcast-progress-fill');
           if (fillEl) fillEl.style.width = _studioState.podcastProgress + '%';
-          /* Update time display */
-          var pd = null;
-          var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
-          if (sop) pd = (STUDIO_RICH_DATA[sop.id] || {}).podcast;
-          if (pd) {
-            var durParts = (pd.duration || '10:00').split(':');
-            var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
-            var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
-            var curMin = Math.floor(currentSec / 60);
-            var curS = currentSec % 60;
-            var timeSpans = document.querySelectorAll('.podcast-time span');
-            if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+          /* Update time display proportionally */
+          var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
+          var curMin = Math.floor(currentSec / 60);
+          var curS = currentSec % 60;
+          var timeSpans = document.querySelectorAll('.podcast-time span');
+          if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+          /* Highlight current segment and scroll into view */
+          if (segChanged) {
+            var allSegs = document.querySelectorAll('.podcast-segment');
+            allSegs.forEach(function(el, i) {
+              el.classList.remove('segment-active');
+              if (i < newSegIdx) el.classList.add('segment-past');
+            });
+            if (allSegs[newSegIdx]) {
+              allSegs[newSegIdx].classList.add('segment-active');
+              allSegs[newSegIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           }
-          if (_studioState.podcastProgress >= 100) {
+          /* Complete */
+          if (newSegIdx >= totalSegs - 1 && (_tickCount % ticksPerSeg) >= ticksPerSeg - 1) {
             clearInterval(_studioState.podcastInterval);
             _studioState.podcastInterval = null;
             _studioState.podcastPlaying = false;
+            _studioState.podcastProgress = 100;
+            var playBtn2 = document.querySelector('.podcast-play-btn');
+            if (playBtn2) playBtn2.innerHTML = '&#x25B6;';
+            var wf2 = document.querySelector('.podcast-waveform');
+            if (wf2) wf2.classList.remove('playing');
             showToast('Podcast complete! Listening time logged.');
           }
-        }, 300);
+        }, tickInterval);
       } else {
         if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       }
