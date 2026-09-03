@@ -4497,7 +4497,7 @@
       z-index: 10003;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.8s ease;
+      transition: opacity 1s ease;
     }
 
     .demo-fade-overlay.active {
@@ -10957,7 +10957,9 @@
       _studioState.demoStep = -1;
       _studioState.demoPaused = false;
       _studioState.demoSpeaking = false;
+      _studioState.demoAdvancing = false;
       _studioState.demoTimer = null;
+      _studioState.demoFallbackTimer = null;
       _studioState.demoAutoReplayTimer = null;
 
       /* Create persistent DOM elements: fade overlay, subtitle bar */
@@ -10973,8 +10975,10 @@
       _studioState.demoStep = -1;
       _studioState.demoPaused = false;
       _studioState.demoSpeaking = false;
+      _studioState.demoAdvancing = false;
       /* Clear ALL timers */
       if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
+      if (_studioState.demoFallbackTimer) { clearTimeout(_studioState.demoFallbackTimer); _studioState.demoFallbackTimer = null; }
       if (_studioState.demoAutoReplayTimer) { clearInterval(_studioState.demoAutoReplayTimer); _studioState.demoAutoReplayTimer = null; }
       /* Cancel all speech immediately */
       if (window.speechSynthesis) { speechSynthesis.cancel(); }
@@ -11036,8 +11040,12 @@
 
       /* Step 1: Clear ALL existing timers to prevent overlap */
       if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
+      if (_studioState.demoFallbackTimer) { clearTimeout(_studioState.demoFallbackTimer); _studioState.demoFallbackTimer = null; }
+      /* Mark advancing so stale onend callbacks are ignored */
+      _studioState.demoAdvancing = true;
       if (window.speechSynthesis) { speechSynthesis.cancel(); }
       _studioState.demoSpeaking = false;
+      _studioState.demoAdvancing = false;
 
       var nextStep = _studioState.demoStep + 1;
 
@@ -11048,7 +11056,7 @@
 
       var step = DEMO_STEPS[nextStep];
 
-      /* Step 2: Fade out (800ms CSS transition + 600ms pause at full dark) */
+      /* Step 2: Fade out (1s CSS transition + 800ms pause at full dark) */
       _demoFadeOut(function() {
         if (!_studioState.demoActive) return;
         _studioState.demoStep = nextStep;
@@ -11063,8 +11071,8 @@
           step.preAction();
         }
 
-        /* Step 5: Wait for DOM to settle (800ms after navigation, 200ms otherwise) */
-        var domWait = step.preAction ? 800 : 200;
+        /* Step 5: Wait for DOM to settle — use preDelay if defined, otherwise generous defaults */
+        var domWait = step.preDelay || (step.preAction ? 1500 : 500);
 
         _studioState.demoTimer = setTimeout(function() {
           if (!_studioState.demoActive) return;
@@ -11084,11 +11092,11 @@
             if (secondEl) secondEl.classList.add('demo-spotlight');
           }
 
-          /* Step 7: Fade in (800ms) -- TTS starts AFTER fade-in completes */
+          /* Step 7: Fade in (1s) -- TTS starts AFTER fade-in completes */
           _demoFadeIn(function() {
             if (!_studioState.demoActive) return;
 
-            /* Step 8: Wait 500ms after fade-in before showing subtitle + starting TTS */
+            /* Step 8: Wait 800ms after fade-in before showing subtitle + starting TTS */
             _studioState.demoTimer = setTimeout(function() {
               if (!_studioState.demoActive) return;
 
@@ -11098,21 +11106,21 @@
 
               /* Step 10: Start TTS narration */
               _demoSpeak(step.desc, nextStep, function() {
-                /* Step 11: On TTS end, wait 3000ms before advancing */
+                /* Step 11: On TTS end, wait 3500ms before advancing */
                 if (!_studioState.demoActive || _studioState.demoPaused) return;
 
                 if (step.action) {
                   step.action(function() {
                     if (_studioState.demoActive && !_studioState.demoPaused) {
-                      _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 3000);
+                      _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 3500);
                     }
                   });
                 } else {
                   /* Step 12: Advance to next step */
-                  _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 3000);
+                  _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 3500);
                 }
               });
-            }, 500);
+            }, 800);
           });
         }, domWait);
       });
@@ -11168,10 +11176,10 @@
       var fadeOv = document.getElementById('demo-fade-overlay');
       if (fadeOv) {
         fadeOv.classList.add('active');
-        /* Wait 800ms for fade-out transition, then 600ms pause at full dark */
+        /* Wait 1000ms for fade-out transition, then 800ms pause at full dark */
         setTimeout(function() {
-          setTimeout(function() { callback(); }, 600);
-        }, 800);
+          setTimeout(function() { callback(); }, 800);
+        }, 1000);
       } else {
         callback();
       }
@@ -11182,9 +11190,9 @@
       if (fadeOv) {
         fadeOv.classList.remove('active');
       }
-      /* Wait for 800ms CSS transition to finish, then call onComplete */
+      /* Wait for 1000ms CSS transition to finish, then call onComplete */
       if (onComplete) {
-        setTimeout(onComplete, 800);
+        setTimeout(onComplete, 1000);
       }
     }
 
@@ -11241,70 +11249,72 @@
     }
 
     function _demoSpeak(text, forStep, onDone) {
-      /* Always cancel any leftover speech first -- prevents stale onend from firing */
-      if (window.speechSynthesis) { speechSynthesis.cancel(); }
-
       if (!window.speechSynthesis || !_studioState.ttsSupported) {
-        /* No TTS: use 8-second fallback */
+        /* No TTS: use text-length-based fallback (roughly 150 words per min = 2.5 words/sec) */
+        var wordCount = text.split(/\s+/).length;
+        var readTime = Math.max(6000, Math.ceil((wordCount / 2.5) * 1000) + 2000);
         _studioState.demoSpeaking = false;
-        _studioState.demoTimer = setTimeout(function() {
+        _studioState.demoFallbackTimer = setTimeout(function() {
           if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
             onDone();
           }
-        }, 8000);
+        }, readTime);
         return;
       }
 
-      var voice = _studioState.ttsVoiceHost1 || (_studioState.ttsVoices.length > 0 ? _studioState.ttsVoices[0] : null);
+      /* Small delay before speaking to let UI settle */
+      _studioState.demoTimer = setTimeout(function() {
+        if (!_studioState.demoActive || _studioState.demoStep !== forStep) return;
 
-      var utt = new SpeechSynthesisUtterance(text);
-      if (voice) utt.voice = voice;
-      utt.rate = 0.95;
-      utt.pitch = 1.0;
-      utt.volume = 1.0;
+        var voice = _studioState.ttsVoiceHost1 || (_studioState.ttsVoices.length > 0 ? _studioState.ttsVoices[0] : null);
 
-      _studioState.demoSpeaking = true;
-      var ttsDone = false;
+        var utt = new SpeechSynthesisUtterance(text);
+        if (voice) utt.voice = voice;
+        utt.rate = 0.9;
+        utt.pitch = 1.0;
+        utt.volume = 1.0;
 
-      /* Safety fallback: if TTS never fires onend (browser quirk), use 8s fallback */
-      var fallbackTimer = setTimeout(function() {
-        if (!ttsDone && _studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+        _studioState.demoSpeaking = true;
+        var ttsDone = false;
+
+        /* Safety fallback based on text length — generous: ~3 words/sec at rate 0.9, plus buffer */
+        var wordCount2 = text.split(/\s+/).length;
+        var fallbackMs = Math.max(10000, Math.ceil((wordCount2 / 2) * 1000) + 5000);
+        _studioState.demoFallbackTimer = setTimeout(function() {
+          if (!ttsDone && _studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+            ttsDone = true;
+            _studioState.demoSpeaking = false;
+            onDone();
+          }
+        }, fallbackMs);
+
+        utt.onend = function() {
+          if (ttsDone || _studioState.demoAdvancing) return;
           ttsDone = true;
+          clearTimeout(_studioState.demoFallbackTimer);
           _studioState.demoSpeaking = false;
-          onDone();
-        }
-      }, 8000);
-
-      utt.onend = function() {
-        if (ttsDone) return;
-        ttsDone = true;
-        clearTimeout(fallbackTimer);
-        _studioState.demoSpeaking = false;
-        if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
-          onDone();
-        }
-      };
-
-      utt.onerror = function(e) {
-        if (ttsDone) return;
-        ttsDone = true;
-        clearTimeout(fallbackTimer);
-        _studioState.demoSpeaking = false;
-        if (e.error === 'canceled') return;
-        /* Fallback: 8 seconds */
-        _studioState.demoTimer = setTimeout(function() {
           if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
             onDone();
           }
-        }, 8000);
-      };
+        };
 
-      /* Chrome bug workaround: small delay before speaking */
-      setTimeout(function() {
-        if (_studioState.demoActive && !ttsDone) {
-          speechSynthesis.speak(utt);
-        }
-      }, 150);
+        utt.onerror = function(e) {
+          if (ttsDone || _studioState.demoAdvancing) return;
+          ttsDone = true;
+          clearTimeout(_studioState.demoFallbackTimer);
+          _studioState.demoSpeaking = false;
+          if (e.error === 'canceled') return;
+          /* On error, use generous fallback */
+          var errFallback = Math.max(8000, Math.ceil((text.split(/\s+/).length / 2.5) * 1000) + 2000);
+          _studioState.demoFallbackTimer = setTimeout(function() {
+            if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+              onDone();
+            }
+          }, errFallback);
+        };
+
+        speechSynthesis.speak(utt);
+      }, 300);
     }
 
     /* Title Card (opening sequence) */
