@@ -4826,7 +4826,7 @@
       </form>
 
       <div class="login-footer">
-        Powered by <span>PureWork AI</span>
+        Enterprise Training Powered by <span>PureBrain</span>
       </div>
     </div>
   </div>
@@ -9053,12 +9053,12 @@
       /* Assign voice and pitch/rate differentiation */
       if (seg.speaker === 'Host 1') {
         if (_studioState.ttsVoiceHost1) utt.voice = _studioState.ttsVoiceHost1;
-        utt.pitch = 0.95;
-        utt.rate = 1.0;
+        utt.pitch = 1.0;
+        utt.rate = 0.88;
       } else {
         if (_studioState.ttsVoiceHost2) utt.voice = _studioState.ttsVoiceHost2;
-        utt.pitch = 1.15;
-        utt.rate = 1.02;
+        utt.pitch = 1.08;
+        utt.rate = 0.9;
       }
       utt.volume = 1.0;
 
@@ -9229,7 +9229,7 @@
           '<div class="studio-chat-header">' +
             '<div class="ai-dot"></div>' +
             '<span>Document AI Chat</span>' +
-            '<span style="margin-left:auto;font-size:0.72rem;color:var(--text-dim);font-weight:400;">Powered by PureWork AI</span>' +
+            '<span style="margin-left:auto;font-size:0.72rem;color:var(--text-dim);font-weight:400;">Enterprise Training Powered by PureBrain</span>' +
           '</div>' +
           '<div class="chat-messages" id="studio-chat-messages">' + messagesHtml + '</div>' +
           chipsHtml +
@@ -9703,7 +9703,7 @@
               '<div style="background: var(--bg-secondary); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem;"><code style="color: var(--accent);">config.json</code> \u2014 Tunable weights</div>' +
               '<div style="background: var(--bg-secondary); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem;"><code style="color: var(--accent);">tests/</code> \u2014 Unit tests</div>' +
             '</div>' +
-            '<p style="color: var(--text-dim); margin-top: 12px; font-size: 0.8rem;">Powered by PureWork AI Scoring Engine</p>' +
+            '<p style="color: var(--text-dim); margin-top: 12px; font-size: 0.8rem;">Powered by PureBrain Scoring Engine</p>' +
           '</div>' +
         '</div>';
     }
@@ -9771,7 +9771,7 @@
       },
       {
         route: 'dashboard',
-        title: 'Powered by PureWork AI.',
+        title: 'Enterprise Training Powered by PureBrain.',
         body: 'This entire platform \u2014 every course, every assessment, every scoring engine \u2014 was built by an AI-powered learning design system. This is what intelligent enterprise learning looks like.\n\nReady to see what it can do for your organization?',
         highlight: null,
         position: 'center',
@@ -10251,7 +10251,7 @@
 
       var utt = new SpeechSynthesisUtterance(text);
       if (voice) utt.voice = voice;
-      utt.rate = 0.95;
+      utt.rate = 0.85;
       utt.pitch = 1.0;
       utt.volume = 1.0;
 
@@ -10739,14 +10739,14 @@
 
         var utt = new SpeechSynthesisUtterance(text);
         if (voice) utt.voice = voice;
-        utt.rate = 0.9;
+        utt.rate = 0.85;
         utt.pitch = 1.0;
         utt.volume = 1.0;
 
         _studioState.demoSpeaking = true;
         var ttsDone = false;
 
-        /* Safety fallback based on text length — generous: ~3 words/sec at rate 0.9, plus buffer */
+        /* Safety fallback based on text length — generous: ~3 words/sec at rate 0.85, plus buffer */
         var wordCount2 = text.split(/\s+/).length;
         var fallbackMs = Math.max(10000, Math.ceil((wordCount2 / 2) * 1000) + 5000);
         _studioState.demoFallbackTimer = setTimeout(function() {
@@ -10794,7 +10794,7 @@
       card.innerHTML = '' +
         '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
         '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
-        '<div class="demo-card-tagline">Enterprise Training, Powered by AI</div>';
+        '<div class="demo-card-tagline">Enterprise Training Powered by PureBrain</div>';
       document.body.appendChild(card);
 
       /* Hide the subtitle bar during title card */
@@ -10844,7 +10844,7 @@
           '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
           '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
           '<div class="demo-card-tagline">Transform your documents into a complete learning platform.</div>' +
-          '<div class="demo-card-contact">Powered by PureWork AI</div>' +
+          '<div class="demo-card-contact">Enterprise Training Powered by PureBrain</div>' +
           '<div class="demo-card-replay">' +
             '<button class="demo-card-replay-btn" onclick="_demoReplay()"><i class="bi bi-arrow-counterclockwise"></i> Replay Demo</button>' +
             '<button class="demo-card-close-btn" onclick="demoEnd()"><i class="bi bi-x-lg"></i> Close</button>' +
