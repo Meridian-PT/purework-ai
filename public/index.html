@@ -4053,6 +4053,368 @@
     .catalogue-empty-sub {
       font-size: 13px;
     }
+
+    /* ================================================================
+       GUIDED WALKTHROUGH TOUR
+       ================================================================ */
+
+    .tour-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 9998;
+      transition: opacity 0.35s ease;
+      pointer-events: auto;
+    }
+
+    .tour-overlay.fade-in {
+      animation: tourOverlayIn 0.35s ease forwards;
+    }
+
+    @keyframes tourOverlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .tour-spotlight {
+      position: relative;
+      z-index: 9999 !important;
+      box-shadow: 0 0 0 4px var(--accent), 0 0 40px rgba(44, 123, 229, 0.35), 0 0 80px rgba(44, 123, 229, 0.15);
+      border-radius: 12px;
+      transition: box-shadow 0.4s ease;
+      pointer-events: auto;
+    }
+
+    .tour-tooltip {
+      position: fixed;
+      z-index: 10000;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 28px 28px 20px;
+      max-width: 420px;
+      width: calc(100vw - 40px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(44, 123, 229, 0.2);
+      animation: tourTooltipIn 0.4s ease forwards;
+    }
+
+    @keyframes tourTooltipIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .tour-tooltip-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 10px;
+      background: var(--accent-light);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .tour-tooltip-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .tour-tooltip-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tour-tooltip-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tour-tooltip-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tour-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      line-height: 1;
+    }
+
+    .tour-btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .tour-btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 12px rgba(44, 123, 229, 0.35);
+    }
+
+    .tour-btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .tour-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border-color: var(--text-dim);
+    }
+
+    .tour-btn-skip {
+      background: transparent;
+      color: var(--text-dim);
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+
+    .tour-btn-skip:hover {
+      color: var(--text-secondary);
+    }
+
+    .tour-progress-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .tour-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .tour-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+      box-shadow: 0 0 8px rgba(44, 123, 229, 0.5);
+    }
+
+    .tour-dot.completed {
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    /* Tour Start Button - Hero */
+    .tour-start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tour-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(44, 123, 229, 0.4), 0 0 40px rgba(139, 92, 246, 0.2);
+    }
+
+    .tour-start-btn:active {
+      transform: translateY(0);
+    }
+
+    .tour-start-btn .tour-play-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .tour-start-btn .tour-pulse-ring {
+      position: absolute;
+      top: 50%;
+      left: 22px;
+      width: 28px;
+      height: 28px;
+      transform: translate(-50%, -50%) translate(14px, 0);
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      animation: tourPulseRing 2s ease-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes tourPulseRing {
+      0% { transform: translate(-50%, -50%) translate(14px, 0) scale(1); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) translate(14px, 0) scale(2.2); opacity: 0; }
+    }
+
+    /* Tour Header Button (always accessible) */
+    .tour-header-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid rgba(44, 123, 229, 0.25);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-left: 12px;
+    }
+
+    .tour-header-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .tour-header-btn i {
+      font-size: 13px;
+    }
+
+    /* Tour CTA Overlay (final step) */
+    .tour-cta-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.8);
+      animation: tourOverlayIn 0.4s ease forwards;
+    }
+
+    .tour-cta-card {
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 520px;
+      width: calc(100vw - 40px);
+      text-align: center;
+      box-shadow: 0 20px 80px rgba(44, 123, 229, 0.3), 0 0 60px rgba(0, 0, 0, 0.5);
+      animation: tourTooltipIn 0.5s ease forwards;
+    }
+
+    .tour-cta-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .tour-cta-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .tour-cta-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .tour-cta-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .tour-cta-btn {
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      line-height: 1;
+    }
+
+    .tour-cta-btn.primary {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff;
+    }
+
+    .tour-cta-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(44, 123, 229, 0.4);
+    }
+
+    .tour-cta-btn.secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .tour-cta-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 640px) {
+      .tour-tooltip {
+        max-width: calc(100vw - 24px);
+        left: 12px !important;
+        right: 12px !important;
+        bottom: 16px !important;
+        top: auto !important;
+        position: fixed !important;
+      }
+      .tour-start-btn {
+        font-size: 14px;
+        padding: 12px 24px;
+      }
+      .tour-cta-card {
+        padding: 32px 24px;
+      }
+      .tour-cta-title {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4202,6 +4564,7 @@
           <h1 class="page-title" id="page-title">Dashboard</h1>
         </div>
         <div class="header-right">
+          <button class="tour-header-btn" id="tour-header-btn" onclick="tourStart()" style="display:none;"><i class="bi bi-play-circle"></i> Tour</button>
           <span class="header-company" id="header-company"></span>
           <div class="header-avatar" id="header-avatar"></div>
         </div>
@@ -4754,7 +5117,11 @@
         _studioState.selectedCategory = 'All';
         if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
         _ttsCancelAll();
+        tourEnd();
       }
+      /* Show/hide tour header button based on route */
+      var tourHeaderBtn = document.getElementById('tour-header-btn');
+      if (tourHeaderBtn) { tourHeaderBtn.style.display = (route === 'studio') ? '' : 'none'; }
     }
 
     /** Listen for hash changes (browser back/forward) */
@@ -6910,7 +7277,7 @@
       }
     ];
 
-    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastPaused: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {}, ttsSupported: !!(window.speechSynthesis), ttsVoices: [], ttsVoiceHost1: null, ttsVoiceHost2: null, ttsUtterance: null, ttsStartTime: null, ttsElapsedMs: 0 };
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastPaused: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {}, ttsSupported: !!(window.speechSynthesis), ttsVoices: [], ttsVoiceHost1: null, ttsVoiceHost2: null, ttsUtterance: null, ttsStartTime: null, ttsElapsedMs: 0, tourActive: false, tourStep: 0, tourSpeaking: false, tourAutoAdvanceTimer: null };
 
     /* ================================================================
        STUDIO RICH DATA: Insights, Podcast, Chat, Study Guide, Scenarios
@@ -8089,24 +8456,29 @@
       var filtered = filterCourses();
 
       /* Hero */
-      var heroHtml = '<div class="catalogue-hero">' +
+      var heroHtml = '<div class="catalogue-hero" id="tour-target-hero">' +
         '<div class="catalogue-hero-title">PureWork <span>Training Studio</span></div>' +
         '<div class="catalogue-hero-sub">Enterprise-grade training content, powered by AI. Upload any document or explore our curated course library.</div>' +
-        '<div class="catalogue-search">' +
+        '<div class="catalogue-search" id="tour-target-search">' +
           '<i class="bi bi-search search-icon"></i>' +
           '<input type="text" placeholder="Search courses by title, topic, or category..." value="' + escapeHtml(_studioState.searchQuery || '') + '" oninput="catalogueSearch(this.value)">' +
         '</div>' +
+        '<button class="tour-start-btn" onclick="tourStart()">' +
+          '<span class="tour-play-icon"><i class="bi bi-play-fill"></i></span>' +
+          '<span class="tour-pulse-ring"></span>' +
+          'Take a Guided Tour' +
+        '</button>' +
       '</div>';
 
       /* Stats bar */
-      var statsHtml = '<div class="catalogue-stats">' +
+      var statsHtml = '<div class="catalogue-stats" id="tour-target-stats">' +
         '<div class="catalogue-stat"><div class="catalogue-stat-value">' + stats.courses + '</div><div class="catalogue-stat-label">Courses</div></div>' +
         '<div class="catalogue-stat"><div class="catalogue-stat-value">' + stats.categories + '</div><div class="catalogue-stat-label">Categories</div></div>' +
         '<div class="catalogue-stat"><div class="catalogue-stat-value">' + stats.hours + '+</div><div class="catalogue-stat-label">Hours of Content</div></div>' +
       '</div>';
 
       /* Category pills */
-      var pillsHtml = '<div class="catalogue-categories">' +
+      var pillsHtml = '<div class="catalogue-categories" id="tour-target-categories">' +
         categories.map(function(cat) {
           var activeClass = (_studioState.selectedCategory === cat) ? ' active' : '';
           return '<button class="catalogue-pill' + activeClass + '" onclick="catalogueSetCategory(\'' + escapeHtml(cat) + '\')">' + escapeHtml(cat) + '</button>';
@@ -9636,6 +10008,535 @@
     }
 
     /* ================================================================
+       GUIDED WALKTHROUGH TOUR ENGINE
+       ================================================================ */
+
+    var TOUR_STEPS = [
+      {
+        id: 'welcome',
+        target: '#tour-target-hero',
+        title: 'Welcome to PureWork Training Studio',
+        desc: 'Welcome to PureWork Training Studio \u2014 an enterprise-grade training platform powered by AI. Let me walk you through what makes this different from anything else on the market.',
+        action: null
+      },
+      {
+        id: 'catalogue',
+        target: '#catalogue-grid-container',
+        title: 'Course Catalogue',
+        desc: 'This is your course catalogue. Every course is AI-generated from your existing SOPs, policies, and documentation. Upload your content, and the platform builds complete training courses automatically.',
+        action: null
+      },
+      {
+        id: 'search-filter',
+        target: '#tour-target-search',
+        secondTarget: '#tour-target-categories',
+        title: 'Search & Filter',
+        desc: 'Find courses instantly with real-time search, or filter by category. Whether you have 10 courses or 10,000 \u2014 everything is organized and discoverable.',
+        action: null
+      },
+      {
+        id: 'course-card',
+        target: '.course-card:not(.coming-soon)',
+        title: 'Course Card',
+        desc: 'Each course shows you the category, difficulty level, duration, and number of modules at a glance. Click any course to dive in.',
+        action: function(next) {
+          /* Auto-click the first active course */
+          var firstCourse = STUDIO_COURSES.find(function(c) { return isCourseActive(c); });
+          if (firstCourse) {
+            setTimeout(function() {
+              catalogueShowCourse(firstCourse.id);
+              setTimeout(next, 600);
+            }, 1200);
+          } else { next(); }
+        }
+      },
+      {
+        id: 'course-detail',
+        target: '.module-list',
+        title: 'Course Detail & Modules',
+        desc: 'Inside each course, you\'ll find structured modules with clear learning objectives. Track progress as your team works through the content.',
+        action: function(next) {
+          /* Auto-click the first module */
+          var course = STUDIO_COURSES.find(function(c) { return c.id === _studioState.selectedCourse; });
+          if (course && course.modules.length > 0) {
+            var sopId = course.modules[0];
+            setTimeout(function() {
+              catalogueShowModule(course.id, sopId);
+              setTimeout(next, 800);
+            }, 1200);
+          } else { next(); }
+        }
+      },
+      {
+        id: 'ai-insights',
+        target: '#studio-insights-container',
+        title: 'AI Insights',
+        desc: 'Every module includes an AI-generated insights panel \u2014 key terms, risk areas, statistics, and a comprehensive summary. Your subject matter experts get a head start.',
+        action: null,
+        preAction: function() {
+          /* Ensure insights are shown */
+          _studioState.insightsRevealed = true;
+          var sopId = _studioState.selectedSop;
+          var richData = STUDIO_RICH_DATA[sopId];
+          if (richData && richData.insights) {
+            var container = document.getElementById('studio-insights-container');
+            var sop = STUDIO_SOPS.find(function(s) { return s.id === sopId; });
+            if (container && sop) {
+              container.innerHTML = renderInsightsPanel(sop, richData.insights);
+            }
+          }
+        }
+      },
+      {
+        id: 'podcast',
+        target: '.studio-output-btn:nth-child(5)',
+        title: 'Audio Overview (Podcast)',
+        desc: 'This is where it gets exciting. Every module has an AI-generated podcast \u2014 a two-host discussion that brings the content to life. Hit play, and it reads to you with two distinct voices.',
+        action: null,
+        preAction: function() {
+          setStudioOutput('podcast');
+        },
+        preDelay: 1400
+      },
+      {
+        id: 'chat',
+        target: '.studio-output-btn:nth-child(8)',
+        title: 'Document Chat',
+        desc: 'Have questions about the material? The Document Chat lets learners ask anything about the course content and get instant, contextual answers.',
+        action: null,
+        preAction: function() {
+          setStudioOutput('chat');
+        },
+        preDelay: 1400
+      },
+      {
+        id: 'studyguide',
+        target: '.studio-output-btn:nth-child(6)',
+        title: 'Study Guide & Scenarios',
+        desc: 'AI-generated study guides, real-world scenario builders, and flashcards turn passive reading into active learning.',
+        action: null,
+        preAction: function() {
+          setStudioOutput('studyguide');
+        },
+        preDelay: 1400
+      },
+      {
+        id: 'quiz',
+        target: '.studio-output-btn:nth-child(2)',
+        title: 'Quiz Assessment',
+        desc: 'Every module includes a built-in quiz with instant scoring. Assess comprehension, identify knowledge gaps, and track completion across your organization.',
+        action: null,
+        preAction: function() {
+          setStudioOutput('quiz');
+        },
+        preDelay: 1400
+      },
+      {
+        id: 'back-to-catalogue',
+        target: '#tour-target-stats',
+        title: 'Complete Learning Experience',
+        desc: 'That\'s the full learning experience \u2014 from catalogue to course to module to assessment. Every piece generated by AI from your existing content.',
+        action: null,
+        preAction: function() {
+          catalogueShowGrid();
+        },
+        preDelay: 500
+      },
+      {
+        id: 'cta',
+        target: null,
+        title: 'Ready to Transform Your Training?',
+        desc: 'PureWork Training Studio transforms your documents into a complete learning platform. Ready to see what it can do with your content? Let\'s talk.',
+        action: null,
+        isCTA: true
+      }
+    ];
+
+    function tourStart() {
+      if (_studioState.tourActive) return;
+      /* Cancel any playing podcast/TTS */
+      _ttsCancelAll();
+      if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _studioState.podcastPlaying = false;
+      _studioState.podcastPaused = false;
+      /* Ensure we are on the studio route and at the catalogue grid */
+      if (APP_STATE.currentRoute !== 'studio') {
+        navigate('studio');
+      } else {
+        /* Reset to grid without resetting tour state */
+        _studioState.catalogueView = 'grid';
+        _studioState.selectedCourse = null;
+        _studioState.selectedSop = null;
+        _studioState.activeOutput = null;
+        _studioState.searchQuery = '';
+        _studioState.selectedCategory = 'All';
+        var contentEl = document.getElementById('content-area');
+        contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+      }
+      _studioState.tourActive = true;
+      _studioState.tourStep = 0;
+      _studioState.tourSpeaking = false;
+      _studioState.tourAutoAdvanceTimer = null;
+      /* Small delay to let DOM settle after grid render */
+      setTimeout(function() { tourShowStep(0); }, 400);
+    }
+
+    function tourEnd() {
+      _studioState.tourActive = false;
+      _studioState.tourStep = 0;
+      _studioState.tourSpeaking = false;
+      if (_studioState.tourAutoAdvanceTimer) {
+        clearTimeout(_studioState.tourAutoAdvanceTimer);
+        _studioState.tourAutoAdvanceTimer = null;
+      }
+      if (window.speechSynthesis) { speechSynthesis.cancel(); }
+      /* Remove tour DOM elements */
+      var overlay = document.getElementById('tour-overlay');
+      if (overlay) overlay.remove();
+      var tooltip = document.getElementById('tour-tooltip');
+      if (tooltip) tooltip.remove();
+      var cta = document.getElementById('tour-cta');
+      if (cta) cta.remove();
+      /* Remove spotlight from any element */
+      document.querySelectorAll('.tour-spotlight').forEach(function(el) {
+        el.classList.remove('tour-spotlight');
+      });
+    }
+
+    function tourShowStep(stepIdx) {
+      if (!_studioState.tourActive) return;
+      if (stepIdx < 0 || stepIdx >= TOUR_STEPS.length) return;
+
+      _studioState.tourStep = stepIdx;
+      var step = TOUR_STEPS[stepIdx];
+
+      /* Cancel any pending auto-advance */
+      if (_studioState.tourAutoAdvanceTimer) {
+        clearTimeout(_studioState.tourAutoAdvanceTimer);
+        _studioState.tourAutoAdvanceTimer = null;
+      }
+      /* Cancel any ongoing speech */
+      if (window.speechSynthesis) { speechSynthesis.cancel(); }
+      _studioState.tourSpeaking = false;
+
+      /* If step has CTA, show CTA overlay instead */
+      if (step.isCTA) {
+        tourShowCTA(step);
+        return;
+      }
+
+      /* If step has preAction, execute it with delay */
+      if (step.preAction) {
+        /* Remove old tooltip/overlay momentarily */
+        var oldTooltip = document.getElementById('tour-tooltip');
+        if (oldTooltip) oldTooltip.remove();
+        step.preAction();
+        var delay = step.preDelay || 500;
+        setTimeout(function() {
+          if (_studioState.tourActive) tourRenderStep(stepIdx);
+        }, delay);
+        return;
+      }
+
+      tourRenderStep(stepIdx);
+    }
+
+    function tourRenderStep(stepIdx) {
+      if (!_studioState.tourActive) return;
+      var step = TOUR_STEPS[stepIdx];
+
+      /* Remove old spotlight */
+      document.querySelectorAll('.tour-spotlight').forEach(function(el) {
+        el.classList.remove('tour-spotlight');
+      });
+
+      /* Find target element */
+      var targetEl = step.target ? document.querySelector(step.target) : null;
+      if (step.secondTarget) {
+        var secondEl = document.querySelector(step.secondTarget);
+      }
+
+      /* Create or update overlay */
+      var overlay = document.getElementById('tour-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'tour-overlay';
+        overlay.className = 'tour-overlay fade-in';
+        overlay.onclick = function(e) { if (e.target === overlay) { /* do nothing - click overlay does not dismiss */ } };
+        document.body.appendChild(overlay);
+      }
+
+      /* Add spotlight to target */
+      if (targetEl) {
+        targetEl.classList.add('tour-spotlight');
+        /* Scroll target into view */
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (secondEl) {
+        secondEl.classList.add('tour-spotlight');
+      }
+
+      /* Build progress dots */
+      var dotsHtml = '';
+      for (var d = 0; d < TOUR_STEPS.length; d++) {
+        var dotClass = 'tour-dot';
+        if (d === stepIdx) dotClass += ' active';
+        else if (d < stepIdx) dotClass += ' completed';
+        dotsHtml += '<div class="' + dotClass + '"></div>';
+      }
+
+      /* Build tooltip HTML */
+      var prevDisabled = stepIdx === 0;
+      var isLast = stepIdx === TOUR_STEPS.length - 2; /* second-to-last, since last is CTA */
+      var nextLabel = isLast ? 'Finish' : 'Next <i class="bi bi-chevron-right"></i>';
+
+      var tooltipHtml = '' +
+        '<div class="tour-tooltip-step"><i class="bi bi-compass"></i> Step ' + (stepIdx + 1) + ' of ' + TOUR_STEPS.length + '</div>' +
+        '<div class="tour-tooltip-title">' + step.title + '</div>' +
+        '<div class="tour-tooltip-desc">' + step.desc + '</div>' +
+        '<div class="tour-tooltip-actions">' +
+          '<button class="tour-btn tour-btn-skip" onclick="tourEnd()">Skip Tour</button>' +
+          '<div class="tour-tooltip-nav">' +
+            (prevDisabled ? '' : '<button class="tour-btn tour-btn-secondary" onclick="tourPrev()"><i class="bi bi-chevron-left"></i> Back</button>') +
+            '<button class="tour-btn tour-btn-primary" onclick="tourNext()">' + nextLabel + '</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tour-progress-dots">' + dotsHtml + '</div>';
+
+      /* Create or update tooltip */
+      var tooltip = document.getElementById('tour-tooltip');
+      if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'tour-tooltip';
+        tooltip.className = 'tour-tooltip';
+        document.body.appendChild(tooltip);
+      }
+      tooltip.innerHTML = tooltipHtml;
+
+      /* Position tooltip relative to target */
+      tourPositionTooltip(tooltip, targetEl);
+
+      /* Narrate with TTS */
+      tourSpeak(step.desc, stepIdx);
+    }
+
+    function tourPositionTooltip(tooltip, targetEl) {
+      /* On mobile, center the tooltip at the bottom */
+      if (window.innerWidth <= 640) {
+        tooltip.style.left = '12px';
+        tooltip.style.right = '12px';
+        tooltip.style.bottom = '16px';
+        tooltip.style.top = 'auto';
+        return;
+      }
+
+      if (!targetEl) {
+        /* Center on screen */
+        tooltip.style.left = '50%';
+        tooltip.style.top = '50%';
+        tooltip.style.transform = 'translate(-50%, -50%)';
+        return;
+      }
+
+      tooltip.style.transform = '';
+
+      var rect = targetEl.getBoundingClientRect();
+      var tooltipRect = tooltip.getBoundingClientRect();
+      var tooltipW = tooltipRect.width || 400;
+      var tooltipH = tooltipRect.height || 250;
+      var margin = 16;
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+
+      /* Determine best position: below, above, right, left */
+      var spaceBelow = vh - rect.bottom;
+      var spaceAbove = rect.top;
+      var spaceRight = vw - rect.right;
+      var spaceLeft = rect.left;
+
+      var top, left;
+
+      if (spaceBelow > tooltipH + margin * 2) {
+        /* Below */
+        top = rect.bottom + margin;
+        left = rect.left + (rect.width / 2) - (tooltipW / 2);
+      } else if (spaceAbove > tooltipH + margin * 2) {
+        /* Above */
+        top = rect.top - tooltipH - margin;
+        left = rect.left + (rect.width / 2) - (tooltipW / 2);
+      } else if (spaceRight > tooltipW + margin * 2) {
+        /* Right */
+        top = rect.top + (rect.height / 2) - (tooltipH / 2);
+        left = rect.right + margin;
+      } else if (spaceLeft > tooltipW + margin * 2) {
+        /* Left */
+        top = rect.top + (rect.height / 2) - (tooltipH / 2);
+        left = rect.left - tooltipW - margin;
+      } else {
+        /* Fallback: bottom of viewport */
+        top = vh - tooltipH - margin;
+        left = (vw - tooltipW) / 2;
+      }
+
+      /* Clamp to viewport */
+      left = Math.max(margin, Math.min(vw - tooltipW - margin, left));
+      top = Math.max(margin, Math.min(vh - tooltipH - margin, top));
+
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+      tooltip.style.right = 'auto';
+      tooltip.style.bottom = 'auto';
+    }
+
+    function tourSpeak(text, forStep) {
+      if (!window.speechSynthesis || !_studioState.ttsSupported) {
+        /* No TTS: auto-advance after reading time estimate */
+        var readMs = Math.max(4000, text.length * 55);
+        _studioState.tourAutoAdvanceTimer = setTimeout(function() {
+          if (_studioState.tourActive && _studioState.tourStep === forStep) {
+            tourNext();
+          }
+        }, readMs);
+        return;
+      }
+
+      /* Cancel existing */
+      speechSynthesis.cancel();
+
+      /* Pick a clear voice for narration */
+      var voice = _studioState.ttsVoiceHost1 || (_studioState.ttsVoices.length > 0 ? _studioState.ttsVoices[0] : null);
+
+      var utt = new SpeechSynthesisUtterance(text);
+      if (voice) utt.voice = voice;
+      utt.rate = 0.95;
+      utt.pitch = 1.0;
+      utt.volume = 1.0;
+
+      _studioState.tourSpeaking = true;
+
+      utt.onend = function() {
+        _studioState.tourSpeaking = false;
+        /* Auto-advance after pause */
+        if (_studioState.tourActive && _studioState.tourStep === forStep) {
+          _studioState.tourAutoAdvanceTimer = setTimeout(function() {
+            if (_studioState.tourActive && _studioState.tourStep === forStep) {
+              tourNext();
+            }
+          }, 1500);
+        }
+      };
+
+      utt.onerror = function(e) {
+        _studioState.tourSpeaking = false;
+        if (e.error === 'canceled') return;
+        /* Fallback: auto-advance on timer */
+        var readMs = Math.max(4000, text.length * 55);
+        _studioState.tourAutoAdvanceTimer = setTimeout(function() {
+          if (_studioState.tourActive && _studioState.tourStep === forStep) {
+            tourNext();
+          }
+        }, readMs);
+      };
+
+      /* Chrome bug workaround: must speak after a tiny delay */
+      setTimeout(function() {
+        if (_studioState.tourActive) {
+          speechSynthesis.speak(utt);
+        }
+      }, 100);
+    }
+
+    function tourNext() {
+      if (!_studioState.tourActive) return;
+      var nextStep = _studioState.tourStep + 1;
+      var step = TOUR_STEPS[_studioState.tourStep];
+
+      /* If current step has an action (navigation), run it first */
+      if (step && step.action) {
+        /* Remove tooltip during navigation */
+        var tooltip = document.getElementById('tour-tooltip');
+        if (tooltip) tooltip.remove();
+        document.querySelectorAll('.tour-spotlight').forEach(function(el) { el.classList.remove('tour-spotlight'); });
+        step.action(function() {
+          if (_studioState.tourActive) tourShowStep(nextStep);
+        });
+      } else {
+        tourShowStep(nextStep);
+      }
+    }
+
+    function tourPrev() {
+      if (!_studioState.tourActive) return;
+      var prevStep = _studioState.tourStep - 1;
+      if (prevStep < 0) return;
+
+      /* For going back, we need to re-navigate to the right view */
+      var targetStep = TOUR_STEPS[prevStep];
+      /* If going back to a catalogue grid step, reset there */
+      if (prevStep <= 3) {
+        /* Go back to catalogue grid */
+        _studioState.catalogueView = 'grid';
+        _studioState.selectedCourse = null;
+        _studioState.selectedSop = null;
+        _studioState.activeOutput = null;
+        var contentEl = document.getElementById('content-area');
+        contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+        setTimeout(function() {
+          tourShowStep(prevStep);
+        }, 400);
+      } else if (prevStep === 4) {
+        /* Go to course detail */
+        var firstCourse = STUDIO_COURSES.find(function(c) { return isCourseActive(c); });
+        if (firstCourse) {
+          catalogueShowCourse(firstCourse.id);
+          setTimeout(function() {
+            tourShowStep(prevStep);
+          }, 400);
+        }
+      } else {
+        /* For module-level steps, just show the step (preAction will handle) */
+        tourShowStep(prevStep);
+      }
+    }
+
+    function tourShowCTA(step) {
+      /* Remove overlay and tooltip */
+      var overlay = document.getElementById('tour-overlay');
+      if (overlay) overlay.remove();
+      var tooltip = document.getElementById('tour-tooltip');
+      if (tooltip) tooltip.remove();
+      document.querySelectorAll('.tour-spotlight').forEach(function(el) {
+        el.classList.remove('tour-spotlight');
+      });
+
+      /* Navigate back to catalogue */
+      catalogueShowGrid();
+
+      /* Create CTA overlay */
+      setTimeout(function() {
+        if (!_studioState.tourActive) return;
+        var cta = document.createElement('div');
+        cta.id = 'tour-cta';
+        cta.className = 'tour-cta-overlay';
+        cta.innerHTML = '' +
+          '<div class="tour-cta-card">' +
+            '<span class="tour-cta-icon">&#x1F680;</span>' +
+            '<div class="tour-cta-title">Transform Your Training Today</div>' +
+            '<div class="tour-cta-desc">' + step.desc + '</div>' +
+            '<div class="tour-cta-buttons">' +
+              '<button class="tour-cta-btn primary" onclick="tourEnd(); showToast(\'Let\\\'s schedule a demo!\', \'\\u2728\');">Get Started</button>' +
+              '<button class="tour-cta-btn secondary" onclick="tourEnd(); tourStart();">Replay Tour</button>' +
+              '<button class="tour-cta-btn secondary" onclick="tourEnd();">Close</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(cta);
+
+        /* Narrate the CTA */
+        tourSpeak(step.desc, _studioState.tourStep);
+      }, 600);
+    }
+
+    /* ================================================================
        UTILITIES
        ================================================================ */
 
@@ -9655,13 +10556,18 @@
       /* Attach login form handler */
       document.getElementById('login-form').addEventListener('submit', handleLogin);
 
-      /* Keyboard shortcut: Escape closes modals */
+      /* Keyboard shortcuts: Escape closes modals/tour, arrows navigate tour */
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+          if (_studioState.tourActive) { tourEnd(); return; }
           closeIframeModalDirect();
           closePolicyModalDirect();
           closeOnboardingAssignModalDirect();
           closeAddUserModalDirect();
+        }
+        if (_studioState.tourActive) {
+          if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); tourNext(); }
+          if (e.key === 'ArrowLeft') { e.preventDefault(); tourPrev(); }
         }
       });
 
