@@ -3033,6 +3033,45 @@
       line-height: 1.6;
     }
 
+    /* TTS indicator */
+    .podcast-tts-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .podcast-tts-badge.tts-active {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+    .podcast-tts-badge.tts-fallback {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+    }
+    .podcast-tts-badge i {
+      font-size: 0.8rem;
+    }
+
+    .podcast-segment.segment-speaking {
+      opacity: 1;
+      background: rgba(44, 123, 229, 0.12);
+      border-left-color: var(--accent);
+      box-shadow: 0 0 12px rgba(44, 123, 229, 0.15);
+    }
+
+    @keyframes ttsPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .podcast-tts-badge.tts-active.speaking {
+      animation: ttsPulse 1.5s ease-in-out infinite;
+    }
+
     /* Document Chat */
     .studio-chat {
       background: var(--bg-card);
@@ -4714,6 +4753,7 @@
         _studioState.searchQuery = '';
         _studioState.selectedCategory = 'All';
         if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+        _ttsCancelAll();
       }
     }
 
@@ -6870,7 +6910,7 @@
       }
     ];
 
-    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {} };
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastPaused: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {}, ttsSupported: !!(window.speechSynthesis), ttsVoices: [], ttsVoiceHost1: null, ttsVoiceHost2: null, ttsUtterance: null, ttsStartTime: null, ttsElapsedMs: 0 };
 
     /* ================================================================
        STUDIO RICH DATA: Insights, Podcast, Chat, Study Guide, Scenarios
@@ -7964,6 +8004,7 @@
       _studioState.selectedSop = null;
       _studioState.activeOutput = null;
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _ttsCancelAll();
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
     }
@@ -7976,6 +8017,7 @@
       _studioState.selectedSop = null;
       _studioState.activeOutput = null;
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _ttsCancelAll();
       var contentEl = document.getElementById('content-area');
       contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
     }
@@ -8196,7 +8238,9 @@
       _studioState.insightsRevealed = false;
       _studioState.checkedItems = {};
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _ttsCancelAll();
       _studioState.podcastPlaying = false;
+      _studioState.podcastPaused = false;
       _studioState.podcastProgress = 0;
       _studioState.podcastSegment = 0;
       var contentEl = document.getElementById('content-area');
@@ -8291,7 +8335,9 @@
 
     function setStudioOutput(outputId) {
       if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _ttsCancelAll();
       _studioState.podcastPlaying = false;
+      _studioState.podcastPaused = false;
       _studioState.podcastProgress = 0;
       _studioState.podcastSegment = 0;
       _studioState.activeOutput = '__loading__';
@@ -8636,13 +8682,20 @@
         '</div>';
       }).join('');
 
+      var ttsBadge = '';
+      if (_studioState.ttsSupported) {
+        ttsBadge = '<span class="podcast-tts-badge tts-active' + (isPlaying ? ' speaking' : '') + '"><i class="bi bi-volume-up-fill"></i> Voice Active</span>';
+      } else {
+        ttsBadge = '<span class="podcast-tts-badge tts-fallback"><i class="bi bi-eye-fill"></i> Visual Mode</span>';
+      }
+
       return '' +
         '<div class="podcast-player">' +
           '<div class="podcast-player-header">' +
             '<div class="podcast-cover">&#x1F399;</div>' +
             '<div class="podcast-meta">' +
               '<div class="podcast-title">' + escapeHtml(pd.title) + '</div>' +
-              '<div class="podcast-subtitle">PureWork AI Training Podcast &middot; ' + escapeHtml(pd.duration) + '</div>' +
+              '<div class="podcast-subtitle">PureWork AI Training Podcast &middot; ' + escapeHtml(pd.duration) + ' ' + ttsBadge + '</div>' +
             '</div>' +
           '</div>' +
           '<div class="podcast-controls">' +
@@ -8660,62 +8713,270 @@
         '</div>';
     }
 
+    /* ---- TTS Voice Initialization ---- */
+    function _ttsInitVoices() {
+      if (!_studioState.ttsSupported) return;
+      var voices = speechSynthesis.getVoices();
+      if (!voices.length) return;
+      _studioState.ttsVoices = voices;
+      /* Filter to English voices */
+      var enVoices = voices.filter(function(v) { return v.lang && v.lang.indexOf('en') === 0; });
+      if (!enVoices.length) enVoices = voices; /* fallback: use whatever is available */
+      /* Try to pick two distinct voices for the two hosts */
+      var host1Voice = null;
+      var host2Voice = null;
+      /* Strategy: look for names hinting at gender or pick first two distinct voices */
+      var maleHints = ['male', 'david', 'james', 'daniel', 'mark', 'guy', 'alex', 'tom', 'aaron', 'reed', 'evan'];
+      var femaleHints = ['female', 'samantha', 'karen', 'victoria', 'fiona', 'zira', 'linda', 'alice', 'tessa', 'moira', 'jenny', 'aria', 'sara'];
+      for (var i = 0; i < enVoices.length; i++) {
+        var nameLower = enVoices[i].name.toLowerCase();
+        if (!host1Voice) {
+          for (var m = 0; m < maleHints.length; m++) {
+            if (nameLower.indexOf(maleHints[m]) !== -1) { host1Voice = enVoices[i]; break; }
+          }
+        }
+        if (!host2Voice) {
+          for (var f = 0; f < femaleHints.length; f++) {
+            if (nameLower.indexOf(femaleHints[f]) !== -1) { host2Voice = enVoices[i]; break; }
+          }
+        }
+        if (host1Voice && host2Voice) break;
+      }
+      /* If we couldn't find gendered voices, just pick first two different voices */
+      if (!host1Voice) host1Voice = enVoices[0];
+      if (!host2Voice) host2Voice = enVoices.length > 1 ? enVoices[1] : enVoices[0];
+      /* Ensure they are different if possible */
+      if (host1Voice === host2Voice && enVoices.length > 1) {
+        host2Voice = enVoices[1] === host1Voice ? enVoices[0] : enVoices[1];
+      }
+      _studioState.ttsVoiceHost1 = host1Voice;
+      _studioState.ttsVoiceHost2 = host2Voice;
+    }
+    /* Initialize voices -- some browsers load async */
+    if (window.speechSynthesis) {
+      _ttsInitVoices();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = _ttsInitVoices;
+      }
+    }
+
+    /* ---- TTS Cancel Helper ---- */
+    function _ttsCancelAll() {
+      if (window.speechSynthesis) {
+        speechSynthesis.cancel();
+      }
+      _studioState.ttsUtterance = null;
+      _studioState.podcastPaused = false;
+      _studioState.ttsElapsedMs = 0;
+      _studioState.ttsStartTime = null;
+    }
+
+    /* ---- TTS: Update podcast UI elements ---- */
+    function _podcastUpdateUI(segIdx, totalSegs, totalSec) {
+      /* Progress */
+      _studioState.podcastProgress = Math.min(100, ((segIdx + 0.5) / totalSegs) * 100);
+      var fillEl = document.querySelector('.podcast-progress-fill');
+      if (fillEl) fillEl.style.width = _studioState.podcastProgress + '%';
+      /* Time display */
+      var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
+      var curMin = Math.floor(currentSec / 60);
+      var curS = currentSec % 60;
+      var timeSpans = document.querySelectorAll('.podcast-time span');
+      if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+      /* Highlight current segment */
+      var allSegs = document.querySelectorAll('.podcast-segment');
+      allSegs.forEach(function(el, i) {
+        el.classList.remove('segment-active', 'segment-speaking');
+        if (i < segIdx) { el.classList.add('segment-past'); }
+      });
+      if (allSegs[segIdx]) {
+        allSegs[segIdx].classList.add('segment-active', 'segment-speaking');
+        allSegs[segIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      /* Update TTS badge pulse */
+      var badge = document.querySelector('.podcast-tts-badge');
+      if (badge) {
+        if (_studioState.podcastPlaying) badge.classList.add('speaking');
+        else badge.classList.remove('speaking');
+      }
+    }
+
+    /* ---- TTS: Speak a segment, then call next ---- */
+    function _ttsSpeakSegment(segments, segIdx, totalSegs, totalSec) {
+      if (!_studioState.podcastPlaying) return;
+      if (segIdx >= totalSegs) {
+        /* Playback complete */
+        _studioState.podcastPlaying = false;
+        _studioState.podcastPaused = false;
+        _studioState.podcastProgress = 100;
+        _studioState.podcastSegment = totalSegs - 1;
+        _studioState.ttsUtterance = null;
+        var fillEl = document.querySelector('.podcast-progress-fill');
+        if (fillEl) fillEl.style.width = '100%';
+        var timeSpans = document.querySelectorAll('.podcast-time span');
+        var tMin = Math.floor(totalSec / 60);
+        var tS = totalSec % 60;
+        if (timeSpans.length >= 1) timeSpans[0].textContent = tMin + ':' + (tS < 10 ? '0' : '') + tS;
+        var playBtn2 = document.querySelector('.podcast-play-btn');
+        if (playBtn2) playBtn2.innerHTML = '&#x25B6;';
+        var wf2 = document.querySelector('.podcast-waveform');
+        if (wf2) wf2.classList.remove('playing');
+        var badge2 = document.querySelector('.podcast-tts-badge');
+        if (badge2) badge2.classList.remove('speaking');
+        /* Mark last segment */
+        var allSegs = document.querySelectorAll('.podcast-segment');
+        allSegs.forEach(function(el) { el.classList.remove('segment-active', 'segment-speaking'); el.classList.add('segment-past'); });
+        showToast('Podcast complete! Listening time logged.');
+        return;
+      }
+      _studioState.podcastSegment = segIdx;
+      _podcastUpdateUI(segIdx, totalSegs, totalSec);
+
+      var seg = segments[segIdx];
+      var utt = new SpeechSynthesisUtterance(seg.text);
+      utt.lang = 'en-US';
+      /* Assign voice and pitch/rate differentiation */
+      if (seg.speaker === 'Host 1') {
+        if (_studioState.ttsVoiceHost1) utt.voice = _studioState.ttsVoiceHost1;
+        utt.pitch = 0.95;
+        utt.rate = 1.0;
+      } else {
+        if (_studioState.ttsVoiceHost2) utt.voice = _studioState.ttsVoiceHost2;
+        utt.pitch = 1.15;
+        utt.rate = 1.02;
+      }
+      utt.volume = 1.0;
+
+      utt.onend = function() {
+        if (!_studioState.podcastPlaying) return;
+        /* Mark current as past, move to next */
+        var curEl = document.querySelector('.podcast-segment.segment-speaking');
+        if (curEl) { curEl.classList.remove('segment-speaking', 'segment-active'); curEl.classList.add('segment-past'); }
+        _ttsSpeakSegment(segments, segIdx + 1, totalSegs, totalSec);
+      };
+      utt.onerror = function(e) {
+        /* If cancelled, do nothing. Otherwise advance. */
+        if (e.error === 'canceled' || e.error === 'interrupted') return;
+        if (_studioState.podcastPlaying) {
+          _ttsSpeakSegment(segments, segIdx + 1, totalSegs, totalSec);
+        }
+      };
+
+      _studioState.ttsUtterance = utt;
+      speechSynthesis.speak(utt);
+    }
+
+    /* ---- Fallback: visual-only timer playback (original behavior) ---- */
+    function _podcastFallbackPlay(totalSegs, totalSec) {
+      var segDuration = 12000;
+      var tickInterval = 200;
+      var ticksPerSeg = segDuration / tickInterval;
+      var _tickCount = (_studioState.podcastSegment || 0) * ticksPerSeg;
+      _studioState.podcastInterval = setInterval(function() {
+        _tickCount++;
+        var newSegIdx = Math.min(totalSegs - 1, Math.floor(_tickCount / ticksPerSeg));
+        var segChanged = newSegIdx !== _studioState.podcastSegment;
+        _studioState.podcastSegment = newSegIdx;
+        _studioState.podcastProgress = Math.min(100, ((newSegIdx + (_tickCount % ticksPerSeg) / ticksPerSeg) / totalSegs) * 100);
+        var fillEl = document.querySelector('.podcast-progress-fill');
+        if (fillEl) fillEl.style.width = _studioState.podcastProgress + '%';
+        var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
+        var curMin = Math.floor(currentSec / 60);
+        var curS = currentSec % 60;
+        var timeSpans = document.querySelectorAll('.podcast-time span');
+        if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
+        if (segChanged) {
+          var allSegs = document.querySelectorAll('.podcast-segment');
+          allSegs.forEach(function(el, i) {
+            el.classList.remove('segment-active');
+            if (i < newSegIdx) el.classList.add('segment-past');
+          });
+          if (allSegs[newSegIdx]) {
+            allSegs[newSegIdx].classList.add('segment-active');
+            allSegs[newSegIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+        if (newSegIdx >= totalSegs - 1 && (_tickCount % ticksPerSeg) >= ticksPerSeg - 1) {
+          clearInterval(_studioState.podcastInterval);
+          _studioState.podcastInterval = null;
+          _studioState.podcastPlaying = false;
+          _studioState.podcastProgress = 100;
+          var playBtn2 = document.querySelector('.podcast-play-btn');
+          if (playBtn2) playBtn2.innerHTML = '&#x25B6;';
+          var wf2 = document.querySelector('.podcast-waveform');
+          if (wf2) wf2.classList.remove('playing');
+          showToast('Podcast complete! Listening time logged.');
+        }
+      }, tickInterval);
+    }
+
+    /* ---- Main Toggle: TTS or Fallback ---- */
     function togglePodcast() {
+      var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
+      var pd = sop ? (STUDIO_RICH_DATA[sop.id] || {}).podcast : null;
+      var totalSegs = pd ? pd.segments.length : 10;
+      var durParts = pd ? (pd.duration || '10:00').split(':') : ['10','00'];
+      var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
+
+      /* --- TTS Path --- */
+      if (_studioState.ttsSupported && pd && pd.segments) {
+
+        /* Currently playing -> pause */
+        if (_studioState.podcastPlaying && !_studioState.podcastPaused) {
+          _studioState.podcastPaused = true;
+          _studioState.podcastPlaying = false;
+          speechSynthesis.pause();
+          /* Update UI to paused state */
+          var playBtn = document.querySelector('.podcast-play-btn');
+          if (playBtn) playBtn.innerHTML = '&#x25B6;';
+          var waveform = document.querySelector('.podcast-waveform');
+          if (waveform) waveform.classList.remove('playing');
+          var badge = document.querySelector('.podcast-tts-badge');
+          if (badge) badge.classList.remove('speaking');
+          return;
+        }
+
+        /* Currently paused -> resume */
+        if (_studioState.podcastPaused) {
+          _studioState.podcastPaused = false;
+          _studioState.podcastPlaying = true;
+          speechSynthesis.resume();
+          /* Update UI to playing state */
+          var playBtn = document.querySelector('.podcast-play-btn');
+          if (playBtn) playBtn.innerHTML = '&#x23F8;';
+          var waveform = document.querySelector('.podcast-waveform');
+          if (waveform) waveform.classList.add('playing');
+          var badge = document.querySelector('.podcast-tts-badge');
+          if (badge) badge.classList.add('speaking');
+          return;
+        }
+
+        /* Not playing, not paused -> start fresh */
+        _studioState.podcastPlaying = true;
+        _studioState.podcastPaused = false;
+        _studioState.podcastSegment = 0;
+        _studioState.podcastProgress = 0;
+        /* Cancel any lingering speech */
+        speechSynthesis.cancel();
+        /* Ensure voices are loaded */
+        if (!_studioState.ttsVoiceHost1) _ttsInitVoices();
+        /* Begin speaking from first segment */
+        _ttsSpeakSegment(pd.segments, 0, totalSegs, totalSec);
+        /* Update UI */
+        var playBtn = document.querySelector('.podcast-play-btn');
+        if (playBtn) playBtn.innerHTML = '&#x23F8;';
+        var waveform = document.querySelector('.podcast-waveform');
+        if (waveform) waveform.classList.add('playing');
+        var badge = document.querySelector('.podcast-tts-badge');
+        if (badge) badge.classList.add('speaking');
+        return;
+      }
+
+      /* --- Fallback Path (no TTS) --- */
       _studioState.podcastPlaying = !_studioState.podcastPlaying;
       if (_studioState.podcastPlaying) {
-        var sop = STUDIO_SOPS.find(function(s) { return s.id === _studioState.selectedSop; });
-        var pd = sop ? (STUDIO_RICH_DATA[sop.id] || {}).podcast : null;
-        var totalSegs = pd ? pd.segments.length : 10;
-        var durParts = pd ? (pd.duration || '10:00').split(':') : ['10','00'];
-        var totalSec = parseInt(durParts[0]) * 60 + parseInt(durParts[1] || 0);
-        /* Each segment gets ~12 seconds of display time for natural reading pace */
-        var segDuration = 12000;
-        var tickInterval = 200;
-        var ticksPerSeg = segDuration / tickInterval;
-        var _tickCount = 0;
         if (!_studioState.podcastSegment) _studioState.podcastSegment = 0;
-        _studioState.podcastInterval = setInterval(function() {
-          _tickCount++;
-          /* Advance segment every segDuration ms */
-          var newSegIdx = Math.min(totalSegs - 1, Math.floor(_tickCount / ticksPerSeg));
-          var segChanged = newSegIdx !== _studioState.podcastSegment;
-          _studioState.podcastSegment = newSegIdx;
-          /* Progress based on segment position */
-          _studioState.podcastProgress = Math.min(100, ((newSegIdx + (_tickCount % ticksPerSeg) / ticksPerSeg) / totalSegs) * 100);
-          /* Update progress bar */
-          var fillEl = document.querySelector('.podcast-progress-fill');
-          if (fillEl) fillEl.style.width = _studioState.podcastProgress + '%';
-          /* Update time display proportionally */
-          var currentSec = Math.floor(totalSec * _studioState.podcastProgress / 100);
-          var curMin = Math.floor(currentSec / 60);
-          var curS = currentSec % 60;
-          var timeSpans = document.querySelectorAll('.podcast-time span');
-          if (timeSpans.length >= 1) timeSpans[0].textContent = curMin + ':' + (curS < 10 ? '0' : '') + curS;
-          /* Highlight current segment and scroll into view */
-          if (segChanged) {
-            var allSegs = document.querySelectorAll('.podcast-segment');
-            allSegs.forEach(function(el, i) {
-              el.classList.remove('segment-active');
-              if (i < newSegIdx) el.classList.add('segment-past');
-            });
-            if (allSegs[newSegIdx]) {
-              allSegs[newSegIdx].classList.add('segment-active');
-              allSegs[newSegIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-          }
-          /* Complete */
-          if (newSegIdx >= totalSegs - 1 && (_tickCount % ticksPerSeg) >= ticksPerSeg - 1) {
-            clearInterval(_studioState.podcastInterval);
-            _studioState.podcastInterval = null;
-            _studioState.podcastPlaying = false;
-            _studioState.podcastProgress = 100;
-            var playBtn2 = document.querySelector('.podcast-play-btn');
-            if (playBtn2) playBtn2.innerHTML = '&#x25B6;';
-            var wf2 = document.querySelector('.podcast-waveform');
-            if (wf2) wf2.classList.remove('playing');
-            showToast('Podcast complete! Listening time logged.');
-          }
-        }, tickInterval);
+        _podcastFallbackPlay(totalSegs, totalSec);
       } else {
         if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
       }
