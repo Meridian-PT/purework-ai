@@ -4497,7 +4497,7 @@
       z-index: 10003;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.8s ease;
     }
 
     .demo-fade-overlay.active {
@@ -10968,12 +10968,15 @@
     }
 
     function demoEnd() {
+      /* Mark inactive FIRST to prevent any in-flight callbacks from firing */
       _studioState.demoActive = false;
       _studioState.demoStep = -1;
       _studioState.demoPaused = false;
       _studioState.demoSpeaking = false;
+      /* Clear ALL timers */
       if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
-      if (_studioState.demoAutoReplayTimer) { clearTimeout(_studioState.demoAutoReplayTimer); _studioState.demoAutoReplayTimer = null; }
+      if (_studioState.demoAutoReplayTimer) { clearInterval(_studioState.demoAutoReplayTimer); _studioState.demoAutoReplayTimer = null; }
+      /* Cancel all speech immediately */
       if (window.speechSynthesis) { speechSynthesis.cancel(); }
 
       /* Exit fullscreen if active */
@@ -11007,10 +11010,10 @@
       if (window.speechSynthesis && speechSynthesis.paused) {
         speechSynthesis.resume();
       } else if (!_studioState.demoSpeaking) {
-        /* Speech already finished while paused, advance */
+        /* Speech already finished while paused, advance after standard wait */
         _studioState.demoTimer = setTimeout(function() {
           demoAdvance();
-        }, 1000);
+        }, 3000);
       }
       _demoUpdatePauseBtn();
     }
@@ -11030,45 +11033,47 @@
 
     function demoAdvance() {
       if (!_studioState.demoActive || _studioState.demoPaused) return;
+
+      /* Step 1: Clear ALL existing timers to prevent overlap */
+      if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
+      if (window.speechSynthesis) { speechSynthesis.cancel(); }
+      _studioState.demoSpeaking = false;
+
       var nextStep = _studioState.demoStep + 1;
 
       if (nextStep >= DEMO_STEPS.length) {
-        /* Demo finished -- show closing card */
         _demoShowClosingCard();
         return;
       }
 
       var step = DEMO_STEPS[nextStep];
 
-      /* Fade transition */
+      /* Step 2: Fade out (800ms CSS transition + 600ms pause at full dark) */
       _demoFadeOut(function() {
+        if (!_studioState.demoActive) return;
         _studioState.demoStep = nextStep;
 
-        /* If CTA step, skip to closing */
         if (step.isCTA) {
           _demoShowClosingCard();
           return;
         }
 
-        /* Run current step's action from PREVIOUS step first (auto-click navigation) */
-        var prevStep = nextStep > 0 ? DEMO_STEPS[nextStep - 1] : null;
-
-        /* Run preAction if present (navigates to correct view) */
+        /* Step 4: Execute navigation preAction if needed */
         if (step.preAction) {
           step.preAction();
         }
 
-        var renderDelay = step.preAction ? (step.preDelay || 500) : 100;
+        /* Step 5: Wait for DOM to settle (800ms after navigation, 200ms otherwise) */
+        var domWait = step.preAction ? 800 : 200;
 
-        setTimeout(function() {
+        _studioState.demoTimer = setTimeout(function() {
           if (!_studioState.demoActive) return;
 
-          /* Remove old spotlight */
+          /* Step 6: Remove old spotlight and apply new one */
           document.querySelectorAll('.demo-spotlight').forEach(function(el) {
             el.classList.remove('demo-spotlight');
           });
 
-          /* Find and spotlight target */
           var targetEl = step.target ? document.querySelector(step.target) : null;
           if (targetEl) {
             targetEl.classList.add('demo-spotlight');
@@ -11079,30 +11084,37 @@
             if (secondEl) secondEl.classList.add('demo-spotlight');
           }
 
-          /* Fade in */
-          _demoFadeIn();
+          /* Step 7: Fade in (800ms) -- TTS starts AFTER fade-in completes */
+          _demoFadeIn(function() {
+            if (!_studioState.demoActive) return;
 
-          /* Update subtitle and progress */
-          _demoUpdateSubtitle(step.desc);
-          _demoUpdateProgress(nextStep);
+            /* Step 8: Wait 500ms after fade-in before showing subtitle + starting TTS */
+            _studioState.demoTimer = setTimeout(function() {
+              if (!_studioState.demoActive) return;
 
-          /* Speak narration */
-          _demoSpeak(step.desc, nextStep, function() {
-            /* After speech ends + wait period, either run action or advance */
-            if (!_studioState.demoActive || _studioState.demoPaused) return;
+              /* Step 9: Show subtitle text */
+              _demoUpdateSubtitle(step.desc);
+              _demoUpdateProgress(nextStep);
 
-            if (step.action) {
-              /* Step has auto-click action (e.g., click a course card) */
-              step.action(function() {
-                if (_studioState.demoActive && !_studioState.demoPaused) {
-                  _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 800);
+              /* Step 10: Start TTS narration */
+              _demoSpeak(step.desc, nextStep, function() {
+                /* Step 11: On TTS end, wait 3000ms before advancing */
+                if (!_studioState.demoActive || _studioState.demoPaused) return;
+
+                if (step.action) {
+                  step.action(function() {
+                    if (_studioState.demoActive && !_studioState.demoPaused) {
+                      _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 3000);
+                    }
+                  });
+                } else {
+                  /* Step 12: Advance to next step */
+                  _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 3000);
                 }
               });
-            } else {
-              _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 2000);
-            }
+            }, 500);
           });
-        }, renderDelay);
+        }, domWait);
       });
     }
 
@@ -11156,16 +11168,23 @@
       var fadeOv = document.getElementById('demo-fade-overlay');
       if (fadeOv) {
         fadeOv.classList.add('active');
-        setTimeout(function() { callback(); }, 500);
+        /* Wait 800ms for fade-out transition, then 600ms pause at full dark */
+        setTimeout(function() {
+          setTimeout(function() { callback(); }, 600);
+        }, 800);
       } else {
         callback();
       }
     }
 
-    function _demoFadeIn() {
+    function _demoFadeIn(onComplete) {
       var fadeOv = document.getElementById('demo-fade-overlay');
       if (fadeOv) {
         fadeOv.classList.remove('active');
+      }
+      /* Wait for 800ms CSS transition to finish, then call onComplete */
+      if (onComplete) {
+        setTimeout(onComplete, 800);
       }
     }
 
@@ -11222,20 +11241,19 @@
     }
 
     function _demoSpeak(text, forStep, onDone) {
+      /* Always cancel any leftover speech first -- prevents stale onend from firing */
+      if (window.speechSynthesis) { speechSynthesis.cancel(); }
+
       if (!window.speechSynthesis || !_studioState.ttsSupported) {
-        /* No TTS: use timer based on text length */
+        /* No TTS: use 8-second fallback */
         _studioState.demoSpeaking = false;
-        var readMs = Math.max(4000, text.length * 55);
         _studioState.demoTimer = setTimeout(function() {
           if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
             onDone();
           }
-        }, readMs);
+        }, 8000);
         return;
       }
-
-      /* Cancel existing */
-      speechSynthesis.cancel();
 
       var voice = _studioState.ttsVoiceHost1 || (_studioState.ttsVoices.length > 0 ? _studioState.ttsVoices[0] : null);
 
@@ -11246,8 +11264,21 @@
       utt.volume = 1.0;
 
       _studioState.demoSpeaking = true;
+      var ttsDone = false;
+
+      /* Safety fallback: if TTS never fires onend (browser quirk), use 8s fallback */
+      var fallbackTimer = setTimeout(function() {
+        if (!ttsDone && _studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+          ttsDone = true;
+          _studioState.demoSpeaking = false;
+          onDone();
+        }
+      }, 8000);
 
       utt.onend = function() {
+        if (ttsDone) return;
+        ttsDone = true;
+        clearTimeout(fallbackTimer);
         _studioState.demoSpeaking = false;
         if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
           onDone();
@@ -11255,23 +11286,25 @@
       };
 
       utt.onerror = function(e) {
+        if (ttsDone) return;
+        ttsDone = true;
+        clearTimeout(fallbackTimer);
         _studioState.demoSpeaking = false;
         if (e.error === 'canceled') return;
-        /* Fallback: timer */
-        var readMs = Math.max(4000, text.length * 55);
+        /* Fallback: 8 seconds */
         _studioState.demoTimer = setTimeout(function() {
           if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
             onDone();
           }
-        }, readMs);
+        }, 8000);
       };
 
-      /* Chrome bug workaround */
+      /* Chrome bug workaround: small delay before speaking */
       setTimeout(function() {
-        if (_studioState.demoActive) {
+        if (_studioState.demoActive && !ttsDone) {
           speechSynthesis.speak(utt);
         }
-      }, 100);
+      }, 150);
     }
 
     /* Title Card (opening sequence) */
@@ -11289,10 +11322,10 @@
       var bar = document.getElementById('demo-subtitle-bar');
       if (bar) bar.style.opacity = '0';
 
-      /* After 3.5 seconds, fade out title card and start Step 0 */
+      /* After 5 seconds, fade out title card and start Step 0 */
       setTimeout(function() {
         if (!_studioState.demoActive) return;
-        card.style.transition = 'opacity 0.6s ease';
+        card.style.transition = 'opacity 0.8s ease';
         card.style.opacity = '0';
         setTimeout(function() {
           card.remove();
@@ -11301,8 +11334,8 @@
           if (bar) bar.style.opacity = '1';
           /* Start advancing through steps */
           demoAdvance();
-        }, 600);
-      }, 3500);
+        }, 800);
+      }, 5000);
     }
 
     /* Closing Card (end sequence) */
@@ -11332,17 +11365,17 @@
           '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
           '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
           '<div class="demo-card-tagline">Transform your documents into a complete learning platform.</div>' +
-          '<div class="demo-card-contact">Learn more at <a href="https://thepeoplegroup.ca" target="_blank">thepeoplegroup.ca</a></div>' +
+          '<div class="demo-card-contact">Learn more at <a href="https://purebrain.ai" target="_blank">purebrain.ai</a></div>' +
           '<div class="demo-card-replay">' +
             '<button class="demo-card-replay-btn" onclick="_demoReplay()"><i class="bi bi-arrow-counterclockwise"></i> Replay Demo</button>' +
             '<button class="demo-card-close-btn" onclick="demoEnd()"><i class="bi bi-x-lg"></i> Close</button>' +
           '</div>' +
-          '<div class="demo-card-auto" id="demo-auto-replay-msg">Auto-replay in 10 seconds...</div>';
+          '<div class="demo-card-auto" id="demo-auto-replay-msg">Auto-replay in 15 seconds...</div>';
         document.body.appendChild(card);
         _demoFadeIn();
 
         /* Auto-replay countdown */
-        var countdown = 10;
+        var countdown = 15;
         var msgEl = card.querySelector('#demo-auto-replay-msg');
         var countdownInterval = setInterval(function() {
           countdown--;
