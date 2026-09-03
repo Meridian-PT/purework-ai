@@ -4415,6 +4415,372 @@
         font-size: 20px;
       }
     }
+
+    /* ================================================================
+       AUTO-PLAY DEMO / VIDEO WALKTHROUGH MODE (Cinema Mode)
+       ================================================================ */
+
+    /* Demo Start Button - Hero (next to tour button) */
+    .demo-start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 16px;
+      margin-left: 12px;
+      position: relative;
+    }
+
+    .demo-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4), 0 0 40px rgba(236, 72, 153, 0.2);
+    }
+
+    .demo-start-btn:active {
+      transform: translateY(0);
+    }
+
+    .demo-start-btn .demo-film-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    /* Demo Header Button */
+    .demo-header-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-left: 8px;
+    }
+
+    .demo-header-btn:hover {
+      background: #8b5cf6;
+      color: #fff;
+      border-color: #8b5cf6;
+    }
+
+    .demo-header-btn i {
+      font-size: 13px;
+    }
+
+    /* Fade Overlay for transitions between steps */
+    .demo-fade-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 15, 30, 0.97);
+      z-index: 10003;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .demo-fade-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Dark overlay behind demo content */
+    .demo-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 9998;
+      animation: tourOverlayIn 0.35s ease forwards;
+      pointer-events: auto;
+    }
+
+    /* Cinematic Spotlight Effect (stronger than tour) */
+    .demo-spotlight {
+      position: relative;
+      z-index: 9999 !important;
+      box-shadow: 0 0 0 4px var(--accent), 0 0 40px rgba(44, 123, 229, 0.5), 0 0 100px rgba(44, 123, 229, 0.2);
+      border-radius: 12px;
+      transform: scale(1.02);
+      transition: all 0.6s ease;
+      pointer-events: auto;
+    }
+
+    /* Subtitle Bar at the bottom */
+    .demo-subtitle-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10001;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85) 25%, rgba(0, 0, 0, 0.95));
+      padding: 48px 20px 20px;
+      transition: opacity 0.4s ease;
+    }
+
+    .demo-subtitle-text {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #fff;
+      max-width: 800px;
+      margin: 0 auto 16px;
+      line-height: 1.5;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .demo-subtitle-text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .demo-step-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .demo-progress {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .demo-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #8b5cf6);
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+
+    .demo-ctrl-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    .demo-ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.1);
+    }
+
+    .demo-ctrl-btn.pause-play {
+      width: 42px;
+      height: 42px;
+      font-size: 16px;
+      background: rgba(44, 123, 229, 0.3);
+      border-color: rgba(44, 123, 229, 0.5);
+    }
+
+    .demo-ctrl-btn.pause-play:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Title Card / Closing Card */
+    .demo-card-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10004;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at center, rgba(15, 21, 40, 0.98), rgba(5, 8, 18, 1));
+      text-align: center;
+      padding: 40px;
+    }
+
+    .demo-card-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      line-height: 1.2;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: demoCardFadeIn 0.8s ease 0.3s forwards;
+    }
+
+    .demo-card-title span {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .demo-card-tagline {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: demoCardFadeIn 0.8s ease 0.7s forwards;
+    }
+
+    .demo-card-contact {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin-top: 24px;
+      opacity: 0;
+      animation: demoCardFadeIn 0.8s ease 1.1s forwards;
+    }
+
+    .demo-card-contact a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .demo-card-logo {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: demoCardFadeIn 0.6s ease 0.1s forwards;
+    }
+
+    .demo-card-replay {
+      margin-top: 36px;
+      opacity: 0;
+      animation: demoCardFadeIn 0.8s ease 1.5s forwards;
+    }
+
+    .demo-card-replay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .demo-card-replay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(44, 123, 229, 0.4);
+    }
+
+    .demo-card-close-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 12px;
+    }
+
+    .demo-card-close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .demo-card-auto {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-top: 16px;
+      opacity: 0;
+      animation: demoCardFadeIn 0.8s ease 2s forwards;
+    }
+
+    @keyframes demoCardFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .demo-subtitle-text {
+        font-size: 1rem;
+        padding: 0 8px;
+      }
+      .demo-controls {
+        gap: 10px;
+      }
+      .demo-card-title {
+        font-size: 2rem;
+      }
+      .demo-card-tagline {
+        font-size: 1rem;
+      }
+      .demo-start-btn {
+        font-size: 14px;
+        padding: 12px 24px;
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4565,6 +4931,7 @@
         </div>
         <div class="header-right">
           <button class="tour-header-btn" id="tour-header-btn" onclick="tourStart()" style="display:none;"><i class="bi bi-play-circle"></i> Tour</button>
+          <button class="demo-header-btn" id="demo-header-btn" onclick="demoStart()" style="display:none;"><i class="bi bi-film"></i> Demo</button>
           <span class="header-company" id="header-company"></span>
           <div class="header-avatar" id="header-avatar"></div>
         </div>
@@ -5118,10 +5485,13 @@
         if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
         _ttsCancelAll();
         tourEnd();
+        demoEnd();
       }
-      /* Show/hide tour header button based on route */
+      /* Show/hide tour + demo header buttons based on route */
       var tourHeaderBtn = document.getElementById('tour-header-btn');
       if (tourHeaderBtn) { tourHeaderBtn.style.display = (route === 'studio') ? '' : 'none'; }
+      var demoHeaderBtn = document.getElementById('demo-header-btn');
+      if (demoHeaderBtn) { demoHeaderBtn.style.display = (route === 'studio') ? '' : 'none'; }
     }
 
     /** Listen for hash changes (browser back/forward) */
@@ -7277,7 +7647,7 @@
       }
     ];
 
-    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastPaused: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {}, ttsSupported: !!(window.speechSynthesis), ttsVoices: [], ttsVoiceHost1: null, ttsVoiceHost2: null, ttsUtterance: null, ttsStartTime: null, ttsElapsedMs: 0, tourActive: false, tourStep: 0, tourSpeaking: false, tourAutoAdvanceTimer: null };
+    var _studioState = { selectedSop: null, activeOutput: null, quizAnswers: {}, slideIndex: 0, flashcardIndex: 0, flashcardFlipped: false, chatMessages: [], insightsRevealed: false, podcastPlaying: false, podcastPaused: false, podcastProgress: 0, podcastSegment: 0, podcastInterval: null, checkedItems: {}, ttsSupported: !!(window.speechSynthesis), ttsVoices: [], ttsVoiceHost1: null, ttsVoiceHost2: null, ttsUtterance: null, ttsStartTime: null, ttsElapsedMs: 0, tourActive: false, tourStep: 0, tourSpeaking: false, tourAutoAdvanceTimer: null, demoActive: false, demoStep: -1, demoPaused: false, demoTimer: null, demoSpeaking: false, demoAutoReplayTimer: null };
 
     /* ================================================================
        STUDIO RICH DATA: Insights, Podcast, Chat, Study Guide, Scenarios
@@ -8467,6 +8837,10 @@
           '<span class="tour-play-icon"><i class="bi bi-play-fill"></i></span>' +
           '<span class="tour-pulse-ring"></span>' +
           'Take a Guided Tour' +
+        '</button>' +
+        '<button class="demo-start-btn" onclick="demoStart()">' +
+          '<span class="demo-film-icon"><i class="bi bi-film"></i></span>' +
+          'Watch Demo' +
         '</button>' +
       '</div>';
 
@@ -10537,6 +10911,466 @@
     }
 
     /* ================================================================
+       AUTO-PLAY DEMO / VIDEO WALKTHROUGH MODE (Cinema Mode)
+       ================================================================ */
+
+    /* Demo reuses the same 12-step script as the tour but with cinematic UI */
+    var DEMO_STEPS = TOUR_STEPS.map(function(step, idx) {
+      return {
+        id: step.id,
+        target: step.target,
+        secondTarget: step.secondTarget || null,
+        title: step.title,
+        desc: step.desc,
+        preAction: step.preAction || null,
+        preDelay: step.preDelay || 500,
+        action: step.action || null,
+        isCTA: step.isCTA || false
+      };
+    });
+
+    function demoStart() {
+      if (_studioState.demoActive) return;
+      /* Cancel any active tour */
+      if (_studioState.tourActive) tourEnd();
+      /* Cancel any playing podcast/TTS */
+      _ttsCancelAll();
+      if (_studioState.podcastInterval) { clearInterval(_studioState.podcastInterval); _studioState.podcastInterval = null; }
+      _studioState.podcastPlaying = false;
+      _studioState.podcastPaused = false;
+
+      /* Ensure we are on the studio route at catalogue grid */
+      if (APP_STATE.currentRoute !== 'studio') {
+        navigate('studio');
+      } else {
+        _studioState.catalogueView = 'grid';
+        _studioState.selectedCourse = null;
+        _studioState.selectedSop = null;
+        _studioState.activeOutput = null;
+        _studioState.searchQuery = '';
+        _studioState.selectedCategory = 'All';
+        var contentEl = document.getElementById('content-area');
+        contentEl.innerHTML = '<div class="page-content">' + renderStudio() + '</div>';
+      }
+
+      _studioState.demoActive = true;
+      _studioState.demoStep = -1;
+      _studioState.demoPaused = false;
+      _studioState.demoSpeaking = false;
+      _studioState.demoTimer = null;
+      _studioState.demoAutoReplayTimer = null;
+
+      /* Create persistent DOM elements: fade overlay, subtitle bar */
+      _demoCreateUI();
+
+      /* Show title card first */
+      _demoShowTitleCard();
+    }
+
+    function demoEnd() {
+      _studioState.demoActive = false;
+      _studioState.demoStep = -1;
+      _studioState.demoPaused = false;
+      _studioState.demoSpeaking = false;
+      if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
+      if (_studioState.demoAutoReplayTimer) { clearTimeout(_studioState.demoAutoReplayTimer); _studioState.demoAutoReplayTimer = null; }
+      if (window.speechSynthesis) { speechSynthesis.cancel(); }
+
+      /* Exit fullscreen if active */
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(function() {});
+      }
+
+      /* Remove all demo DOM */
+      ['demo-fade-overlay', 'demo-overlay', 'demo-subtitle-bar', 'demo-title-card', 'demo-closing-card'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+      });
+
+      /* Remove spotlight */
+      document.querySelectorAll('.demo-spotlight').forEach(function(el) {
+        el.classList.remove('demo-spotlight');
+      });
+    }
+
+    function demoPause() {
+      if (!_studioState.demoActive || _studioState.demoPaused) return;
+      _studioState.demoPaused = true;
+      if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
+      if (window.speechSynthesis && speechSynthesis.speaking) { speechSynthesis.pause(); }
+      _demoUpdatePauseBtn();
+    }
+
+    function demoResume() {
+      if (!_studioState.demoActive || !_studioState.demoPaused) return;
+      _studioState.demoPaused = false;
+      if (window.speechSynthesis && speechSynthesis.paused) {
+        speechSynthesis.resume();
+      } else if (!_studioState.demoSpeaking) {
+        /* Speech already finished while paused, advance */
+        _studioState.demoTimer = setTimeout(function() {
+          demoAdvance();
+        }, 1000);
+      }
+      _demoUpdatePauseBtn();
+    }
+
+    function demoTogglePause() {
+      if (_studioState.demoPaused) { demoResume(); }
+      else { demoPause(); }
+    }
+
+    function demoToggleFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(function() {});
+      } else {
+        document.documentElement.requestFullscreen().catch(function() {});
+      }
+    }
+
+    function demoAdvance() {
+      if (!_studioState.demoActive || _studioState.demoPaused) return;
+      var nextStep = _studioState.demoStep + 1;
+
+      if (nextStep >= DEMO_STEPS.length) {
+        /* Demo finished -- show closing card */
+        _demoShowClosingCard();
+        return;
+      }
+
+      var step = DEMO_STEPS[nextStep];
+
+      /* Fade transition */
+      _demoFadeOut(function() {
+        _studioState.demoStep = nextStep;
+
+        /* If CTA step, skip to closing */
+        if (step.isCTA) {
+          _demoShowClosingCard();
+          return;
+        }
+
+        /* Run current step's action from PREVIOUS step first (auto-click navigation) */
+        var prevStep = nextStep > 0 ? DEMO_STEPS[nextStep - 1] : null;
+
+        /* Run preAction if present (navigates to correct view) */
+        if (step.preAction) {
+          step.preAction();
+        }
+
+        var renderDelay = step.preAction ? (step.preDelay || 500) : 100;
+
+        setTimeout(function() {
+          if (!_studioState.demoActive) return;
+
+          /* Remove old spotlight */
+          document.querySelectorAll('.demo-spotlight').forEach(function(el) {
+            el.classList.remove('demo-spotlight');
+          });
+
+          /* Find and spotlight target */
+          var targetEl = step.target ? document.querySelector(step.target) : null;
+          if (targetEl) {
+            targetEl.classList.add('demo-spotlight');
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          if (step.secondTarget) {
+            var secondEl = document.querySelector(step.secondTarget);
+            if (secondEl) secondEl.classList.add('demo-spotlight');
+          }
+
+          /* Fade in */
+          _demoFadeIn();
+
+          /* Update subtitle and progress */
+          _demoUpdateSubtitle(step.desc);
+          _demoUpdateProgress(nextStep);
+
+          /* Speak narration */
+          _demoSpeak(step.desc, nextStep, function() {
+            /* After speech ends + wait period, either run action or advance */
+            if (!_studioState.demoActive || _studioState.demoPaused) return;
+
+            if (step.action) {
+              /* Step has auto-click action (e.g., click a course card) */
+              step.action(function() {
+                if (_studioState.demoActive && !_studioState.demoPaused) {
+                  _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 800);
+                }
+              });
+            } else {
+              _studioState.demoTimer = setTimeout(function() { demoAdvance(); }, 2000);
+            }
+          });
+        }, renderDelay);
+      });
+    }
+
+    /* ---- Demo Internal Helpers ---- */
+
+    function _demoCreateUI() {
+      /* Fade overlay */
+      if (!document.getElementById('demo-fade-overlay')) {
+        var fadeOv = document.createElement('div');
+        fadeOv.id = 'demo-fade-overlay';
+        fadeOv.className = 'demo-fade-overlay';
+        document.body.appendChild(fadeOv);
+      }
+
+      /* Dark overlay */
+      if (!document.getElementById('demo-overlay')) {
+        var overlay = document.createElement('div');
+        overlay.id = 'demo-overlay';
+        overlay.className = 'demo-overlay';
+        document.body.appendChild(overlay);
+      }
+
+      /* Subtitle bar */
+      if (!document.getElementById('demo-subtitle-bar')) {
+        var bar = document.createElement('div');
+        bar.id = 'demo-subtitle-bar';
+        bar.className = 'demo-subtitle-bar';
+        bar.innerHTML = '' +
+          '<div class="demo-subtitle-text" id="demo-subtitle-text"></div>' +
+          '<div class="demo-controls">' +
+            '<div class="demo-step-label" id="demo-step-label">0 / ' + (DEMO_STEPS.length - 1) + '</div>' +
+            '<div class="demo-progress" onclick="_demoProgressClick(event)">' +
+              '<div class="demo-progress-fill" id="demo-progress-fill" style="width: 0%;"></div>' +
+            '</div>' +
+            '<button class="demo-ctrl-btn pause-play" id="demo-pause-btn" onclick="demoTogglePause()" title="Pause / Play (Space)"><i class="bi bi-pause-fill"></i></button>' +
+            '<button class="demo-ctrl-btn" onclick="demoToggleFullscreen()" title="Fullscreen (F)"><i class="bi bi-fullscreen"></i></button>' +
+            '<button class="demo-ctrl-btn" onclick="demoEnd()" title="Exit Demo (Esc)"><i class="bi bi-x-lg"></i></button>' +
+          '</div>';
+        document.body.appendChild(bar);
+      }
+    }
+
+    function _demoRemoveUI() {
+      ['demo-fade-overlay', 'demo-overlay', 'demo-subtitle-bar'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+      });
+    }
+
+    function _demoFadeOut(callback) {
+      var fadeOv = document.getElementById('demo-fade-overlay');
+      if (fadeOv) {
+        fadeOv.classList.add('active');
+        setTimeout(function() { callback(); }, 500);
+      } else {
+        callback();
+      }
+    }
+
+    function _demoFadeIn() {
+      var fadeOv = document.getElementById('demo-fade-overlay');
+      if (fadeOv) {
+        fadeOv.classList.remove('active');
+      }
+    }
+
+    function _demoUpdateSubtitle(text) {
+      var el = document.getElementById('demo-subtitle-text');
+      if (!el) return;
+      /* Fade out, swap, fade in */
+      el.classList.remove('visible');
+      setTimeout(function() {
+        el.textContent = text;
+        el.classList.add('visible');
+      }, 200);
+    }
+
+    function _demoUpdateProgress(stepIdx) {
+      var totalSteps = DEMO_STEPS.length - 1; /* Exclude CTA step */
+      var fillEl = document.getElementById('demo-progress-fill');
+      var labelEl = document.getElementById('demo-step-label');
+      if (fillEl) {
+        var pct = Math.round(((stepIdx + 1) / totalSteps) * 100);
+        fillEl.style.width = pct + '%';
+      }
+      if (labelEl) {
+        labelEl.textContent = (stepIdx + 1) + ' / ' + totalSteps;
+      }
+    }
+
+    function _demoUpdatePauseBtn() {
+      var btn = document.getElementById('demo-pause-btn');
+      if (!btn) return;
+      if (_studioState.demoPaused) {
+        btn.innerHTML = '<i class="bi bi-play-fill"></i>';
+        btn.title = 'Resume (Space)';
+      } else {
+        btn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+        btn.title = 'Pause (Space)';
+      }
+    }
+
+    function _demoProgressClick(e) {
+      /* Allow clicking progress bar to jump to step (rough) */
+      var bar = e.currentTarget;
+      var rect = bar.getBoundingClientRect();
+      var pct = (e.clientX - rect.left) / rect.width;
+      var totalSteps = DEMO_STEPS.length - 1;
+      var targetStep = Math.min(totalSteps - 1, Math.max(0, Math.floor(pct * totalSteps)));
+      /* Reset and jump to that step */
+      if (window.speechSynthesis) speechSynthesis.cancel();
+      if (_studioState.demoTimer) { clearTimeout(_studioState.demoTimer); _studioState.demoTimer = null; }
+      _studioState.demoStep = targetStep - 1;
+      _studioState.demoPaused = false;
+      _demoUpdatePauseBtn();
+      demoAdvance();
+    }
+
+    function _demoSpeak(text, forStep, onDone) {
+      if (!window.speechSynthesis || !_studioState.ttsSupported) {
+        /* No TTS: use timer based on text length */
+        _studioState.demoSpeaking = false;
+        var readMs = Math.max(4000, text.length * 55);
+        _studioState.demoTimer = setTimeout(function() {
+          if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+            onDone();
+          }
+        }, readMs);
+        return;
+      }
+
+      /* Cancel existing */
+      speechSynthesis.cancel();
+
+      var voice = _studioState.ttsVoiceHost1 || (_studioState.ttsVoices.length > 0 ? _studioState.ttsVoices[0] : null);
+
+      var utt = new SpeechSynthesisUtterance(text);
+      if (voice) utt.voice = voice;
+      utt.rate = 0.95;
+      utt.pitch = 1.0;
+      utt.volume = 1.0;
+
+      _studioState.demoSpeaking = true;
+
+      utt.onend = function() {
+        _studioState.demoSpeaking = false;
+        if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+          onDone();
+        }
+      };
+
+      utt.onerror = function(e) {
+        _studioState.demoSpeaking = false;
+        if (e.error === 'canceled') return;
+        /* Fallback: timer */
+        var readMs = Math.max(4000, text.length * 55);
+        _studioState.demoTimer = setTimeout(function() {
+          if (_studioState.demoActive && _studioState.demoStep === forStep && !_studioState.demoPaused) {
+            onDone();
+          }
+        }, readMs);
+      };
+
+      /* Chrome bug workaround */
+      setTimeout(function() {
+        if (_studioState.demoActive) {
+          speechSynthesis.speak(utt);
+        }
+      }, 100);
+    }
+
+    /* Title Card (opening sequence) */
+    function _demoShowTitleCard() {
+      var card = document.createElement('div');
+      card.id = 'demo-title-card';
+      card.className = 'demo-card-overlay';
+      card.innerHTML = '' +
+        '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
+        '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
+        '<div class="demo-card-tagline">Enterprise Training, Powered by AI</div>';
+      document.body.appendChild(card);
+
+      /* Hide the subtitle bar during title card */
+      var bar = document.getElementById('demo-subtitle-bar');
+      if (bar) bar.style.opacity = '0';
+
+      /* After 3.5 seconds, fade out title card and start Step 0 */
+      setTimeout(function() {
+        if (!_studioState.demoActive) return;
+        card.style.transition = 'opacity 0.6s ease';
+        card.style.opacity = '0';
+        setTimeout(function() {
+          card.remove();
+          /* Show subtitle bar */
+          var bar = document.getElementById('demo-subtitle-bar');
+          if (bar) bar.style.opacity = '1';
+          /* Start advancing through steps */
+          demoAdvance();
+        }, 600);
+      }, 3500);
+    }
+
+    /* Closing Card (end sequence) */
+    function _demoShowClosingCard() {
+      /* Cancel speech */
+      if (window.speechSynthesis) speechSynthesis.cancel();
+      /* Remove spotlight */
+      document.querySelectorAll('.demo-spotlight').forEach(function(el) {
+        el.classList.remove('demo-spotlight');
+      });
+      /* Hide subtitle bar */
+      var bar = document.getElementById('demo-subtitle-bar');
+      if (bar) bar.style.opacity = '0';
+      /* Remove overlay */
+      var overlay = document.getElementById('demo-overlay');
+      if (overlay) overlay.style.opacity = '0';
+
+      /* Navigate back to grid */
+      catalogueShowGrid();
+
+      /* Create closing card with fade out + replay */
+      _demoFadeOut(function() {
+        var card = document.createElement('div');
+        card.id = 'demo-closing-card';
+        card.className = 'demo-card-overlay';
+        card.innerHTML = '' +
+          '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
+          '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
+          '<div class="demo-card-tagline">Transform your documents into a complete learning platform.</div>' +
+          '<div class="demo-card-contact">Learn more at <a href="https://thepeoplegroup.ca" target="_blank">thepeoplegroup.ca</a></div>' +
+          '<div class="demo-card-replay">' +
+            '<button class="demo-card-replay-btn" onclick="_demoReplay()"><i class="bi bi-arrow-counterclockwise"></i> Replay Demo</button>' +
+            '<button class="demo-card-close-btn" onclick="demoEnd()"><i class="bi bi-x-lg"></i> Close</button>' +
+          '</div>' +
+          '<div class="demo-card-auto" id="demo-auto-replay-msg">Auto-replay in 10 seconds...</div>';
+        document.body.appendChild(card);
+        _demoFadeIn();
+
+        /* Auto-replay countdown */
+        var countdown = 10;
+        var msgEl = card.querySelector('#demo-auto-replay-msg');
+        var countdownInterval = setInterval(function() {
+          countdown--;
+          if (!_studioState.demoActive || countdown <= 0) {
+            clearInterval(countdownInterval);
+            if (_studioState.demoActive && countdown <= 0) {
+              _demoReplay();
+            }
+            return;
+          }
+          if (msgEl) msgEl.textContent = 'Auto-replay in ' + countdown + ' seconds...';
+        }, 1000);
+
+        _studioState.demoAutoReplayTimer = countdownInterval;
+      });
+    }
+
+    function _demoReplay() {
+      /* Clear auto-replay timer */
+      if (_studioState.demoAutoReplayTimer) {
+        clearInterval(_studioState.demoAutoReplayTimer);
+        _studioState.demoAutoReplayTimer = null;
+      }
+      demoEnd();
+      setTimeout(function() { demoStart(); }, 300);
+    }
+
+    /* ================================================================
        UTILITIES
        ================================================================ */
 
@@ -10556,15 +11390,23 @@
       /* Attach login form handler */
       document.getElementById('login-form').addEventListener('submit', handleLogin);
 
-      /* Keyboard shortcuts: Escape closes modals/tour, arrows navigate tour */
+      /* Keyboard shortcuts: Escape closes modals/tour/demo, arrows navigate tour, space pauses demo */
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+          if (_studioState.demoActive) { demoEnd(); return; }
           if (_studioState.tourActive) { tourEnd(); return; }
           closeIframeModalDirect();
           closePolicyModalDirect();
           closeOnboardingAssignModalDirect();
           closeAddUserModalDirect();
         }
+        /* Demo mode keys */
+        if (_studioState.demoActive) {
+          if (e.key === ' ') { e.preventDefault(); demoTogglePause(); }
+          if (e.key === 'f' || e.key === 'F') { e.preventDefault(); demoToggleFullscreen(); }
+          return; /* Consume all other keys during demo */
+        }
+        /* Tour keys */
         if (_studioState.tourActive) {
           if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); tourNext(); }
           if (e.key === 'ArrowLeft') { e.preventDefault(); tourPrev(); }
@@ -10574,6 +11416,17 @@
       /* Try to restore existing session */
       if (restoreSession()) {
         showApp();
+
+        /* Check for auto-demo URL parameter: ?demo=true or #studio?demo=true */
+        var urlParams = new URLSearchParams(window.location.search);
+        var hashDemo = window.location.hash.indexOf('demo=true') !== -1;
+        if (urlParams.get('demo') === 'true' || urlParams.get('autoplay') === 'true' || hashDemo) {
+          /* Auto-start demo after short delay */
+          setTimeout(function() {
+            navigate('studio');
+            setTimeout(function() { demoStart(); }, 800);
+          }, 2000);
+        }
       }
     });
   </script>
