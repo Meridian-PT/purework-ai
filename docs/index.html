@@ -8851,7 +8851,7 @@
 
       /* Hero */
       var heroHtml = '<div class="catalogue-hero" id="tour-target-hero">' +
-        '<div class="catalogue-hero-title">PureWork <span>Training Studio</span></div>' +
+        '<div class="catalogue-hero-title">' + (window._BRAND ? window._BRAND.catalogueTitle : 'PureWork <span>Training Studio</span>') + '</div>' +
         '<div class="catalogue-hero-sub">Enterprise-grade training content, powered by AI. Upload any document or explore our curated course library.</div>' +
         '<div class="catalogue-search" id="tour-target-search">' +
           '<i class="bi bi-search search-icon"></i>' +
@@ -9465,7 +9465,7 @@
             '<div class="podcast-cover">&#x1F399;</div>' +
             '<div class="podcast-meta">' +
               '<div class="podcast-title">' + escapeHtml(pd.title) + '</div>' +
-              '<div class="podcast-subtitle">PureWork AI Training Podcast &middot; ' + escapeHtml(pd.duration) + ' ' + ttsBadge + '</div>' +
+              '<div class="podcast-subtitle">' + (window._BRAND ? window._BRAND.podcastSub : 'PureWork AI Training Podcast') + ' &middot; ' + escapeHtml(pd.duration) + ' ' + ttsBadge + '</div>' +
             '</div>' +
           '</div>' +
           '<div class="podcast-controls">' +
@@ -9784,7 +9784,7 @@
           '<div class="studio-chat-header">' +
             '<div class="ai-dot"></div>' +
             '<span>Document AI Chat</span>' +
-            '<span style="margin-left:auto;font-size:0.72rem;color:var(--text-dim);font-weight:400;">Enterprise Training Powered by PureBrain</span>' +
+            '<span style="margin-left:auto;font-size:0.72rem;color:var(--text-dim);font-weight:400;">' + (window._BRAND ? window._BRAND.poweredBy : 'Enterprise Training Powered by PureBrain') + '</span>' +
           '</div>' +
           '<div class="chat-messages" id="studio-chat-messages">' + messagesHtml + '</div>' +
           chipsHtml +
@@ -10152,7 +10152,7 @@
           description: 'Candidate-to-JD matching across 8 dimensions: hard skills, soft skills, experience level, industry alignment, education fit, culture indicators, growth trajectory, and logistics.',
           dimensions: '8 weighted dimensions',
           output: 'Match Score, Tier (Strong/Good/Partial/Weak), Interview Focus Areas, Hire Recommendation',
-          useCase: 'Pure Work AI \u2014 automated candidate ranking against any job description'
+          useCase: (window._BRAND ? window._BRAND.name : 'Pure Work AI') + ' \u2014 automated candidate ranking against any job description'
         },
         {
           id: 'btbh',
@@ -10182,7 +10182,7 @@
           description: 'Structured interview questions scored 1\u20135, mapped to organizational core values. Categories: behavioral, situational, values, and performance indicators.',
           dimensions: '4 question categories \u00d7 7 role types',
           output: 'Interview Guide with Questions, Scoring Rubrics, Red/Green Flags, Follow-Ups, Hire Decision Framework',
-          useCase: 'Pure Work AI \u2014 generates custom interview guides for any role category'
+          useCase: (window._BRAND ? window._BRAND.name : 'Pure Work AI') + ' \u2014 generates custom interview guides for any role category'
         },
         {
           id: 'origination',
@@ -10227,7 +10227,7 @@
 
       return '' +
         '<div class="welcome-message">Scoring Engines</div>' +
-        '<p class="welcome-sub">AI-powered intelligence models powering Pure Work AI and Bounty Hunter. All engines are configurable, auditable, and ready for integration.</p>' +
+        '<p class="welcome-sub">AI-powered intelligence models powering ' + (window._BRAND ? window._BRAND.name : 'Pure Work AI') + ' and Bounty Hunter. All engines are configurable, auditable, and ready for integration.</p>' +
         '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-bottom: 24px;">' +
           '<div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center;">' +
             '<div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);">6</div>' +
@@ -10258,7 +10258,7 @@
               '<div style="background: var(--bg-secondary); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem;"><code style="color: var(--accent);">config.json</code> \u2014 Tunable weights</div>' +
               '<div style="background: var(--bg-secondary); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem;"><code style="color: var(--accent);">tests/</code> \u2014 Unit tests</div>' +
             '</div>' +
-            '<p style="color: var(--text-dim); margin-top: 12px; font-size: 0.8rem;">Powered by PureBrain Scoring Engine</p>' +
+            '<p style="color: var(--text-dim); margin-top: 12px; font-size: 0.8rem;">' + (window._BRAND ? window._BRAND.engineCredit : 'Powered by PureBrain Scoring Engine') + '</p>' +
           '</div>' +
         '</div>';
     }
@@ -10270,7 +10270,7 @@
     var TOUR_STEPS = [
       {
         route: 'dashboard',
-        title: 'Welcome to Pure Work AI',
+        title: window._BRAND ? window._BRAND.welcomeTitle : 'Welcome to Pure Work AI',
         body: 'Your workforce operating system. This dashboard shows real-time metrics across assessments, policy compliance, onboarding progress, and your content library.',
         highlight: '.metrics-grid',
         position: 'bottom'
@@ -10326,7 +10326,7 @@
       },
       {
         route: 'dashboard',
-        title: 'Enterprise Training Powered by PureBrain.',
+        title: window._BRAND ? window._BRAND.poweredBy + '.' : 'Enterprise Training Powered by PureBrain.',
         body: 'This entire platform \u2014 every course, every assessment, every scoring engine \u2014 was built by an AI-powered learning design system. This is what intelligent enterprise learning looks like.\n\nReady to see what it can do for your organization?',
         highlight: null,
         position: 'center',
@@ -10513,7 +10513,7 @@
           '</div>' +
           '<div class="ent-page-header">' +
             '<div class="ent-page-title"><i class="bi bi-speedometer2" style="margin-right:10px;color:var(--accent);"></i>Admin Command Center</div>' +
-            '<div class="ent-page-subtitle">Enterprise Training Powered by PureBrain &mdash; Real-time platform analytics and compliance monitoring</div>' +
+            '<div class="ent-page-subtitle">' + (window._BRAND ? window._BRAND.pageSubPrefix : 'Enterprise Training Powered by PureBrain') + ' &mdash; Real-time platform analytics and compliance monitoring</div>' +
           '</div>' +
           kpiHtml +
           barChartHtml +
@@ -10602,7 +10602,7 @@
           '</div>' +
           '<div class="ent-page-header">' +
             '<div class="ent-page-title"><i class="bi bi-file-earmark-text" style="margin-right:10px;color:var(--accent);"></i>AI Document Analysis</div>' +
-            '<div class="ent-page-subtitle">Enterprise Training Powered by PureBrain &mdash; Transform any document into structured, assessment-ready courses</div>' +
+            '<div class="ent-page-subtitle">' + (window._BRAND ? window._BRAND.pageSubPrefix : 'Enterprise Training Powered by PureBrain') + ' &mdash; Transform any document into structured, assessment-ready courses</div>' +
           '</div>' +
           /* Progress Bar */
           '<div style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">' +
@@ -10781,7 +10781,7 @@
           '</div>' +
           '<div class="ent-page-header">' +
             '<div class="ent-page-title"><i class="bi bi-chat-dots" style="margin-right:10px;color:var(--accent);"></i>AI Expert & Audio Overview</div>' +
-            '<div class="ent-page-subtitle">Enterprise Training Powered by PureBrain &mdash; Ask questions, get source-cited answers, and listen to AI-generated audio summaries</div>' +
+            '<div class="ent-page-subtitle">' + (window._BRAND ? window._BRAND.pageSubPrefix : 'Enterprise Training Powered by PureBrain') + ' &mdash; Ask questions, get source-cited answers, and listen to AI-generated audio summaries</div>' +
           '</div>' +
           '<div class="ask-ai-grid">' +
             /* Left: Chat Interface */
@@ -10908,7 +10908,7 @@
           '</div>' +
           '<div class="ent-page-header">' +
             '<div class="ent-page-title"><i class="bi bi-sliders" style="margin-right:10px;color:var(--accent);"></i>Learning Science & Personalization</div>' +
-            '<div class="ent-page-subtitle">Enterprise Training Powered by PureBrain &mdash; Configure AI-powered instructional design, learning adaptation, and content generation parameters</div>' +
+            '<div class="ent-page-subtitle">' + (window._BRAND ? window._BRAND.pageSubPrefix : 'Enterprise Training Powered by PureBrain') + ' &mdash; Configure AI-powered instructional design, learning adaptation, and content generation parameters</div>' +
           '</div>' +
           '<div class="pers-grid">' +
             /* Left Column */
@@ -11100,7 +11100,7 @@
           '</div>' +
           '<div class="ent-page-header">' +
             '<div class="ent-page-title"><i class="bi bi-graph-up-arrow" style="margin-right:10px;color:var(--accent);"></i>Training Analytics & Compliance Audit</div>' +
-            '<div class="ent-page-subtitle">Enterprise Training Powered by PureBrain &mdash; Comprehensive platform analytics, performance insights, and audit compliance tracking</div>' +
+            '<div class="ent-page-subtitle">' + (window._BRAND ? window._BRAND.pageSubPrefix : 'Enterprise Training Powered by PureBrain') + ' &mdash; Comprehensive platform analytics, performance insights, and audit compliance tracking</div>' +
           '</div>' +
           /* Top Row: Audit Score + Compliance Gaps */
           '<div class="ent-grid-3">' +
@@ -11207,8 +11207,8 @@
       {
         id: 'welcome',
         target: '#tour-target-hero',
-        title: 'Welcome to PureWork Training Studio',
-        desc: 'Welcome to PureWork Training Studio \u2014 an enterprise-grade training platform powered by AI. Let me walk you through what makes this different from anything else on the market.',
+        title: window._BRAND ? window._BRAND.welcomeTitle : 'Welcome to PureWork Training Studio',
+        desc: window._BRAND ? window._BRAND.welcomeDesc : 'Welcome to PureWork Training Studio \u2014 an enterprise-grade training platform powered by AI. Let me walk you through what makes this different from anything else on the market.',
         action: null
       },
       {
@@ -11338,7 +11338,7 @@
         id: 'cta',
         target: null,
         title: 'Ready to Transform Your Training?',
-        desc: 'PureWork Training Studio transforms your documents into a complete learning platform. Ready to see what it can do with your content? Let\'s talk.',
+        desc: window._BRAND ? window._BRAND.closingDesc : 'PureWork Training Studio transforms your documents into a complete learning platform. Ready to see what it can do with your content? Let\'s talk.',
         action: null,
         isCTA: true
       }
@@ -12142,8 +12142,8 @@
       card.className = 'demo-card-overlay';
       card.innerHTML = '' +
         '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
-        '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
-        '<div class="demo-card-tagline">Enterprise Training Powered by PureBrain</div>';
+        '<div class="demo-card-title">' + (window._BRAND ? window._BRAND.demoCardTitle : 'PureWork <span>Training Studio</span>') + '</div>' +
+        '<div class="demo-card-tagline">' + (window._BRAND ? window._BRAND.demoCardTagline : 'Enterprise Training Powered by PureBrain') + '</div>';
       document.body.appendChild(card);
 
       /* Hide the subtitle bar during title card */
@@ -12191,9 +12191,9 @@
         card.className = 'demo-card-overlay';
         card.innerHTML = '' +
           '<div class="demo-card-logo"><i class="bi bi-mortarboard-fill"></i></div>' +
-          '<div class="demo-card-title">PureWork <span>Training Studio</span></div>' +
+          '<div class="demo-card-title">' + (window._BRAND ? window._BRAND.demoCardTitle : 'PureWork <span>Training Studio</span>') + '</div>' +
           '<div class="demo-card-tagline">Transform your documents into a complete learning platform.</div>' +
-          '<div class="demo-card-contact">Enterprise Training Powered by PureBrain</div>' +
+          '<div class="demo-card-contact">' + (window._BRAND ? window._BRAND.demoCardTagline : 'Enterprise Training Powered by PureBrain') + '</div>' +
           '<div class="demo-card-replay">' +
             '<button class="demo-card-replay-btn" onclick="_demoReplay()"><i class="bi bi-arrow-counterclockwise"></i> Replay Demo</button>' +
             '<button class="demo-card-close-btn" onclick="demoEnd()"><i class="bi bi-x-lg"></i> Close</button>' +
@@ -12273,6 +12273,65 @@
           if (e.key === 'ArrowLeft') { e.preventDefault(); tourPrev(); }
         }
       });
+
+      /* ================================================================
+         BRAND THEMING: ?brand=nanu activates Naked Nuclear skin
+         Usage: ?brand=nanu or ?brand=nanu&ss=training-admin
+         ================================================================ */
+      var _brandParams = new URLSearchParams(window.location.search);
+      var _activeBrand = _brandParams.get('brand');
+
+      if (_activeBrand === 'nanu') {
+        /* --- NaNu CSS Variable Overrides --- */
+        var root = document.documentElement;
+        root.style.setProperty('--bg-primary', '#0a0a0a');
+        root.style.setProperty('--bg-secondary', '#111111');
+        root.style.setProperty('--bg-card', '#1a1a1a');
+        root.style.setProperty('--bg-sidebar', '#080808');
+        root.style.setProperty('--accent', '#e8c840');
+        root.style.setProperty('--accent-hover', '#d4b535');
+        root.style.setProperty('--accent-light', 'rgba(232, 200, 64, 0.15)');
+        root.style.setProperty('--border', '#2a2a2a');
+        root.style.setProperty('--border-light', '#1e1e1e');
+        root.style.setProperty('--nav-active', 'rgba(232, 200, 64, 0.15)');
+
+        /* --- NaNu DOM Text Replacements --- */
+        document.title = 'Naked Nuclear — Training Platform';
+
+        /* Login page */
+        var loginLogo = document.querySelector('.login-logo-text');
+        if (loginLogo) loginLogo.innerHTML = 'Naked <span>Nuclear</span>';
+        var loginSub = document.querySelector('.login-subtitle');
+        if (loginSub) loginSub.textContent = 'Enterprise Training Platform';
+        var loginFooter = document.querySelector('.login-footer');
+        if (loginFooter) loginFooter.innerHTML = 'Powered by <span>PureBrain</span>';
+
+        /* Sidebar logo */
+        var sidebarLogo = document.querySelector('.sidebar-logo-text');
+        if (sidebarLogo) sidebarLogo.innerHTML = 'Naked <span>Nuclear</span>';
+        var sidebarBadge = document.querySelector('.sidebar-logo-badge');
+        if (sidebarBadge) sidebarBadge.textContent = 'EPRI';
+
+        /* --- NaNu JS String Overrides for Dynamic Content --- */
+        window._BRAND = {
+          name: 'Naked Nuclear',
+          shortName: 'NaNu',
+          tagline: 'Enterprise Training Platform',
+          poweredBy: 'Powered by PureBrain',
+          catalogueTitle: 'Naked Nuclear <span>Training</span>',
+          podcastSub: 'Naked Nuclear Training Podcast',
+          pageSubPrefix: 'Naked Nuclear Training',
+          welcomeTitle: 'Welcome to Naked Nuclear Training',
+          welcomeDesc: 'Welcome to Naked Nuclear Training — an enterprise-grade training platform powered by AI. Let me walk you through what makes this different from anything else on the market.',
+          closingDesc: 'Naked Nuclear Training transforms your documents into a complete learning platform. Ready to see what it can do with your content? Let\'s talk.',
+          demoCardTitle: 'Naked Nuclear <span>Training</span>',
+          demoCardTagline: 'Powered by PureBrain',
+          useCasePrefix: 'Naked Nuclear',
+          engineCredit: 'Powered by PureBrain Engine'
+        };
+      } else {
+        window._BRAND = null;
+      }
 
       /* Screenshot mode: ?ss=ROUTE auto-authenticates and navigates */
       var ssParams = new URLSearchParams(window.location.search);
