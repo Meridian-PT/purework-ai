@@ -12274,8 +12274,17 @@
         }
       });
 
+      /* Screenshot mode: ?ss=ROUTE auto-authenticates and navigates */
+      var ssParams = new URLSearchParams(window.location.search);
+      var ssRoute = ssParams.get('ss');
+      if (ssRoute) {
+        APP_STATE.token = 'demo-token-ss';
+        APP_STATE.user = { id: 1, name: 'Sarah Mitchell', email: 'admin@demo.com', role: 'admin', company: 'Acme Corporation' };
+        showApp();
+        window.location.hash = '#/' + ssRoute;
+      }
       /* Try to restore existing session */
-      if (restoreSession()) {
+      else if (restoreSession()) {
         showApp();
 
         /* Check for auto-demo URL parameter: ?demo=true or #studio?demo=true */
